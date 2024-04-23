@@ -2,6 +2,11 @@
   "name": "CameraConnect",
   "displayName": "CameraConnect",
   "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "f1cd6da7-6c20-4b0d-8f8b-6b06ef714ae3"
+      }
+    },
     "name": "CameraConnect",
     "slug": "CameraConnect",
     "scheme": "cameraconnect",
@@ -17,9 +22,7 @@
       "fallbackToCacheTimeout": 0
     },
     "jsEngine": "hermes",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.cameraconnect",
@@ -68,12 +71,14 @@
         }
       ],
       "expo-font",
-      "react-native-vision-camera",
-      {
-        "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
-        "enableMicrophonePermission": true,
-        "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
-      }
+      [
+        "react-native-vision-camera",
+        {
+          "cameraPermissionText": "$(PRODUCT_NAME) needs access to your Camera.",
+          "enableMicrophonePermission": true,
+          "microphonePermissionText": "$(PRODUCT_NAME) needs access to your Microphone."
+        }
+      ]
     ],
     "experiments": {
       "tsconfigPaths": true
