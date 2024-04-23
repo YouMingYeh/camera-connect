@@ -46,6 +46,12 @@ const zh = {
     debugTab: "調試",
     communityTab: "社區",
     podcastListTab: "播客",
+    cameraTab: "相機",
+    albumTab: "相簿",
+    exploreTab: "探索",
+    notificationsTab: "通知",
+    settingsTab: "設定",
+    profileTab: "個人資料",
   },
   demoCommunityScreen: {
     title: "與社區連接",
