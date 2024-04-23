@@ -7,7 +7,7 @@ export * from "./DemoShowroomScreen/DemoShowroomScreen"
 
 export * from "./ErrorScreen/ErrorBoundary"
 // export other screens here
-export * from "./CameraScreen"
+export * from "./CameraScreen/CameraScreen"
 export * from "./AlbumScreen"
 export * from "./ExploreScreen"
 export * from "./NotificationsScreen"

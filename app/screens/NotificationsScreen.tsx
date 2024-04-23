@@ -8,18 +8,20 @@ import { Screen, Text } from "app/components"
 
 interface NotificationsScreenProps extends AppStackScreenProps<"Notifications"> {}
 
-export const NotificationsScreen: FC<NotificationsScreenProps> = observer(function NotificationsScreen() {
-  // Pull in one of our MST stores
-  // const { someStore, anotherStore } = useStores()
+export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
+  function NotificationsScreen() {
+    // Pull in one of our MST stores
+    // const { someStore, anotherStore } = useStores()
 
-  // Pull in navigation via hook
-  // const navigation = useNavigation()
-  return (
-    <Screen style={$root} preset="scroll">
-      <Text text="notifications" />
-    </Screen>
-  )
-})
+    // Pull in navigation via hook
+    // const navigation = useNavigation()
+    return (
+      <Screen style={$root} preset="scroll">
+        <Text text="notifications" />
+      </Screen>
+    )
+  },
+)
 
 const $root: ViewStyle = {
   flex: 1,
