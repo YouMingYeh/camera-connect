@@ -6,36 +6,83 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from "react-na
 import { Camera, FlashMode, CameraType, CameraCapturedPicture } from "expo-camera"
 import CameraPreview from "./CameraPreview"
 import { ScrollView } from "react-native-gesture-handler"
+import { Media, VideoType } from "./type"
+import { ResizeMode, Video } from "expo-av"
 let camera: Camera
+
 export default function App() {
   const [startCamera, setStartCamera] = React.useState(false)
   const [previewVisible, setPreviewVisible] = React.useState(false)
-  const [capturedImages, setCapturedImages] = React.useState<CameraCapturedPicture[]>()
+  const [capturedMedia, setCapturedMedias] = React.useState<Media[]>()
   const [cameraType, setCameraType] = React.useState(CameraType.back)
   const [flashMode, setFlashMode] = React.useState(FlashMode.off)
+  const [recording, setRecording] = React.useState(false)
+
+  const [recordingMode, setRecordingMode] = React.useState(false)
 
   const __startCamera = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync()
-    if (status === "granted") {
+    const cameraStatus = await Camera.requestCameraPermissionsAsync()
+    const audioStatus = await Camera.requestMicrophonePermissionsAsync()
+    if (cameraStatus.status === "granted" && audioStatus.status === "granted") {
       setStartCamera(true)
     } else {
       Alert.alert("Access denied")
     }
   }
+
+  const __toggleRecordingMode = () => {
+    setRecordingMode((prevMode) => !prevMode)
+  }
+
   const __takePicture = async () => {
     const photo: CameraCapturedPicture = await camera.takePictureAsync()
     // setPreviewVisible(true)
-    setCapturedImages((prev) => {
+    const media: Media = {
+      type: "image",
+      data: photo,
+    }
+    setCapturedMedias((prev) => {
       if (prev) {
-        return [photo, ...prev]
+        return [media, ...prev]
       } else {
-        return [photo]
+        return [media]
       }
     })
   }
+
+  const __takeVideo = async () => {
+    setRecording(true)
+    const video: VideoType = await camera.recordAsync()
+    const media: Media = {
+      type: "video",
+      data: video,
+    }
+    setCapturedMedias((prev) => {
+      if (prev) {
+        return [media, ...prev]
+      } else {
+        return [media]
+      }
+    })
+  }
+
+  const __stopVideo = async () => {
+    await camera.stopRecording()
+    setRecording(false)
+  }
+
+  const __toggleRecord = async () => {
+    alert("recording: ")
+    if (recording) {
+      await __stopVideo()
+    } else {
+      await __takeVideo()
+    }
+  }
+
   const __savePhoto = () => {
-    if (capturedImages) {
-      console.log(capturedImages[0].uri)
+    if (capturedMedia) {
+      console.log(capturedMedia[0].data.uri)
     }
   }
   const __retakePicture = () => {
@@ -89,9 +136,9 @@ export default function App() {
             width: "100%",
           }}
         >
-          {previewVisible && capturedImages ? (
+          {previewVisible && capturedMedia ? (
             <CameraPreview
-              photos={capturedImages}
+              medias={capturedMedia}
               savePhoto={__savePhoto}
               retakePicture={__retakePicture}
             />
@@ -126,35 +173,55 @@ export default function App() {
                   <TouchableOpacity
                     onPress={__handleFlashMode}
                     style={{
-                      backgroundColor: flashMode === FlashMode.off ? "#000" : "#fff",
                       borderRadius: 50, // Change the value to a number
-                      height: 25,
-                      width: 25,
+                      height: 35,
+                      width: 35,
                     }}
                   >
                     <Text
                       style={{
-                        fontSize: 20,
+                        fontSize: 30,
                       }}
                     >
-                      ⚡️
+                      {flashMode === FlashMode.on
+                        ? "⚡️"
+                        : flashMode === FlashMode.off
+                        ? "🔆"
+                        : "❌"}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={__switchCamera}
                     style={{
-                      marginTop: 20,
+                      marginTop: 10,
                       borderRadius: 50,
-                      height: 25,
-                      width: 25,
+                      height: 35,
+                      width: 35,
                     }}
                   >
                     <Text
                       style={{
-                        fontSize: 20,
+                        fontSize: 30,
                       }}
                     >
-                      {cameraType === CameraType.front ? "🤳" : "📷"}
+                      {cameraType === CameraType.front ? "🤳" : "📸"}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={__toggleRecordingMode}
+                    style={{
+                      marginTop: 10,
+                      borderRadius: 50,
+                      height: 35,
+                      width: 35,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 30,
+                      }}
+                    >
+                      {recordingMode ? "📹" : "📷"}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -177,43 +244,56 @@ export default function App() {
                     }}
                   >
                     <TouchableOpacity
-                      onPress={__takePicture}
+                      onPress={recordingMode ? __toggleRecord : __takePicture}
                       style={{
                         width: 70,
                         height: 70,
                         bottom: 0,
                         borderRadius: 50,
-                        backgroundColor: "#fff",
+                        backgroundColor: recordingMode ? "#ff0000" : "#fff",
                         zIndex: 10,
+                        borderWidth: 3,
+                        borderColor: recording ? "#ff0000" : "#fff",
                       }}
                     />
                   </View>
                 </View>
               </View>
-              <View style={{ height: 80, width: "100%", backgroundColor: "transparent" }}>
-                {capturedImages && capturedImages.length > 0 && (
+
+              <TouchableOpacity
+                onPress={__handlePreviewButtonPress}
+                style={{
+                  position: "absolute",
+                  right: 20,
+                  bottom: 20,
+                  borderRadius: 30,
+                  width: 60,
+                  height: 60,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {capturedMedia && capturedMedia.length > 0 && (
                   <ScrollView horizontal={true} style={styles.thumbnailScrollView}>
-                    {capturedImages.map((photo) => (
-                      <Image key={photo.uri} source={{ uri: photo.uri }} style={styles.thumbnail} />
-                    ))}
+                    {capturedMedia.map((media) =>
+                      media.type === "image" ? (
+                        <Image
+                          key={media.data.uri}
+                          source={{ uri: media.data.uri }}
+                          style={styles.thumbnail}
+                        />
+                      ) : (
+                        <Video
+                          key={media.data.uri}
+                          source={{ uri: media.data.uri }}
+                          style={styles.thumbnail}
+                          resizeMode={ResizeMode.COVER}
+                        />
+                      ),
+                    )}
                   </ScrollView>
                 )}
-                <TouchableOpacity
-                  onPress={__handlePreviewButtonPress}
-                  style={{
-                    position: "absolute",
-                    right: 20,
-                    bottom: 20,
-                    borderRadius: 30,
-                    width: 60,
-                    height: 60,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text style={{color: "white"}}>Preview</Text>
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </Camera>
           )}
         </View>

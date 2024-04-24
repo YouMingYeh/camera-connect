@@ -1,8 +1,6 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
-import { CameraCapturedPicture } from "expo-camera"
 import {
-  ImageBackground,
   Text,
   TouchableOpacity,
   View,
@@ -11,20 +9,24 @@ import {
   ScrollView,
 } from "react-native"
 import React, { useState } from "react"
-import BouncyCheckbox from "react-native-bouncy-checkbox";
+import BouncyCheckbox from "react-native-bouncy-checkbox"
+import { Media } from "./type"
+import { ResizeMode, Video } from "expo-av"
 
 const CameraPreview = ({
-  photos,
+  medias,
   retakePicture,
   savePhoto,
 }: {
-  photos: CameraCapturedPicture[]
+  medias: Media[]
   retakePicture: () => void
   savePhoto: () => void
 }) => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0)
-  const [selectedPhotos, setSelectedPhotos] = useState<Array<boolean>>(new Array(photos.length).fill(false))
-  const photo = photos[selectedPhotoIndex]
+  const [selectedPhotos, setSelectedPhotos] = useState<Array<boolean>>(
+    new Array(medias.length).fill(false),
+  )
+  const photo = medias[selectedPhotoIndex]
 
   const selectPhoto = (index: number) => {
     setSelectedPhotoIndex(index)
@@ -45,92 +47,128 @@ const CameraPreview = ({
         height: "100%",
       }}
     >
-      <ImageBackground
-        source={{ uri: photo && photo.uri }}
+      {photo && photo.type === "video" ? (
+        <Video
+          source={{ uri: photo.data.uri }}
+          rate={1.0}
+          volume={1.0}
+          isMuted={false}
+          resizeMode={ResizeMode.COVER}
+          shouldPlay
+          isLooping
+          style={{
+            flex: 1,
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+          }}
+        />
+      ) : (
+        <Image
+          source={{ uri: photo && photo.data.uri }}
+          style={{
+            flex: 1,
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+          }}
+        />
+      )}
+
+      <View
         style={{
           flex: 1,
+          flexDirection: "column",
+          padding: 15,
+          justifyContent: "flex-end",
         }}
       >
         <View
           style={{
-            flex: 1,
-            flexDirection: "column",
-            padding: 15,
-            justifyContent: "flex-end",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            position: "absolute",
+            right: 0,
+            bottom: 0,
+            width: "100%",
+            zIndex: 10,
           }}
         >
-          <View
+          <TouchableOpacity
+            onPress={retakePicture}
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              position: "absolute",
-              right: 0,
-              bottom: 0,
-              width: "100%",
-              zIndex: 10,
+              width: 130,
+              height: 40,
+              alignItems: "center",
+              borderRadius: 4,
             }}
           >
-            <TouchableOpacity
-              onPress={retakePicture}
+            <Text
               style={{
-                width: 130,
-                height: 40,
-                alignItems: "center",
-                borderRadius: 4,
+                color: "#fff",
+                fontSize: 20,
               }}
             >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 20,
-                }}
-              >
-                Re-take
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={savePhoto}
-              style={{
-                width: 130,
-                height: 40,
-                alignItems: "center",
-                borderRadius: 4,
-              }}
-            >
-              <Text
-                style={{
-                  color: "#fff",
-                  fontSize: 20,
-                }}
-              >
-                save photo
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            horizontal={true}
-            style={styles.thumbnailScrollView}
+              Re-take
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={savePhoto}
+            style={{
+              width: 130,
+              height: 40,
+              alignItems: "center",
+              borderRadius: 4,
+            }}
           >
-            {photos.map((photo, index) => (
-              <TouchableOpacity style={styles.thumbnailContainer} key={index} onPress={() => selectPhoto(index)}>
-                <Image source={{ uri: photo.uri }} style={styles.thumbnail} />
-                <BouncyCheckbox
-                  style={styles.checkboxContainer}
-                  isChecked={selectedPhotos[index]}
-                  onPress={() => toggleSelection(index)}
-                />
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 20,
+              }}
+            >
+              save photo
+            </Text>
+          </TouchableOpacity>
         </View>
-      </ImageBackground>
+        <ScrollView horizontal={true} style={styles.thumbnailScrollView}>
+          {medias.map((media, index) => (
+            <TouchableOpacity
+              style={styles.thumbnailContainer}
+              key={index}
+              onPress={() => selectPhoto(index)}
+            >
+            {media.type === "image" ? (
+                <Image
+                    key={media.data.uri}
+                    source={{ uri: media.data.uri }}
+                    style={styles.thumbnail}
+                />
+            ) : (
+                <Video
+                    key={media.data.uri}
+                    source={{ uri: media.data.uri }}
+                    style={styles.thumbnail}
+                    resizeMode={ResizeMode.COVER}
+                />
+            )}
+
+              <BouncyCheckbox
+                style={styles.checkboxContainer}
+                isChecked={selectedPhotos[index]}
+                onPress={() => toggleSelection(index)}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   checkboxContainer: {
-    position: 'absolute',
+    position: "absolute",
     right: -14,
     top: 2,
   },
@@ -148,7 +186,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     height: 100,
     left: 0,
-    position: 'absolute',
+    position: "absolute",
     right: 0,
   },
 })
