@@ -1,8 +1,8 @@
 import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
-import { ViewStyle } from "react-native"
+// import { ViewStyle } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Screen } from "app/components"
+// import { Screen } from "app/components"
 import CameraView from "./CameraView"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
@@ -16,12 +16,12 @@ export const CameraScreen: FC<CameraScreenProps> = observer(function CameraScree
   // Pull in navigation via hook
   // const navigation = useNavigation()
   return (
-    <Screen style={$root} preset="scroll">
       <CameraView />
-    </Screen>
   )
 })
 
-const $root: ViewStyle = {
-  flex: 1,
-}
+// const $root: ViewStyle = {
+//   flex: 1,
+//   width: "100%",
+//   height: "100%",
+// }
