@@ -1,2 +1,2 @@
-declare function ControlBar(): JSX.Element;
-export { ControlBar };
+declare function ControlBar(): JSX.Element
+export { ControlBar }

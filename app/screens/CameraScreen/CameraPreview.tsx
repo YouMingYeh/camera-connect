@@ -6,6 +6,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { Media } from "./type"
 import { ResizeMode, Video } from "expo-av"
 import { ImageEditor } from "./expo-image-editor"
+import VideoTrimmer from "./VideoTrimmer"
 
 const CameraPreview = ({
   medias,
@@ -23,6 +24,7 @@ const CameraPreview = ({
     new Array(medias.length).fill(false),
   )
   const [editorVisible, setEditorVisible] = useState(false)
+  const [videoEditorVisible, setVideoEditorVisible] = useState(false)
   const photo = medias[selectedPhotoIndex]
 
   const selectPhoto = (index: number) => {
@@ -33,6 +35,13 @@ const CameraPreview = ({
     const newSelectedPhotos = [...selectedPhotos]
     newSelectedPhotos[index] = !newSelectedPhotos[index]
     setSelectedPhotos(newSelectedPhotos)
+  }
+  const handleEdit = () => {
+    if (photo && photo.type === "video") {
+      setVideoEditorVisible(true)
+      return
+    }
+    setEditorVisible(true)
   }
 
   return (
@@ -45,7 +54,7 @@ const CameraPreview = ({
       }}
     >
       <TouchableOpacity
-        onPress={() => setEditorVisible(true)}
+        onPress={() => handleEdit()}
         style={{
           position: "absolute",
           right: 20,
@@ -85,21 +94,22 @@ const CameraPreview = ({
         mode="full"
       />
       {photo && photo.type === "video" ? (
-        <Video
-          source={{ uri: photo.data.uri }}
-          rate={1.0}
-          volume={1.0}
-          isMuted={false}
-          resizeMode={ResizeMode.COVER}
-          shouldPlay
-          isLooping
-          style={{
-            flex: 1,
-            width: "100%",
-            height: "100%",
-            position: "absolute",
-          }}
-        />
+        videoEditorVisible ? (
+          <VideoTrimmer videoUri={photo && photo.data.uri} />
+        ) : (
+          <Video
+            source={{ uri: photo && photo.data.uri }}
+            style={{
+              flex: 1,
+              width: "100%",
+              height: "100%",
+              position: "absolute",
+            }}
+            resizeMode={ResizeMode.COVER}
+            shouldPlay
+            isLooping
+          />
+        )
       ) : (
         <Image
           source={{ uri: photo && photo.data.uri }}
@@ -110,6 +120,30 @@ const CameraPreview = ({
             position: "absolute",
           }}
         />
+      )}
+      {(editorVisible || videoEditorVisible) && (
+        <TouchableOpacity
+          onPress={() => {
+            setEditorVisible(false)
+            setVideoEditorVisible(false)
+          }}
+          style={{
+            position: "absolute",
+            left: 20,
+            top: 30,
+            zIndex: 10,
+            padding: 10,
+          }}
+        >
+          <Text
+            style={{
+              color: "#fff",
+              fontSize: 20,
+            }}
+          >
+            Exit Edit
+          </Text>
+        </TouchableOpacity>
       )}
 
       <View
@@ -206,6 +240,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: -14,
     top: 2,
+    zIndex: 20,
   },
   thumbnail: {
     height: "100%",
@@ -216,6 +251,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 100,
     width: 100,
+    zIndex: 50,
   },
   thumbnailScrollView: {
     bottom: 0,
@@ -223,6 +259,7 @@ const styles = StyleSheet.create({
     left: 0,
     position: "absolute",
     right: 0,
+    zIndex: 10,
   },
 })
 

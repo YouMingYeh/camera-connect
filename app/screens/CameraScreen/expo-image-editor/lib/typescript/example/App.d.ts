@@ -1,2 +1,2 @@
-import "@expo/match-media";
-export default function App(): JSX.Element;
+import "@expo/match-media"
+export default function App(): JSX.Element

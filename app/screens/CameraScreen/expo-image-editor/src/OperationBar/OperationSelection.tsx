@@ -1,33 +1,22 @@
-import * as React from "react";
-import {
-  Platform,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
-import { Icon } from "../components/Icon";
-import { IconButton } from "../components/IconButton";
-import { editingModeState, EditingModes } from "../Store";
-import { useRecoilState } from "recoil";
-import { useContext } from "react";
-import {
-  AdjustmentOperations,
-  EditingOperations,
-  EditorContext,
-  TransformOperations,
-} from "..";
-import { useMemo } from "react";
+import * as React from "react"
+import { Platform, StyleSheet, View, TouchableOpacity, ScrollView } from "react-native"
+import { Icon } from "../components/Icon"
+import { IconButton } from "../components/IconButton"
+import { editingModeState, EditingModes } from "../Store"
+import { useRecoilState } from "recoil"
+import { useContext } from "react"
+import { AdjustmentOperations, EditingOperations, EditorContext, TransformOperations } from ".."
+import { useMemo } from "react"
 
 interface Operation<T> {
-  title: string;
-  iconID: React.ComponentProps<typeof Icon>["iconID"];
-  operationID: T;
+  title: string
+  iconID: React.ComponentProps<typeof Icon>["iconID"]
+  operationID: T
 }
 
 interface Operations {
-  transform: Operation<TransformOperations>[];
-  adjust: Operation<AdjustmentOperations>[];
+  transform: Operation<TransformOperations>[]
+  adjust: Operation<AdjustmentOperations>[]
 }
 
 const operations: Operations = {
@@ -50,52 +39,40 @@ const operations: Operations = {
       operationID: "blur",
     },
   ],
-};
+}
 
 export function OperationSelection() {
   //
-  const { allowedTransformOperations, allowedAdjustmentOperations } =
-    useContext(EditorContext);
+  const { allowedTransformOperations, allowedAdjustmentOperations } = useContext(EditorContext)
 
-  const isTransformOnly =
-    allowedTransformOperations && !allowedAdjustmentOperations;
-  const isAdjustmentOnly =
-    allowedAdjustmentOperations && !allowedTransformOperations;
+  const isTransformOnly = allowedTransformOperations && !allowedAdjustmentOperations
+  const isAdjustmentOnly = allowedAdjustmentOperations && !allowedTransformOperations
 
   const [selectedOperationGroup, setSelectedOperationGroup] = React.useState<
     "transform" | "adjust"
-  >(isAdjustmentOnly ? "adjust" : "transform");
+  >(isAdjustmentOnly ? "adjust" : "transform")
 
-  const [, setEditingMode] = useRecoilState(editingModeState);
+  const [, setEditingMode] = useRecoilState(editingModeState)
 
   const filteredOperations = useMemo(() => {
     // If neither are specified then allow the full range of operations
     if (!allowedTransformOperations && !allowedAdjustmentOperations) {
-      return operations;
+      return operations
     }
     const filteredTransforms = allowedTransformOperations
-      ? operations.transform.filter((op) =>
-          allowedTransformOperations.includes(op.operationID)
-        )
-      : operations.transform;
+      ? operations.transform.filter((op) => allowedTransformOperations.includes(op.operationID))
+      : operations.transform
     const filteredAdjustments = allowedAdjustmentOperations
-      ? operations.adjust.filter((op) =>
-          allowedAdjustmentOperations.includes(op.operationID)
-        )
-      : operations.adjust;
+      ? operations.adjust.filter((op) => allowedAdjustmentOperations.includes(op.operationID))
+      : operations.adjust
     if (isTransformOnly) {
-      return { transform: filteredTransforms, adjust: [] };
+      return { transform: filteredTransforms, adjust: [] }
     }
     if (isAdjustmentOnly) {
-      return { adjust: filteredAdjustments, transform: [] };
+      return { adjust: filteredAdjustments, transform: [] }
     }
-    return { transform: filteredTransforms, adjust: filteredAdjustments };
-  }, [
-    allowedTransformOperations,
-    allowedAdjustmentOperations,
-    isTransformOnly,
-    isAdjustmentOnly,
-  ]);
+    return { transform: filteredTransforms, adjust: filteredAdjustments }
+  }, [allowedTransformOperations, allowedAdjustmentOperations, isTransformOnly, isAdjustmentOnly])
 
   return (
     <>
@@ -111,7 +88,7 @@ export function OperationSelection() {
                   onPress={() => setEditingMode(item.operationID)}
                 />
               </View>
-            )
+            ),
           )
         }
       </ScrollView>
@@ -126,7 +103,11 @@ export function OperationSelection() {
             ]}
             onPress={() => setSelectedOperationGroup("transform")}
           >
-            <Icon iconID="transform" text="Transform" disabled={selectedOperationGroup !== "transform"}/>
+            <Icon
+              iconID="transform"
+              text="Transform"
+              disabled={selectedOperationGroup !== "transform"}
+            />
           </TouchableOpacity>
           <TouchableOpacity
             style={[
@@ -137,12 +118,12 @@ export function OperationSelection() {
             ]}
             onPress={() => setSelectedOperationGroup("adjust")}
           >
-            <Icon iconID="tune" text="Adjust" disabled={selectedOperationGroup !== "adjust"}/>
+            <Icon iconID="tune" text="Adjust" disabled={selectedOperationGroup !== "adjust"} />
           </TouchableOpacity>
         </View>
       ) : null}
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -171,4 +152,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "black",
   },
-});
+})

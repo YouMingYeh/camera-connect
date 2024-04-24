@@ -1,1 +1,1 @@
-export declare function Blur(): JSX.Element | null;
+export declare function Blur(): JSX.Element | null

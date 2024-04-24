@@ -1,1 +1,1 @@
-export declare function Rotate(): JSX.Element;
+export declare function Rotate(): JSX.Element

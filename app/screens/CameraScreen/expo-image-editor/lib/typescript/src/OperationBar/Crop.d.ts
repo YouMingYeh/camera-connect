@@ -1,1 +1,1 @@
-export declare function Crop(): JSX.Element;
+export declare function Crop(): JSX.Element

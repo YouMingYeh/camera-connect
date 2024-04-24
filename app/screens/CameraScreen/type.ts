@@ -7,6 +7,6 @@ export type VideoType = {
 export type ImageType = CameraCapturedPicture
 
 export type Media = {
-    type: "image" | "video"
-    data: ImageType | VideoType
+  type: "image" | "video"
+  data: ImageType | VideoType
 }

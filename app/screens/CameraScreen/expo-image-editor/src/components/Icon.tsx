@@ -1,26 +1,20 @@
-import * as React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import * as React from "react"
+import { View, Text, StyleSheet } from "react-native"
+import { MaterialIcons } from "@expo/vector-icons"
 
 export interface IIconProps {
-  disabled?: boolean;
-  iconID: React.ComponentProps<typeof MaterialIcons>["name"];
-  text: string;
+  disabled?: boolean
+  iconID: React.ComponentProps<typeof MaterialIcons>["name"]
+  text: string
 }
 
 export function Icon(props: IIconProps) {
   return (
     <View style={styles.container}>
-      <MaterialIcons
-        name={props.iconID}
-        size={26}
-        color={props.disabled ? "grey" : "white"}
-      />
-      <Text style={props.disabled? styles.distableText: styles.text}>
-        {props.text}
-      </Text>
+      <MaterialIcons name={props.iconID} size={26} color={props.disabled ? "grey" : "white"} />
+      <Text style={props.disabled ? styles.distableText : styles.text}>{props.text}</Text>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -40,4 +34,4 @@ const styles = StyleSheet.create({
     color: "grey",
     textAlign: "center",
   },
-});
+})

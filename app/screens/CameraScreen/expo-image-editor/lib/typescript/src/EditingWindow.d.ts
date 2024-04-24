@@ -1,2 +1,2 @@
-declare function EditingWindow(): JSX.Element;
-export { EditingWindow };
+declare function EditingWindow(): JSX.Element
+export { EditingWindow }

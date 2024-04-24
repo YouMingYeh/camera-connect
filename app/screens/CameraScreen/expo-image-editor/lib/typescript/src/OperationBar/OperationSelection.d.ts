@@ -1,1 +1,1 @@
-export declare function OperationSelection(): JSX.Element;
+export declare function OperationSelection(): JSX.Element

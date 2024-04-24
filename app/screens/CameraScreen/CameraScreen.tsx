@@ -15,9 +15,7 @@ export const CameraScreen: FC<CameraScreenProps> = observer(function CameraScree
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
-  return (
-      <CameraView />
-  )
+  return <CameraView />
 })
 
 // const $root: ViewStyle = {

@@ -1,61 +1,56 @@
-import * as React from "react";
-import { View, StyleSheet } from "react-native";
-import _ from "lodash";
-import { useRecoilState } from "recoil";
-import { editingModeState, imageDataState, processingState } from "./Store";
-import { IconButton } from "./components/IconButton";
-import { useContext } from "react";
-import { EditorContext } from "./index";
-import { useEffect } from "react";
-import { usePerformCrop } from "./customHooks/usePerformCrop";
+import * as React from "react"
+import { View, StyleSheet } from "react-native"
+import _ from "lodash"
+import { useRecoilState } from "recoil"
+import { editingModeState, imageDataState, processingState } from "./Store"
+import { IconButton } from "./components/IconButton"
+import { useContext } from "react"
+import { EditorContext } from "./index"
+import { useEffect } from "react"
+import { usePerformCrop } from "./customHooks/usePerformCrop"
 
 function ControlBar() {
   //
-  const [editingMode, setEditingMode] = useRecoilState(editingModeState);
-  const [imageData] = useRecoilState(imageDataState);
-  const [processing, setProcessing] = useRecoilState(processingState);
-  const { mode, onCloseEditor, onEditingComplete } = useContext(EditorContext);
+  const [editingMode, setEditingMode] = useRecoilState(editingModeState)
+  const [imageData] = useRecoilState(imageDataState)
+  const [processing, setProcessing] = useRecoilState(processingState)
+  const { mode, onCloseEditor, onEditingComplete } = useContext(EditorContext)
 
-  const performCrop = usePerformCrop();
+  const performCrop = usePerformCrop()
 
-  const shouldDisableDoneButton =
-    editingMode !== "operation-select" && mode !== "crop-only";
+  const shouldDisableDoneButton = editingMode !== "operation-select" && mode !== "crop-only"
 
   const onFinishEditing = async () => {
     if (mode === "full") {
-      setProcessing(false);
-      onEditingComplete(imageData);
-      onCloseEditor();
+      setProcessing(false)
+      onEditingComplete(imageData)
+      onCloseEditor()
     } else if (mode === "crop-only") {
-      await performCrop();
+      await performCrop()
     }
-  };
+  }
 
   const onPressBack = () => {
     if (mode === "full") {
       if (editingMode === "operation-select") {
-        onCloseEditor();
+        onCloseEditor()
       } else {
-        setEditingMode("operation-select");
+        setEditingMode("operation-select")
       }
     } else if (mode === "crop-only") {
-      onCloseEditor();
+      onCloseEditor()
     }
-  };
+  }
 
   // Complete the editing process if we are in crop only mode after the editingMode gets set
   // back to operation select (happens internally in usePerformCrop) - can't do it in onFinishEditing
   // else it gets stale state - may need to refactor the hook as this feels hacky
   useEffect(() => {
-    if (
-      mode === "crop-only" &&
-      imageData.uri &&
-      editingMode === "operation-select"
-    ) {
-      onEditingComplete(imageData);
-      onCloseEditor();
+    if (mode === "crop-only" && imageData.uri && editingMode === "operation-select") {
+      onEditingComplete(imageData)
+      onCloseEditor()
     }
-  }, [imageData, editingMode]);
+  }, [imageData, editingMode])
 
   return (
     <View style={styles.container}>
@@ -67,10 +62,10 @@ function ControlBar() {
         disabled={shouldDisableDoneButton}
       />
     </View>
-  );
+  )
 }
 
-export { ControlBar };
+export { ControlBar }
 
 const styles = StyleSheet.create({
   container: {
@@ -82,4 +77,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 4,
   },
-});
+})

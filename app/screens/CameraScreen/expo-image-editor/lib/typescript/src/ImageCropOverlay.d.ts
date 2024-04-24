@@ -1,2 +1,2 @@
-declare const ImageCropOverlay: () => JSX.Element;
-export { ImageCropOverlay };
+declare const ImageCropOverlay: () => JSX.Element
+export { ImageCropOverlay }

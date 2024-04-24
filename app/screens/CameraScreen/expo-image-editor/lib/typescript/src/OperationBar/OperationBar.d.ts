@@ -1,1 +1,1 @@
-export declare function OperationBar(): JSX.Element;
+export declare function OperationBar(): JSX.Element

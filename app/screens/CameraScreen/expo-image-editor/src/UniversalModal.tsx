@@ -1,10 +1,10 @@
-import React from "react";
-import { Modal as RNModal, Platform } from "react-native";
+import React from "react"
+import { Modal as RNModal, Platform } from "react-native"
 //@ts-ignore
-import WebModal from "modal-enhanced-react-native-web";
+import WebModal from "modal-enhanced-react-native-web"
 
 interface IUniversalModalProps extends React.ComponentProps<typeof RNModal> {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 export const UniversalModal = (props: IUniversalModalProps) => {
@@ -13,8 +13,8 @@ export const UniversalModal = (props: IUniversalModalProps) => {
       <WebModal isVisible={props.visible} style={{ margin: 0 }}>
         {props.children}
       </WebModal>
-    );
+    )
   }
 
-  return <RNModal {...props} />;
-};
+  return <RNModal {...props} />
+}

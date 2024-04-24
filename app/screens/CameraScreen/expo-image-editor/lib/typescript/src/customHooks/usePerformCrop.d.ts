@@ -1,1 +1,1 @@
-export declare const usePerformCrop: () => () => Promise<void>;
+export declare const usePerformCrop: () => () => Promise<void>

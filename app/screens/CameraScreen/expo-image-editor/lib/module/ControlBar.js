@@ -1,72 +1,72 @@
-import * as React from "react";
-import { View, StyleSheet } from "react-native";
-import { useRecoilState } from "recoil";
-import { editingModeState, imageDataState, processingState } from "./Store";
-import { IconButton } from "./components/IconButton";
-import { useContext } from "react";
-import { EditorContext } from "./index";
-import { useEffect } from "react";
-import { usePerformCrop } from "./customHooks/usePerformCrop";
+import * as React from "react"
+import { View, StyleSheet } from "react-native"
+import { useRecoilState } from "recoil"
+import { editingModeState, imageDataState, processingState } from "./Store"
+import { IconButton } from "./components/IconButton"
+import { useContext } from "react"
+import { EditorContext } from "./index"
+import { useEffect } from "react"
+import { usePerformCrop } from "./customHooks/usePerformCrop"
 
 function ControlBar() {
   //
-  const [editingMode, setEditingMode] = useRecoilState(editingModeState);
-  const [imageData] = useRecoilState(imageDataState);
-  const [processing, setProcessing] = useRecoilState(processingState);
-  const {
-    mode,
-    onCloseEditor,
-    onEditingComplete
-  } = useContext(EditorContext);
-  const performCrop = usePerformCrop();
-  const shouldDisableDoneButton = editingMode !== "operation-select" && mode !== "crop-only";
+  const [editingMode, setEditingMode] = useRecoilState(editingModeState)
+  const [imageData] = useRecoilState(imageDataState)
+  const [processing, setProcessing] = useRecoilState(processingState)
+  const { mode, onCloseEditor, onEditingComplete } = useContext(EditorContext)
+  const performCrop = usePerformCrop()
+  const shouldDisableDoneButton = editingMode !== "operation-select" && mode !== "crop-only"
 
   const onFinishEditing = async () => {
     if (mode === "full") {
-      setProcessing(false);
-      onEditingComplete(imageData);
-      onCloseEditor();
+      setProcessing(false)
+      onEditingComplete(imageData)
+      onCloseEditor()
     } else if (mode === "crop-only") {
-      await performCrop();
+      await performCrop()
     }
-  };
+  }
 
   const onPressBack = () => {
     if (mode === "full") {
       if (editingMode === "operation-select") {
-        onCloseEditor();
+        onCloseEditor()
       } else {
-        setEditingMode("operation-select");
+        setEditingMode("operation-select")
       }
     } else if (mode === "crop-only") {
-      onCloseEditor();
+      onCloseEditor()
     }
-  }; // Complete the editing process if we are in crop only mode after the editingMode gets set
+  } // Complete the editing process if we are in crop only mode after the editingMode gets set
   // back to operation select (happens internally in usePerformCrop) - can't do it in onFinishEditing
   // else it gets stale state - may need to refactor the hook as this feels hacky
 
-
   useEffect(() => {
     if (mode === "crop-only" && imageData.uri && editingMode === "operation-select") {
-      onEditingComplete(imageData);
-      onCloseEditor();
+      onEditingComplete(imageData)
+      onCloseEditor()
     }
-  }, [imageData, editingMode]);
-  return /*#__PURE__*/React.createElement(View, {
-    style: styles.container
-  }, /*#__PURE__*/React.createElement(IconButton, {
-    iconID: "arrow-back",
-    text: "Back",
-    onPress: onPressBack
-  }), /*#__PURE__*/React.createElement(IconButton, {
-    iconID: "done",
-    text: "Done",
-    onPress: onFinishEditing,
-    disabled: shouldDisableDoneButton
-  }));
+  }, [imageData, editingMode])
+  return /*#__PURE__*/ React.createElement(
+    View,
+    {
+      style: styles.container,
+    },
+    /*#__PURE__*/ React.createElement(IconButton, {
+      iconID: "arrow-back",
+      text: "Back",
+      onPress: onPressBack,
+    }),
+    /*#__PURE__*/ React.createElement(IconButton, {
+      iconID: "done",
+      text: "Done",
+      onPress: onFinishEditing,
+      disabled: shouldDisableDoneButton,
+    }),
+  )
 }
 
-export { ControlBar };
+export { ControlBar }
 const styles = StyleSheet.create({
   container: {
     width: "100%",
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 4
-  }
-});
+    paddingHorizontal: 4,
+  },
+})
 //# sourceMappingURL=ControlBar.js.map

@@ -73,7 +73,6 @@ export default function App() {
   }
 
   const __toggleRecord = async () => {
-    alert("recording: ")
     if (recording) {
       await __stopVideo()
     } else {

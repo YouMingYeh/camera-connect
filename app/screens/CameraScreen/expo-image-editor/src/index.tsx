@@ -1,32 +1,32 @@
-import * as React from "react";
-import { StyleSheet, View, StatusBar, Platform } from "react-native";
-import { ControlBar } from "./ControlBar";
-import { EditingWindow } from "./EditingWindow";
-import * as ImageManipulator from "expo-image-manipulator";
-import { Processing } from "./Processing";
-import { useRecoilState, RecoilRoot } from "recoil";
+import * as React from "react"
+import { StyleSheet, View, StatusBar, Platform } from "react-native"
+import { ControlBar } from "./ControlBar"
+import { EditingWindow } from "./EditingWindow"
+import * as ImageManipulator from "expo-image-manipulator"
+import { Processing } from "./Processing"
+import { useRecoilState, RecoilRoot } from "recoil"
 import {
   processingState,
   imageDataState,
   editingModeState,
   readyState,
   ImageDimensions,
-} from "./Store";
-import { OperationBar } from "./OperationBar/OperationBar";
-import { UniversalModal } from "./UniversalModal";
-const noScroll = require("no-scroll");
+} from "./Store"
+import { OperationBar } from "./OperationBar/OperationBar"
+import { UniversalModal } from "./UniversalModal"
+const noScroll = require("no-scroll")
 
 type EditorContextType = {
-  throttleBlur: boolean;
-  minimumCropDimensions: ImageDimensions;
-  fixedAspectRatio: number;
-  lockAspectRatio: boolean;
-  mode: Mode;
-  onCloseEditor: () => void;
-  onEditingComplete: (result: any) => void;
-  allowedTransformOperations?: TransformOperations[];
-  allowedAdjustmentOperations?: AdjustmentOperations[];
-};
+  throttleBlur: boolean
+  minimumCropDimensions: ImageDimensions
+  fixedAspectRatio: number
+  lockAspectRatio: boolean
+  mode: Mode
+  onCloseEditor: () => void
+  onEditingComplete: (result: any) => void
+  allowedTransformOperations?: TransformOperations[]
+  allowedAdjustmentOperations?: AdjustmentOperations[]
+}
 
 export const EditorContext = React.createContext<EditorContextType>({
   throttleBlur: true,
@@ -39,30 +39,30 @@ export const EditorContext = React.createContext<EditorContextType>({
   mode: "full",
   onCloseEditor: () => {},
   onEditingComplete: () => {},
-});
+})
 
-export type Mode = "full" | "crop-only";
+export type Mode = "full" | "crop-only"
 
-export type TransformOperations = "crop" | "rotate";
-export type AdjustmentOperations = "blur";
-export type EditingOperations = TransformOperations | AdjustmentOperations;
+export type TransformOperations = "crop" | "rotate"
+export type AdjustmentOperations = "blur"
+export type EditingOperations = TransformOperations | AdjustmentOperations
 
 export interface ImageEditorProps {
-  visible: boolean;
-  onCloseEditor: () => void;
-  imageUri: string | undefined;
-  fixedCropAspectRatio?: number;
+  visible: boolean
+  onCloseEditor: () => void
+  imageUri: string | undefined
+  fixedCropAspectRatio?: number
   minimumCropDimensions?: {
-    width: number;
-    height: number;
-  };
-  onEditingComplete: (result: any) => void;
-  lockAspectRatio?: boolean;
-  throttleBlur?: boolean;
-  mode?: Mode;
-  allowedTransformOperations?: TransformOperations[];
-  allowedAdjustmentOperations?: AdjustmentOperations[];
-  asView?: boolean;
+    width: number
+    height: number
+  }
+  onEditingComplete: (result: any) => void
+  lockAspectRatio?: boolean
+  throttleBlur?: boolean
+  mode?: Mode
+  allowedTransformOperations?: TransformOperations[]
+  allowedAdjustmentOperations?: AdjustmentOperations[]
+  asView?: boolean
 }
 
 function ImageEditorCore(props: ImageEditorProps) {
@@ -75,66 +75,66 @@ function ImageEditorCore(props: ImageEditorProps) {
     lockAspectRatio = false,
     allowedTransformOperations,
     allowedAdjustmentOperations,
-  } = props;
+  } = props
 
-  const [, setImageData] = useRecoilState(imageDataState);
-  const [, setReady] = useRecoilState(readyState);
-  const [, setEditingMode] = useRecoilState(editingModeState);
+  const [, setImageData] = useRecoilState(imageDataState)
+  const [, setReady] = useRecoilState(readyState)
+  const [, setEditingMode] = useRecoilState(editingModeState)
 
   // Initialise the image data when it is set through the props
   React.useEffect(() => {
     const initialise = async () => {
       if (props.imageUri) {
         const enableEditor = () => {
-          setReady(true);
+          setReady(true)
           // Set no-scroll to on
-          noScroll.on();
-        };
+          noScroll.on()
+        }
         // Platform check
         if (Platform.OS === "web") {
-          let img = document.createElement("img");
+          let img = document.createElement("img")
           img.onload = () => {
             setImageData({
               uri: props.imageUri ?? "",
               height: img.height,
               width: img.width,
-            });
-            enableEditor();
-          };
-          img.src = props.imageUri;
+            })
+            enableEditor()
+          }
+          img.src = props.imageUri
         } else {
           const { width: pickerWidth, height: pickerHeight } =
-            await ImageManipulator.manipulateAsync(props.imageUri, []);
+            await ImageManipulator.manipulateAsync(props.imageUri, [])
           setImageData({
             uri: props.imageUri,
             width: pickerWidth,
             height: pickerHeight,
-          });
-          enableEditor();
+          })
+          enableEditor()
         }
       }
-    };
-    initialise();
-  }, [props.imageUri]);
+    }
+    initialise()
+  }, [props.imageUri])
 
   const onCloseEditor = () => {
     // Set no-scroll to off
-    noScroll.off();
-    props.onCloseEditor();
-  };
+    noScroll.off()
+    props.onCloseEditor()
+  }
 
   React.useEffect(() => {
     // Reset the state of things and only render the UI
     // when this state has been initialised
     if (!props.visible) {
-      setReady(false);
+      setReady(false)
     }
     // Check if ther mode is set to crop only if this is the case then set the editingMode
     // to crop
     if (mode === "crop-only") {
-      setEditingMode("crop");
+      setEditingMode("crop")
     }
-  }, [props.visible]);
+  }, [props.visible])
 
   return (
     <EditorContext.Provider
@@ -154,24 +154,20 @@ function ImageEditorCore(props: ImageEditorProps) {
       {props.asView ? (
         <ImageEditorView {...props} />
       ) : (
-        <UniversalModal
-          visible={props.visible}
-          presentationStyle="fullScreen"
-          statusBarTranslucent
-        >
+        <UniversalModal visible={props.visible} presentationStyle="fullScreen" statusBarTranslucent>
           <ImageEditorView {...props} />
         </UniversalModal>
       )}
     </EditorContext.Provider>
-  );
+  )
 }
 
 export function ImageEditorView(props: ImageEditorProps) {
   //
-  const { mode = "full" } = props;
+  const { mode = "full" } = props
 
-  const [ready, setReady] = useRecoilState(readyState);
-  const [processing, setProcessing] = useRecoilState(processingState);
+  const [ready, setReady] = useRecoilState(readyState)
+  const [processing, setProcessing] = useRecoilState(processingState)
 
   return (
     <>
@@ -184,7 +180,7 @@ export function ImageEditorView(props: ImageEditorProps) {
       ) : null}
       {processing ? <Processing /> : null}
     </>
-  );
+  )
 }
 
 export function ImageEditor(props: ImageEditorProps) {
@@ -194,7 +190,7 @@ export function ImageEditor(props: ImageEditorProps) {
     <RecoilRoot>
       <ImageEditorCore {...props} />
     </RecoilRoot>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -202,4 +198,4 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#222",
   },
-});
+})
