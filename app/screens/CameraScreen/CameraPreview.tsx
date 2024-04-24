@@ -1,24 +1,20 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
-import {
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  StyleSheet,
-  ScrollView,
-} from "react-native"
+import { Text, TouchableOpacity, View, Image, StyleSheet, ScrollView } from "react-native"
 import React, { useState } from "react"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { Media } from "./type"
 import { ResizeMode, Video } from "expo-av"
+import { ImageEditor } from "./expo-image-editor"
 
 const CameraPreview = ({
   medias,
+  setMedias,
   retakePicture,
   savePhoto,
 }: {
   medias: Media[]
+  setMedias: (medias: Media[]) => void
   retakePicture: () => void
   savePhoto: () => void
 }) => {
@@ -26,6 +22,7 @@ const CameraPreview = ({
   const [selectedPhotos, setSelectedPhotos] = useState<Array<boolean>>(
     new Array(medias.length).fill(false),
   )
+  const [editorVisible, setEditorVisible] = useState(false)
   const photo = medias[selectedPhotoIndex]
 
   const selectPhoto = (index: number) => {
@@ -47,6 +44,46 @@ const CameraPreview = ({
         height: "100%",
       }}
     >
+      <TouchableOpacity
+        onPress={() => setEditorVisible(true)}
+        style={{
+          position: "absolute",
+          right: 20,
+          top: 30,
+          zIndex: 10,
+          padding: 10,
+        }}
+      >
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 20,
+          }}
+        >
+          Edit
+        </Text>
+      </TouchableOpacity>
+      <ImageEditor
+        visible={editorVisible}
+        onCloseEditor={() => setEditorVisible(false)}
+        imageUri={photo && photo.data.uri}
+        minimumCropDimensions={{
+          width: 100,
+          height: 100,
+        }}
+        onEditingComplete={(result) => {
+          const newMedias = [...medias]
+          newMedias[selectedPhotoIndex] = {
+            type: "image",
+            data: {
+              uri: result.uri,
+            },
+          }
+          setMedias(newMedias)
+          setEditorVisible(false)
+        }}
+        mode="full"
+      />
       {photo && photo.type === "video" ? (
         <Video
           source={{ uri: photo.data.uri }}
@@ -89,7 +126,7 @@ const CameraPreview = ({
             justifyContent: "space-between",
             position: "absolute",
             right: 0,
-            bottom: 0,
+            bottom: 120,
             width: "100%",
             zIndex: 10,
           }}
@@ -97,8 +134,7 @@ const CameraPreview = ({
           <TouchableOpacity
             onPress={retakePicture}
             style={{
-              width: 130,
-              height: 40,
+              paddingEnd: 10,
               alignItems: "center",
               borderRadius: 4,
             }}
@@ -115,8 +151,7 @@ const CameraPreview = ({
           <TouchableOpacity
             onPress={savePhoto}
             style={{
-              width: 130,
-              height: 40,
+              paddingEnd: 20,
               alignItems: "center",
               borderRadius: 4,
             }}
@@ -138,20 +173,20 @@ const CameraPreview = ({
               key={index}
               onPress={() => selectPhoto(index)}
             >
-            {media.type === "image" ? (
+              {media.type === "image" ? (
                 <Image
-                    key={media.data.uri}
-                    source={{ uri: media.data.uri }}
-                    style={styles.thumbnail}
+                  key={media.data.uri}
+                  source={{ uri: media.data.uri }}
+                  style={styles.thumbnail}
                 />
-            ) : (
+              ) : (
                 <Video
-                    key={media.data.uri}
-                    source={{ uri: media.data.uri }}
-                    style={styles.thumbnail}
-                    resizeMode={ResizeMode.COVER}
+                  key={media.data.uri}
+                  source={{ uri: media.data.uri }}
+                  style={styles.thumbnail}
+                  resizeMode={ResizeMode.COVER}
                 />
-            )}
+              )}
 
               <BouncyCheckbox
                 style={styles.checkboxContainer}

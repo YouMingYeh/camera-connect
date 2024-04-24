@@ -8,6 +8,7 @@ import CameraPreview from "./CameraPreview"
 import { ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
 import { ResizeMode, Video } from "expo-av"
+
 let camera: Camera
 
 export default function App() {
@@ -81,8 +82,8 @@ export default function App() {
   }
 
   const __savePhoto = () => {
-    if (capturedMedia) {
-      console.log(capturedMedia[0].data.uri)
+    if (!capturedMedia) {
+      return
     }
   }
   const __retakePicture = () => {
@@ -141,6 +142,7 @@ export default function App() {
               medias={capturedMedia}
               savePhoto={__savePhoto}
               retakePicture={__retakePicture}
+              setMedias={setCapturedMedias}
             />
           ) : (
             <Camera
