@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-native/no-color-literals */
 import * as React from "react"
 import { Platform, StyleSheet, View, TouchableOpacity, ScrollView } from "react-native"
 import { Icon } from "../components/Icon"
@@ -37,6 +39,11 @@ const operations: Operations = {
       title: "Blur",
       iconID: "blur-on",
       operationID: "blur",
+    },
+    {
+      title: "Filter",
+      iconID: "filter",
+      operationID: "filter",
     },
   ],
 }
@@ -78,7 +85,6 @@ export function OperationSelection() {
     <>
       <ScrollView style={styles.opRow} horizontal>
         {
-          //@ts-ignore
           filteredOperations[selectedOperationGroup].map(
             (item: Operation<EditingOperations>, index: number) => (
               <View style={styles.opContainer} key={item.title}>

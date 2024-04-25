@@ -44,13 +44,13 @@ export const EditorContext = React.createContext<EditorContextType>({
 export type Mode = "full" | "crop-only"
 
 export type TransformOperations = "crop" | "rotate"
-export type AdjustmentOperations = "blur"
+export type AdjustmentOperations = "blur" | "filter"
 export type EditingOperations = TransformOperations | AdjustmentOperations
 
 export interface ImageEditorProps {
   visible: boolean
   onCloseEditor: () => void
-  imageUri: string | undefined
+  imageUri: string
   fixedCropAspectRatio?: number
   minimumCropDimensions?: {
     width: number
@@ -82,40 +82,40 @@ function ImageEditorCore(props: ImageEditorProps) {
   const [, setEditingMode] = useRecoilState(editingModeState)
 
   // Initialise the image data when it is set through the props
-  React.useEffect(() => {
-    const initialise = async () => {
-      if (props.imageUri) {
-        const enableEditor = () => {
-          setReady(true)
-          // Set no-scroll to on
-          noScroll.on()
-        }
-        // Platform check
-        if (Platform.OS === "web") {
-          let img = document.createElement("img")
-          img.onload = () => {
-            setImageData({
-              uri: props.imageUri ?? "",
-              height: img.height,
-              width: img.width,
-            })
-            enableEditor()
-          }
-          img.src = props.imageUri
-        } else {
-          const { width: pickerWidth, height: pickerHeight } =
-            await ImageManipulator.manipulateAsync(props.imageUri, [])
+  const initialise = async () => {
+    if (props.imageUri) {
+      const enableEditor = () => {
+        setReady(true)
+        // Set no-scroll to on
+        noScroll.on()
+      }
+      // Platform check
+      if (Platform.OS === "web") {
+        let img = document.createElement("img")
+        img.onload = () => {
           setImageData({
-            uri: props.imageUri,
-            width: pickerWidth,
-            height: pickerHeight,
+            uri: props.imageUri ?? "",
+            height: img.height,
+            width: img.width,
           })
           enableEditor()
         }
+        img.src = props.imageUri
+      } else {
+        const { width: pickerWidth, height: pickerHeight } =
+          await ImageManipulator.manipulateAsync(props.imageUri, [])
+        setImageData({
+          uri: props.imageUri,
+          width: pickerWidth,
+          height: pickerHeight,
+        })
+        enableEditor()
       }
     }
+  }
+  React.useEffect(() => {
     initialise()
-  }, [props.imageUri])
+  }, [props.imageUri, props.visible])
 
   const onCloseEditor = () => {
     // Set no-scroll to off

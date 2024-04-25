@@ -7,6 +7,7 @@ import { Crop } from "./Crop"
 import { Rotate } from "./Rotate"
 import { Blur } from "./Blur"
 import { useState } from "react"
+import { Filter } from "./Filter"
 
 export function OperationBar() {
   //
@@ -20,6 +21,8 @@ export function OperationBar() {
         return <Rotate />
       case "blur":
         return <Blur />
+      case "filter":
+        return <Filter />
       default:
         return null
     }

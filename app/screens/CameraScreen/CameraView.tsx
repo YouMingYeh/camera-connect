@@ -8,6 +8,7 @@ import CameraPreview from "./CameraPreview"
 import { ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
 import { ResizeMode, Video } from "expo-av"
+import * as ImageManinpulator from "expo-image-manipulator"
 
 let camera: Camera
 
@@ -37,10 +38,16 @@ export default function App() {
 
   const __takePicture = async () => {
     const photo: CameraCapturedPicture = await camera.takePictureAsync()
-    // setPreviewVisible(true)
+
+    // Make the image size smaller using expo image manipulator
+    const manipResult = await ImageManinpulator.manipulateAsync(photo.uri, [{ resize: { width: 360 } }], {
+      compress: 0.8,
+      format: ImageManinpulator.SaveFormat.PNG,
+    })
+
     const media: Media = {
       type: "image",
-      data: photo,
+      data: manipResult,
     }
     setCapturedMedias((prev) => {
       if (prev) {

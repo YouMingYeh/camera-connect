@@ -1,5 +1,7 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-native/no-color-literals */
 import * as React from "react"
-import { Image, PixelRatio, StyleSheet, View } from "react-native"
+import { Image, StyleSheet, View } from "react-native"
 import { ImageCropOverlay } from "./ImageCropOverlay"
 import { useRecoilState } from "recoil"
 import {
@@ -29,7 +31,8 @@ function EditingWindow() {
   // Get some readable boolean states
   const isCropping = editingMode === "crop"
   const isBlurring = editingMode === "blur"
-  const usesGL = isBlurring
+  const isFiltering = editingMode === "filter"
+  const usesGL = isBlurring || isFiltering
 
   const getImageFrame = (layout: { width: number; height: number; [key: string]: any }) => {
     onUpdateCropLayout(layout)
@@ -43,7 +46,7 @@ function EditingWindow() {
       const editingWindowAspectRatio = layout.height / layout.width
       //
       const imageAspectRatio = imageData.height / imageData.width
-      let bounds = { x: 0, y: 0, width: 0, height: 0 }
+      const bounds = { x: 0, y: 0, width: 0, height: 0 }
       let imageScaleFactor = 1
       // Check which is larger
       if (imageAspectRatio > editingWindowAspectRatio) {
@@ -130,13 +133,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  glContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+  },
   image: {
     flex: 1,
     resizeMode: "contain",
-  },
-  glContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
 })

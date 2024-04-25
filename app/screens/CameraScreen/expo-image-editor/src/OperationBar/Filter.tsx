@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react-native/no-color-literals */
 import * as React from "react"
 import { StyleSheet, View, Text, PixelRatio, Platform } from "react-native"
 import { useRecoilState } from "recoil"
@@ -27,77 +29,46 @@ void main () {
   gl_Position = vec4(1.0 - 2.0 * uv, 0, 1);
 }`
 
-const fragShader = `
-precision highp float;
+const fragShader = `precision highp float;
 precision highp int;
 uniform sampler2D texture;
 uniform highp float width;
 uniform highp float height;
 varying vec2 uv;
-uniform highp int radius;
-uniform highp int pass;
-uniform highp float pixelFrequency;
-float gauss (float sigma, float x) {
-  float g = (1.0/sqrt(2.0*3.142*sigma*sigma))*exp(-0.5*(x*x)/(sigma*sigma));
-  return g;
-}
-void main () {
-  float f_radius = float(radius);
-  float sigma = (0.5 * f_radius);
-  // Get the color of the fragment pixel
-  vec4 color = texture2D(texture, vec2(uv.x, uv.y));
-  color *= gauss(sigma, 0.0);
-  // Loop over the neightbouring pixels
-  for (int i = -30; i <= 30; i++) {
-    // Make sure we don't include the main pixel which we already sampled!
-    if (i != 0) {
-      // Check we are on an index that doesn't exceed the blur radius specified
-      if (i >= -radius && i <= radius) {
-        float index = float(i);
-        // Caclulate the current pixel index
-        float pixelIndex = 0.0;
-        if (pass == 0) {
-          pixelIndex = (uv.y) * height;
-        }
-        else {
-          pixelIndex = uv.x * width;
-        }
-        // Get the neighbouring pixel index
-        float offset = index * pixelFrequency;
-        pixelIndex += offset;
-        // Normalise the new index back into the 0.0 to 1.0 range
-        if (pass == 0) {
-          pixelIndex /= height;
-        }
-        else {
-          pixelIndex /= width;
-        }
-        // Pad the UV 
-        if (pixelIndex < 0.0) {
-          pixelIndex = 0.0;
-        }
-        if (pixelIndex > 1.0) {
-          pixelIndex = 1.0;
-        }
-        // Get gaussian amplitude
-        float g = gauss(sigma, index);
-        // Get the color of neighbouring pixel
-        vec4 previousColor = vec4(0.0, 0.0, 0.0, 0.0);
-        if (pass == 0) {
-          previousColor = texture2D(texture, vec2(uv.x, pixelIndex)) * g;
-        }
-        else {
-          previousColor = texture2D(texture, vec2(pixelIndex, uv.y)) * g;
-        }
-        color += previousColor;
-      }
-    }
-  }
-  // Return the resulting color
-  gl_FragColor = color;
-}`
+uniform highp int filterType; // New uniform to control the type of filter applied
 
-export function Blur() {
+vec4 grayscale(vec4 color) {
+    float avg = (color.r + color.g + color.b) / 3.0;
+    return vec4(avg, avg, avg, 1.0);
+}
+
+vec4 sepia(vec4 color) {
+    float r = color.r * 0.393 + color.g * 0.769 + color.b * 0.189;
+    float g = color.r * 0.349 + color.g * 0.686 + color.b * 0.168;
+    float b = color.r * 0.272 + color.g * 0.534 + color.b * 0.131;
+    return vec4(r, g, b, 1.0);
+}
+
+vec4 contrastBoost(vec4 color) {
+    const float contrast = 1.5;
+    vec3 factor = (color.rgb - 0.5) * contrast + 0.5;
+    return vec4(factor, 1.0);
+}
+
+void main() {
+    vec4 color = texture2D(texture, vec2(uv.x, uv.y));
+    if (filterType == 2) {
+        color = grayscale(color);
+    } else if (filterType == 3) {
+        color = sepia(color);
+    } else if (filterType == 4) {
+        color = contrastBoost(color);
+    }
+    gl_FragColor = color;
+}
+`
+
+export function Filter() {
   //
   const [, setProcessing] = useRecoilState(processingState)
   const [imageData, setImageData] = useRecoilState(imageDataState)
@@ -107,7 +78,7 @@ export function Blur() {
   const { throttleBlur } = React.useContext(EditorContext)
 
   const [sliderValue, setSliderValue] = React.useState(1)
-  const [blur, setBlur] = React.useState(1)
+  const [filter, setFilter] = React.useState(1)
   const [glProgram, setGLProgram] = React.useState<WebGLProgram | null>(null)
 
   const onClose = () => {
@@ -179,9 +150,9 @@ export function Blur() {
           }
           await FileSystem.copyAsync({
             from: asset.uri,
-            to: FileSystem.cacheDirectory + "blur.jpg",
+            to: FileSystem.cacheDirectory + "filter.jpg",
           })
-          asset.localUri = FileSystem.cacheDirectory + "blur.jpg"
+          asset.localUri = FileSystem.cacheDirectory + "filter.jpg"
         } else {
           asset = Asset.fromURI(imageData.uri)
           await asset.downloadAsync()
@@ -240,8 +211,7 @@ export function Blur() {
               gl.uniform1i(gl.getUniformLocation(program, "texture"), 0)
               gl.uniform1f(gl.getUniformLocation(program, "width"), asset.width)
               gl.uniform1f(gl.getUniformLocation(program, "height"), asset.height)
-              // Calculate the pixel frequency to sample at based on the image resolution
-              // as the blur radius is in dp
+
               const pixelFrequency = Math.max(
                 Math.round(imageData.width / imageBounds.width / 2),
                 1,
@@ -261,8 +231,8 @@ export function Blur() {
     const program = glProgram
     if (gl !== null && program !== null) {
       gl.uniform1i(gl.getUniformLocation(program, "texture"), 0)
-      gl.uniform1i(gl.getUniformLocation(program, "radius"), blur)
-      gl.uniform1i(gl.getUniformLocation(program, "pass"), 0)
+      gl.uniform1i(gl.getUniformLocation(program, "filterType"), filter)
+      // gl.uniform1i(gl.getUniformLocation(program, "pass"), 0)
       // Setup so first pass renders to a texture rather than to canvas
       // Create and bind the framebuffer
       const firstPassTexture = gl.createTexture()
@@ -290,20 +260,18 @@ export function Blur() {
       // attach the texture as the first color attachment
       const attachmentPoint = gl.COLOR_ATTACHMENT0
       gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, firstPassTexture, 0)
-      //gl.viewport(0, 0, imageData.width, imageData.height);
       // Actually draw using the shader program we setup!
       gl.drawArrays(gl.TRIANGLES, 0, 6)
       gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-      //gl.viewport(0, 0, imageData.width, imageData.height);
       gl.uniform1i(gl.getUniformLocation(program, "texture"), 1)
       gl.uniform1i(gl.getUniformLocation(program, "pass"), 1)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
       gl.endFrameEXP()
     }
-  }, [blur, glContext, glProgram])
+  }, [filter, glContext, glProgram])
 
   const throttleSliderBlur = React.useRef<(value: number) => void>(
-    throttle((value) => setBlur(value), 50, { leading: true }),
+    throttle((value) => setFilter(value), 50, { leading: true }),
   ).current
 
   React.useEffect(() => {
@@ -324,11 +292,11 @@ export function Blur() {
             if (throttleBlur) {
               throttleSliderBlur(Math.round(value[0]))
             } else {
-              setBlur(Math.round(value[0]))
+              setFilter(Math.round(value[0]))
             }
           }}
           minimumValue={1}
-          maximumValue={30}
+          maximumValue={4}
           minimumTrackTintColor="#00A3FF"
           maximumTrackTintColor="#ccc"
           thumbTintColor="#c4c4c4"
@@ -338,7 +306,7 @@ export function Blur() {
       </View>
       <View style={styles.row}>
         <IconButton iconID="close" text="Cancel" onPress={() => onClose()} />
-        <Text style={styles.prompt}>Blur Radius: {Math.round(sliderValue)}</Text>
+        <Text style={styles.prompt}>Filter Type {Math.round(sliderValue)}</Text>
         <IconButton iconID="check" text="Done" onPress={() => onSaveWithBlur()} />
       </View>
     </View>
@@ -347,10 +315,10 @@ export function Blur() {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
   },
   prompt: {
     color: "white",
@@ -358,17 +326,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   row: {
-    width: "100%",
-    height: 80,
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    flexDirection: "row",
+    height: 80,
+    justifyContent: "space-between",
     paddingHorizontal: "2%",
+    width: "100%",
   },
   slider: {
     height: 20,
-    width: "90%",
     maxWidth: 600,
+    width: "90%",
   },
   sliderTrack: {
     borderRadius: 10,
