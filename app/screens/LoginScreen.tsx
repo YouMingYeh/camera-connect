@@ -62,7 +62,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     setAuthEmail("")
 
     // set auth token to supabase 
-    setAuthToken(String(data.session.access_token))
+    setAuthToken(String(data.session?.access_token))
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
