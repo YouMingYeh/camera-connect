@@ -102,8 +102,10 @@ function ImageEditorCore(props: ImageEditorProps) {
         }
         img.src = props.imageUri
       } else {
-        const { width: pickerWidth, height: pickerHeight } =
-          await ImageManipulator.manipulateAsync(props.imageUri, [])
+        const { width: pickerWidth, height: pickerHeight } = await ImageManipulator.manipulateAsync(
+          props.imageUri,
+          [],
+        )
         setImageData({
           uri: props.imageUri,
           width: pickerWidth,
