@@ -105,12 +105,13 @@ const ProfileSettingsContent = () => {
   return (
     <View>
       <TouchableOpacity style={styles.expandButton} onPress={handlePress}>
-        <View style={styles.innerContainer}>
-          <View style={styles.textContainer}>
-            <Text style={styles.expandButtonText}>Profile Settings</Text>
-          </View>
-          <Feather name={expanded ? "chevron-up" : "chevron-down"} size={24} color="white" />
-        </View>
+        <Text style={styles.expandButtonText}>Profile Settings</Text>
+        <Feather
+          style={styles.expandButtonIcon}
+          name={expanded ? "chevron-up" : "chevron-down"}
+          size={24}
+          color="white"
+        />
       </TouchableOpacity>
       {expanded && (
         <View style={styles.container}>
@@ -119,11 +120,14 @@ const ProfileSettingsContent = () => {
             onChangeText={setUsername}
             value={username}
             placeholder="Enter your new username"
+            placeholderTextColor="black"
           />
           <Pressable style={styles.button} onPress={pickImage}>
             <Text style={styles.buttonText}>Upload New Avatar</Text>
           </Pressable>
-          {avatar && <Image source={{ uri: avatar }} style={styles.avatar} resizeMode="cover" />}
+          {avatar ? (
+            <Image source={{ uri: avatar }} style={styles.avatar} resizeMode="cover" />
+          ) : null}
           <Pressable style={styles.button} onPress={updateProfile}>
             <Text style={styles.buttonText}>Save</Text>
           </Pressable>
@@ -135,7 +139,6 @@ const ProfileSettingsContent = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -145,6 +148,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 10,
     width: "80%",
+    backgroundColor: "white",
   },
   button: {
     alignItems: "center",
@@ -167,8 +171,9 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   expandButton: {
-    flexDirection: "row",
+    position: "relative",
     alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 16,
     height: 60,
     backgroundColor: "black",
@@ -176,16 +181,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     width: 300,
   },
-  innerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
+  expandButtonIcon: {
+    position: "absolute",
+    right: 16,
   },
-  textContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+
   expandButtonText: {
     color: "white",
     fontWeight: "500",

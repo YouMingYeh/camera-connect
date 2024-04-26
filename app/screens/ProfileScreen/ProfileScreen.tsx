@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    marginTop: 64,
+    marginTop: 72,
   },
   avatarContainer: {
     marginTop: 32,
