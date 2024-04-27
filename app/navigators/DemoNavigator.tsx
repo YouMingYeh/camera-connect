@@ -5,8 +5,18 @@ import { TextStyle, ViewStyle } from "react-native"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { Icon } from "../components"
 import { translate } from "../i18n"
-import { DemoCommunityScreen, DemoShowroomScreen, DemoDebugScreen } from "../screens"
-import { DemoPodcastListScreen } from "../screens/DemoPodcastListScreen"
+import {
+  // DemoCommunityScreen,
+  DemoShowroomScreen,
+  // DemoDebugScreen,
+  CameraScreen,
+  AlbumScreen,
+  ExploreScreen,
+  NotificationsScreen,
+  // SettingsScreen,
+  ProfileScreen,
+} from "../screens"
+// import { DemoPodcastListScreen } from "../screens/DemoPodcastListScreen"
 import { colors, spacing, typography } from "../theme"
 import { AppStackParamList, AppStackScreenProps } from "./AppNavigator"
 
@@ -15,6 +25,12 @@ export type DemoTabParamList = {
   DemoShowroom: { queryIndex?: string; itemIndex?: string }
   DemoDebug: undefined
   DemoPodcastList: undefined
+  Camera: undefined
+  Album: undefined
+  Explore: undefined
+  Notifications: undefined
+  Settings: undefined
+  Profile: undefined
 }
 
 /**
@@ -63,6 +79,71 @@ export function DemoNavigator() {
       />
 
       <Tab.Screen
+        name="Album"
+        component={AlbumScreen}
+        options={{
+          tabBarLabel: translate("demoNavigator.albumTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="album" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Explore"
+        component={ExploreScreen}
+        options={{
+          tabBarLabel: translate("demoNavigator.exploreTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="explore" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Camera"
+        component={CameraScreen}
+        options={{
+          tabBarLabel: translate("demoNavigator.cameraTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="camera" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Notifications"
+        component={NotificationsScreen}
+        options={{
+          tabBarLabel: translate("demoNavigator.notificationsTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="notification" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarLabel: translate("demoNavigator.profileTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="profile" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      />
+
+      {/* <Tab.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          tabBarLabel: translate("demoNavigator.settingsTab"),
+          tabBarIcon: ({ focused }) => (
+            <Icon icon="settings" color={focused ? colors.tint : undefined} size={30} />
+          ),
+        }}
+      /> */}
+
+      {/* <Tab.Screen
         name="DemoCommunity"
         component={DemoCommunityScreen}
         options={{
@@ -72,7 +153,6 @@ export function DemoNavigator() {
           ),
         }}
       />
-
       <Tab.Screen
         name="DemoPodcastList"
         component={DemoPodcastListScreen}
@@ -94,7 +174,7 @@ export function DemoNavigator() {
             <Icon icon="debug" color={focused ? colors.tint : undefined} size={30} />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   )
 }

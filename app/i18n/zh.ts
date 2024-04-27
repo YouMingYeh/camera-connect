@@ -46,11 +46,16 @@ const zh = {
     debugTab: "調試",
     communityTab: "社區",
     podcastListTab: "播客",
+    cameraTab: "相機",
+    albumTab: "相簿",
+    exploreTab: "探索",
+    notificationsTab: "通知",
+    settingsTab: "設定",
+    profileTab: "個人資料",
   },
   demoCommunityScreen: {
     title: "與社區連接",
-    tagLine:
-      "加入 Infinite Red 的 React Native 工程師社區，提升你的應用開發能力！",
+    tagLine: "加入 Infinite Red 的 React Native 工程師社區，提升你的應用開發能力！",
     joinUsOnSlackTitle: "加入 Slack",
     joinUsOnSlack:
       "希望有個地方能與世界各地的 React Native 工程師連接嗎？加入 Infinite Red Community Slack 的對話！我們不斷增長的社區是一個安全的空間，可以提問、向他人學習並擴展你的網絡。",
@@ -81,22 +86,17 @@ const zh = {
   demoDebugScreen: {
     howTo: "如何操作",
     title: "調試",
-    tagLine:
-      "恭喜，你擁有一個非常先進的 React Native 應用模板。利用這個範本吧！",
+    tagLine: "恭喜，你擁有一個非常先進的 React Native 應用模板。利用這個範本吧！",
     reactotron: "發送到 Reactotron",
     reportBugs: "報告錯誤",
     demoList: "示例列表",
     demoPodcastList: "示例播客列表",
     androidReactotronHint:
       "如果這不起作用，確保 Reactotron 桌面應用正在運行，從你的終端運行 adb reverse tcp:9090 tcp:9090，並重新加載應用。",
-    iosReactotronHint:
-      "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
-    macosReactotronHint:
-      "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
-    webReactotronHint:
-      "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
-    windowsReactotronHint:
-      "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
+    iosReactotronHint: "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
+    macosReactotronHint: "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
+    webReactotronHint: "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
+    windowsReactotronHint: "如果這不起作用，確保 Reactotron 桌面應用正在運行並重新加載應用。",
   },
   demoPodcastListScreen: {
     title: "React Native Radio 節目",
@@ -104,8 +104,7 @@ const zh = {
     favoriteButton: "收藏",
     unfavoriteButton: "取消收藏",
     accessibility: {
-      cardHint:
-        "雙擊以聆聽節目。長按並雙擊以{{action}}此節目。",
+      cardHint: "雙擊以聆聽節目。長按並雙擊以{{action}}此節目。",
       switch: "打開以僅顯示收藏",
       favoriteAction: "切換收藏",
       favoriteIcon: "未收藏的節目",
@@ -115,8 +114,7 @@ const zh = {
     },
     noFavoritesEmptyState: {
       heading: "這裡看起來有點空",
-      content:
-        "還沒有添加任何收藏。點擊節目上的心形圖標，將它添加到你的收藏中！",
+      content: "還沒有添加任何收藏。點擊節目上的心形圖標，將它添加到你的收藏中！",
     },
   },
 }
