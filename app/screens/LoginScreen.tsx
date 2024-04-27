@@ -1,16 +1,17 @@
 import { observer } from "mobx-react-lite"
 import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
-import { TextInput, TextStyle, ViewStyle } from "react-native"
+import { TextInput, TextStyle, ViewStyle, Switch, View } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
+import { supabase } from "../utils/supabase"
+
+interface LoginScreenProps extends AppStackScreenProps<"Login"> { }
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
   const authPasswordInput = useRef<TextInput>(null)
-
   const [authPassword, setAuthPassword] = useState("")
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -19,11 +20,16 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     authenticationStore: { authEmail, setAuthEmail, setAuthToken, validationError },
   } = useStores()
 
+  const [isSignUp, setSignUp] = useState(false)
+
+  const testing_signup = true
+
   useEffect(() => {
     // Here is where you could fetch credentials from keychain or storage
     // and pre-fill the form fields.
-    setAuthEmail("ignite@infinite.red")
-    setAuthPassword("ign1teIsAwes0m3")
+    // namwoam: default email and password to empty
+    setAuthEmail("")
+    setAuthPassword("")
 
     // Return a "cleanup" function that React will run when the component unmounts
     return () => {
@@ -34,10 +40,19 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
   const error = isSubmitted ? validationError : ""
 
-  function login() {
+  async function login() {
     setIsSubmitted(true)
     setAttemptsCount(attemptsCount + 1)
-
+    const { data, error } = isSignUp ?
+      await supabase.auth.signUp({
+        email: authEmail, password: authPassword
+      }) :
+      await supabase.auth.signInWithPassword({
+        email: authEmail,
+        password: authPassword,
+      })
+    if (!data.user) return
+    if (error) return
     if (validationError) return
 
     // Make a request to your server to get an authentication token.
@@ -46,8 +61,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     setAuthPassword("")
     setAuthEmail("")
 
-    // We'll mock this with a fake token.
-    setAuthToken(String(Date.now()))
+    // set auth token to supabase 
+    setAuthToken(String(data.session?.access_token))
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -105,6 +120,14 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         onSubmitEditing={login}
         RightAccessory={PasswordRightAccessory}
       />
+      {testing_signup ? <View style={$signupContainer}>
+        <Text>註冊</Text>
+        <Switch value={isSignUp} onValueChange={setSignUp}>
+        </Switch>
+        <Text style={{ color: 'red' }}>這個功能僅供測試</Text>
+      </View> : ""}
+
+
 
       <Button
         testID="login-button"
@@ -113,7 +136,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         preset="reversed"
         onPress={login}
       />
-    </Screen>
+    </Screen >
   )
 })
 
@@ -141,4 +164,9 @@ const $textField: ViewStyle = {
 
 const $tapButton: ViewStyle = {
   marginTop: spacing.xs,
+}
+
+const $signupContainer: ViewStyle = {
+  flexDirection: "row",
+  columnGap: spacing.sm
 }
