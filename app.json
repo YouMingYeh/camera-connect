@@ -2,6 +2,11 @@
   "name": "CameraConnect",
   "displayName": "CameraConnect",
   "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "f1cd6da7-6c20-4b0d-8f8b-6b06ef714ae3"
+      }
+    },
     "name": "CameraConnect",
     "slug": "CameraConnect",
     "scheme": "cameraconnect",
@@ -17,9 +22,7 @@
       "fallbackToCacheTimeout": 0
     },
     "jsEngine": "hermes",
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "android": {
       "icon": "./assets/images/app-icon-android-legacy.png",
       "package": "com.cameraconnect",
@@ -67,7 +70,18 @@
           }
         }
       ],
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ],
+      [
+        "with-rn-image-crop-picker"
+      ]
     ],
     "experiments": {
       "tsconfigPaths": true

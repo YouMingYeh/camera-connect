@@ -46,6 +46,12 @@ const en = {
     debugTab: "Debug",
     communityTab: "Community",
     podcastListTab: "Podcast",
+    cameraTab: "Camera",
+    albumTab: "Album",
+    exploreTab: "Explore",
+    notificationsTab: "Notifications",
+    settingsTab: "Settings",
+    profileTab: "Profile",
   },
   demoCommunityScreen: {
     title: "Connect with the community",
