@@ -40,10 +40,14 @@ export default function App() {
     const photo: CameraCapturedPicture = await camera.takePictureAsync()
 
     // Make the image size smaller using expo image manipulator
-    const manipResult = await ImageManinpulator.manipulateAsync(photo.uri, [{ resize: { width: 360 } }], {
-      compress: 0.8,
-      format: ImageManinpulator.SaveFormat.PNG,
-    })
+    const manipResult = await ImageManinpulator.manipulateAsync(
+      photo.uri,
+      [{ resize: { width: 360 } }],
+      {
+        compress: 0.8,
+        format: ImageManinpulator.SaveFormat.PNG,
+      },
+    )
 
     const media: Media = {
       type: "image",

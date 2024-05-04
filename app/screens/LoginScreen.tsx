@@ -8,7 +8,7 @@ import { colors, spacing } from "../theme"
 
 import { supabase } from "../utils/supabase"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> { }
+interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
   const authPasswordInput = useRef<TextInput>(null)
@@ -43,14 +43,15 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   async function login() {
     setIsSubmitted(true)
     setAttemptsCount(attemptsCount + 1)
-    const { data, error } = isSignUp ?
-      await supabase.auth.signUp({
-        email: authEmail, password: authPassword
-      }) :
-      await supabase.auth.signInWithPassword({
-        email: authEmail,
-        password: authPassword,
-      })
+    const { data, error } = isSignUp
+      ? await supabase.auth.signUp({
+          email: authEmail,
+          password: authPassword,
+        })
+      : await supabase.auth.signInWithPassword({
+          email: authEmail,
+          password: authPassword,
+        })
     if (!data.user) return
     if (error) return
     if (validationError) return
@@ -61,7 +62,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     setAuthPassword("")
     setAuthEmail("")
 
-    // set auth token to supabase 
+    // set auth token to supabase
     setAuthToken(String(data.session?.access_token))
   }
 
@@ -120,14 +121,15 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         onSubmitEditing={login}
         RightAccessory={PasswordRightAccessory}
       />
-      {testing_signup ? <View style={$signupContainer}>
-        <Text>註冊</Text>
-        <Switch value={isSignUp} onValueChange={setSignUp}>
-        </Switch>
-        <Text style={{ color: 'red' }}>這個功能僅供測試</Text>
-      </View> : ""}
-
-
+      {testing_signup ? (
+        <View style={$signupContainer}>
+          <Text>註冊</Text>
+          <Switch value={isSignUp} onValueChange={setSignUp}></Switch>
+          <Text style={{ color: "red" }}>這個功能僅供測試</Text>
+        </View>
+      ) : (
+        ""
+      )}
 
       <Button
         testID="login-button"
@@ -136,7 +138,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         preset="reversed"
         onPress={login}
       />
-    </Screen >
+    </Screen>
   )
 })
 
@@ -168,5 +170,5 @@ const $tapButton: ViewStyle = {
 
 const $signupContainer: ViewStyle = {
   flexDirection: "row",
-  columnGap: spacing.sm
+  columnGap: spacing.sm,
 }
