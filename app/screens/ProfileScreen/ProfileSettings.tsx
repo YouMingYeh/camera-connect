@@ -1,4 +1,3 @@
-import React, { useState } from "react"
 import {
   View,
   TextInput,
@@ -10,13 +9,14 @@ import {
   TouchableOpacity,
 } from "react-native"
 import * as ImagePicker from "expo-image-picker"
-import { supabase } from "../../config/initSupabase"
+import { userStore } from "../../stores/userStore"
 import { v4 as uuidv4 } from "uuid"
 import { Buffer } from "buffer"
 import { Feather } from "@expo/vector-icons"
-
+import React, { useEffect, useState } from "react"
 import type { SupabaseClient } from "@supabase/supabase-js"
 
+import { supabase, get_userid } from "../../utils/supabase"
 type User = {
   username: string
   id: string
@@ -46,7 +46,7 @@ const ProfileSettingsContent = () => {
   const uploadAvatar = async (filename: string, base64: string) => {
     let { data, error } = await supabase.storage
       .from("avatar")
-      .upload(filename, Buffer.from(base64.replace(/data:image\/([^;]+);base64,/, ""), "base64"), {
+      .upload(filename, Buffer.from(base64, "base64"), {
         contentType: "image/jpeg",
         upsert: true,
       })
@@ -71,16 +71,19 @@ const ProfileSettingsContent = () => {
         updates.username = username
       }
       if (Object.keys(updates).length > 0) {
-        await updateUser(supabase, {
-          id: "3a05e507-972c-4579-ae3c-3eb38138780f",
+        const updatedUser = await updateUser(supabase, {
+          id: userID,
           ...updates,
         })
+        userStore.setUserInfo(updatedUser)
       }
-      setExpanded(!expanded)
     } catch (error) {
       console.error("Error updating profile:", error)
       Alert.alert("Update Failed")
     }
+    setExpanded(!expanded)
+    setUsername("")
+    setAvatar("")
   }
 
   const pickImage = async () => {
@@ -89,18 +92,27 @@ const ProfileSettingsContent = () => {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     })
 
     if (!result.canceled) {
-      const uri = result.assets[0].uri
-      const imageData = uri.replace(/dataAimage\/([^A]+)Abase64A/, "")
-      setAvatar(imageData)
+      const base64 = result.assets[0].base64 || ""
+      setAvatar(base64)
     }
   }
 
   const handlePress = () => {
     setExpanded(!expanded)
   }
+  const [userID, setUserID] = useState("")
+
+  useEffect(() => {
+    ;(async () => {
+      setUserID(await get_userid())
+    })()
+  }, [])
+
+  const avatarUri = "data:image/jpeg;base64," + avatar
 
   return (
     <View>
@@ -126,7 +138,7 @@ const ProfileSettingsContent = () => {
             <Text style={styles.buttonText}>Upload New Avatar</Text>
           </Pressable>
           {avatar ? (
-            <Image source={{ uri: avatar }} style={styles.avatar} resizeMode="cover" />
+            <Image source={{ uri: avatarUri }} style={styles.avatar} resizeMode="cover" />
           ) : null}
           <Pressable style={styles.button} onPress={updateProfile}>
             <Text style={styles.buttonText}>Save</Text>

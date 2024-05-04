@@ -1,15 +1,15 @@
-import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
-import { View, Image, Text, ScrollView, StyleSheet } from "react-native"
+import { View, Image, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen } from "app/components"
 import { ExpandableSection } from "./ExpandableSection"
 import ProfileSettings from "./ProfileSettings"
 import FriendsContent from "./FriendsContent"
 import AlbumsContent from "./AlbumsContent"
-import { useState, useEffect } from "react"
-
-import { supabase } from "../../config/initSupabase"
+import React, { FC, useEffect, useState } from "react"
+import { supabase, get_userid } from "../../utils/supabase"
+import { useStores } from "../../models"
+import { userStore } from "../../stores/userStore"
 interface ProfileScreenProps extends AppStackScreenProps<"Profile"> {}
 
 import type { SupabaseClient } from "@supabase/supabase-js"
@@ -29,18 +29,47 @@ async function readUserInfo(supabaseClient: SupabaseClient, userId: string) {
 }
 
 export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileScreen() {
-  const [userInfo, setUserInfo] = useState({ username: "", avatar_url: "" })
+  const {
+    authenticationStore: { setAuthToken },
+  } = useStores()
+  const { userInfo } = userStore
+  const [userID, setUserID] = useState("")
 
+  async function signout() {
+    const { error } = await supabase.auth.signOut()
+    if (error) return
+    setAuthToken("")
+  }
   useEffect(() => {
-    const fetchData = async () => {
-      const userData = await readUserInfo(supabase, "3a05e507-972c-4579-ae3c-3eb38138780f")
-      if (userData) {
-        setUserInfo(userData)
+    const fetchAndSetUserID = async () => {
+      const fetchedUserID = await get_userid()
+      if (fetchedUserID && fetchedUserID !== "") {
+        setUserID(fetchedUserID)
       }
     }
 
-    fetchData()
+    fetchAndSetUserID()
   }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (userID) {
+        const userData = await readUserInfo(supabase, userID)
+        if (userData) {
+          userStore.setUserInfo(userData)
+        } else {
+          console.error("No user data returned with userID: ", userID)
+        }
+      } else {
+        console.log("No userID available to fetch data")
+      }
+    }
+
+    if (userID) {
+      fetchData()
+    }
+  }, [userID])
+
   return (
     <Screen preset="fixed">
       <ScrollView contentContainerStyle={styles.contentContainerStyle}>
@@ -60,11 +89,13 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
         <ExpandableSection title="Albums">
           <AlbumsContent />
         </ExpandableSection>
+        <TouchableOpacity style={styles.button} onPress={signout}>
+          <Text style={styles.buttonText}>登出</Text>
+        </TouchableOpacity>
       </ScrollView>
     </Screen>
   )
 })
-
 const styles = StyleSheet.create({
   contentContainerStyle: {
     flexGrow: 1,
@@ -85,5 +116,21 @@ const styles = StyleSheet.create({
     fontSize: 28,
     marginTop: 16,
     marginBottom: 16,
+  },
+  button: {
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "black",
+    marginTop: 10,
+    height: 60,
+    width: 300,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
   },
 })
