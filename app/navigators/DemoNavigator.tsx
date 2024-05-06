@@ -15,6 +15,7 @@ import {
   NotificationsScreen,
   // SettingsScreen,
   ProfileScreen,
+  DemoDebugScreen,
 } from "../screens"
 // import { DemoPodcastListScreen } from "../screens/DemoPodcastListScreen"
 import { colors, spacing, typography } from "../theme"
@@ -163,9 +164,9 @@ export function DemoNavigator() {
             <Icon icon="podcast" color={focused ? colors.tint : undefined} size={30} />
           ),
         }}
-      />
+      /> */}
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="DemoDebug"
         component={DemoDebugScreen}
         options={{
