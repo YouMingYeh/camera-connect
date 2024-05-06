@@ -10,7 +10,7 @@ import {
   DemoShowroomScreen,
   // DemoDebugScreen,
   CameraScreen,
-  AlbumScreen,
+  AlbumFeedScreen,
   ExploreScreen,
   NotificationsScreen,
   // SettingsScreen,
@@ -27,7 +27,7 @@ export type DemoTabParamList = {
   DemoDebug: undefined
   DemoPodcastList: undefined
   Camera: undefined
-  Album: undefined
+  AlbumFeed: undefined
   Explore: undefined
   Notifications: undefined
   Settings: undefined
@@ -80,8 +80,8 @@ export function DemoNavigator() {
       />
 
       <Tab.Screen
-        name="Album"
-        component={AlbumScreen}
+        name="AlbumFeed"
+        component={AlbumFeedScreen}
         options={{
           tabBarLabel: translate("demoNavigator.albumTab"),
           tabBarIcon: ({ focused }) => (
