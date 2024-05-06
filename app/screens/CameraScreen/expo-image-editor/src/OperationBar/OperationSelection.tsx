@@ -84,19 +84,17 @@ export function OperationSelection() {
   return (
     <>
       <ScrollView style={styles.opRow} horizontal>
-        {
-          filteredOperations[selectedOperationGroup].map(
-            (item: Operation<EditingOperations>, index: number) => (
-              <View style={styles.opContainer} key={item.title}>
-                <IconButton
-                  text={item.title}
-                  iconID={item.iconID}
-                  onPress={() => setEditingMode(item.operationID)}
-                />
-              </View>
-            ),
-          )
-        }
+        {filteredOperations[selectedOperationGroup].map(
+          (item: Operation<EditingOperations>, index: number) => (
+            <View style={styles.opContainer} key={item.title}>
+              <IconButton
+                text={item.title}
+                iconID={item.iconID}
+                onPress={() => setEditingMode(item.operationID)}
+              />
+            </View>
+          ),
+        )}
       </ScrollView>
       {!isTransformOnly && !isAdjustmentOnly ? (
         <View style={styles.modeRow}>
