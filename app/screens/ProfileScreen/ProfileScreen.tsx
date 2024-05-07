@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { View, Image, Text, ScrollView, StyleSheet, TouchableOpacity } from "react-native"
+import { View, Image, Text, ScrollView, StyleSheet, Pressable } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen } from "app/components"
 import { ExpandableSection } from "./ExpandableSection"
@@ -72,7 +72,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
 
   return (
     <Screen preset="fixed">
-      <ScrollView contentContainerStyle={styles.contentContainerStyle}>
+      <ScrollView contentContainerStyle={styles.contentContainerStyle} >
         <View style={styles.avatarContainer}>
           <Image
             source={{ uri: userInfo.avatar_url || "default_avatar_placeholder.png" }}
@@ -89,9 +89,9 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
         <ExpandableSection title="Albums">
           <AlbumsContent />
         </ExpandableSection>
-        <TouchableOpacity style={styles.button} onPress={signout}>
+        <Pressable style={styles.button} onPress={signout}>
           <Text style={styles.buttonText}>登出</Text>
-        </TouchableOpacity>
+        </Pressable>
       </ScrollView>
     </Screen>
   )
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-start",
-    marginTop: 72,
+    paddingVertical: 32,
   },
   avatarContainer: {
     marginTop: 32,

@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native"
+import { View, Text, Pressable, StyleSheet } from "react-native"
 import { Feather } from "@expo/vector-icons"
 
 interface ExpandableSectionProps {
@@ -16,7 +16,7 @@ export const ExpandableSection: React.FC<ExpandableSectionProps> = ({ title, chi
 
   return (
     <View>
-      <TouchableOpacity style={styles.button} onPress={handlePress}>
+      <Pressable style={styles.button} onPress={handlePress}>
         <Text style={styles.expandButtonText}>{title}</Text>
         <Feather
           style={styles.expandButtonIcon}
@@ -24,7 +24,7 @@ export const ExpandableSection: React.FC<ExpandableSectionProps> = ({ title, chi
           size={24}
           color="white"
         />
-      </TouchableOpacity>
+      </Pressable>
       {expanded && children}
     </View>
   )
