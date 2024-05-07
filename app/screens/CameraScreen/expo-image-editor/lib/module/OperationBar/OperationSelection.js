@@ -4,9 +4,8 @@ import { Icon } from "../components/Icon"
 import { IconButton } from "../components/IconButton"
 import { editingModeState } from "../Store"
 import { useRecoilState } from "recoil"
-import { useContext } from "react"
+import { useContext , useMemo } from "react"
 import { EditorContext } from ".."
-import { useMemo } from "react"
 const operations = {
   transform: [
     {
@@ -69,23 +68,23 @@ export function OperationSelection() {
       adjust: filteredAdjustments,
     }
   }, [allowedTransformOperations, allowedAdjustmentOperations, isTransformOnly, isAdjustmentOnly])
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     React.Fragment,
     null,
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       ScrollView,
       {
         style: styles.opRow,
         horizontal: true,
-      }, //@ts-ignore
+      }, // @ts-ignore
       filteredOperations[selectedOperationGroup].map((item, index) =>
-        /*#__PURE__*/ React.createElement(
+        /* #__PURE__ */ React.createElement(
           View,
           {
             style: styles.opContainer,
             key: item.title,
           },
-          /*#__PURE__*/ React.createElement(IconButton, {
+          /* #__PURE__ */ React.createElement(IconButton, {
             text: item.title,
             iconID: item.iconID,
             onPress: () => setEditingMode(item.operationID),
@@ -94,12 +93,12 @@ export function OperationSelection() {
       ),
     ),
     !isTransformOnly && !isAdjustmentOnly
-      ? /*#__PURE__*/ React.createElement(
+      ? /* #__PURE__ */ React.createElement(
           View,
           {
             style: styles.modeRow,
           },
-          /*#__PURE__*/ React.createElement(
+          /* #__PURE__ */ React.createElement(
             TouchableOpacity,
             {
               style: [
@@ -110,12 +109,12 @@ export function OperationSelection() {
               ],
               onPress: () => setSelectedOperationGroup("transform"),
             },
-            /*#__PURE__*/ React.createElement(Icon, {
+            /* #__PURE__ */ React.createElement(Icon, {
               iconID: "transform",
               text: "Transform",
             }),
           ),
-          /*#__PURE__*/ React.createElement(
+          /* #__PURE__ */ React.createElement(
             TouchableOpacity,
             {
               style: [
@@ -126,7 +125,7 @@ export function OperationSelection() {
               ],
               onPress: () => setSelectedOperationGroup("adjust"),
             },
-            /*#__PURE__*/ React.createElement(Icon, {
+            /* #__PURE__ */ React.createElement(Icon, {
               iconID: "tune",
               text: "Adjust",
             }),
@@ -136,30 +135,30 @@ export function OperationSelection() {
   )
 }
 const styles = StyleSheet.create({
-  opRow: {
-    height: 80,
-    width: "100%",
-    backgroundColor: "#333",
-  },
-  opContainer: {
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 16,
-  },
-  modeRow: {
-    height: 80,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
   modeButton: {
-    height: 80,
-    flex: 1,
-    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#222",
+    flex: 1,
+    height: 80,
+    justifyContent: "center",
+  },
+  modeRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    height: 80,
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  opContainer: {
+    alignItems: "center",
+    height: "100%",
+    justifyContent: "center",
+    marginLeft: 16,
+  },
+  opRow: {
+    backgroundColor: "#333",
+    height: 80,
+    width: "100%",
   },
 })
-//# sourceMappingURL=OperationSelection.js.map
+// # sourceMappingURL=OperationSelection.js.map

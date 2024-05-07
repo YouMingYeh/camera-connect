@@ -13,11 +13,11 @@ export { Processing }
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    height: "100%",
-    width: "100%",
-    backgroundColor: "#33333355",
-    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "#33333355",
+    height: "100%",
+    justifyContent: "center",
+    position: "absolute",
+    width: "100%",
   },
 })

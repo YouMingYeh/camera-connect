@@ -1,6 +1,6 @@
 import React from "react"
 import { Modal as RNModal, Platform } from "react-native"
-//@ts-ignore
+// @ts-ignore
 import WebModal from "modal-enhanced-react-native-web"
 
 interface IUniversalModalProps extends React.ComponentProps<typeof RNModal> {

@@ -1,12 +1,4 @@
-import {
-  View,
-  TextInput,
-  Pressable,
-  Image,
-  StyleSheet,
-  Text,
-  Alert,
-} from "react-native"
+import { View, TextInput, Pressable, Image, StyleSheet, Text, Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import { userStore } from "../../stores/userStore"
 import { v4 as uuidv4 } from "uuid"
@@ -43,7 +35,7 @@ const ProfileSettingsContent = () => {
   const [expanded, setExpanded] = useState(false)
 
   const uploadAvatar = async (filename: string, base64: string) => {
-    let { data, error } = await supabase.storage
+    const { data, error } = await supabase.storage
       .from("avatar")
       .upload(filename, Buffer.from(base64, "base64"), {
         contentType: "image/jpeg",
@@ -56,7 +48,7 @@ const ProfileSettingsContent = () => {
   }
   const updateProfile = async () => {
     try {
-      let updates: { avatar_url?: string; username?: string } = {}
+      const updates: { avatar_url?: string; username?: string } = {}
 
       if (avatar) {
         const filename = `avatars_${uuidv4()}`
@@ -86,7 +78,7 @@ const ProfileSettingsContent = () => {
   }
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
@@ -149,58 +141,58 @@ const ProfileSettingsContent = () => {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
-    width: "80%",
-    backgroundColor: "white",
+  avatar: {
+    borderRadius: 50,
+    height: 100,
+    margin: 20,
+    width: 100,
   },
   button: {
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    backgroundColor: "black",
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: "black",
+    justifyContent: "center",
     marginTop: 10,
+    paddingHorizontal: 32,
+    paddingVertical: 12,
   },
   buttonText: {
     color: "white",
     fontSize: 16,
   },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    margin: 20,
-  },
-  expandButton: {
-    position: "relative",
+  container: {
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 16,
-    height: 60,
+  },
+  expandButton: {
+    alignItems: "center",
     backgroundColor: "black",
-    marginTop: 16,
     borderRadius: 4,
+    height: 60,
+    justifyContent: "center",
+    marginTop: 16,
+    paddingHorizontal: 16,
+    position: "relative",
     width: 300,
   },
   expandButtonIcon: {
     position: "absolute",
     right: 16,
   },
-
   expandButtonText: {
     color: "white",
-    fontWeight: "500",
     fontSize: 18,
+    fontWeight: "500",
+  },
+
+  input: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    height: 40,
+    margin: 12,
+    padding: 10,
+    width: "80%",
   },
 })
 

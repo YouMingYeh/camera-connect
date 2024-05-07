@@ -93,7 +93,7 @@ export default function App() {
 
   const __savePhoto = () => {
     if (!capturedMedia) {
-      return
+      
     }
   }
   const __retakePicture = () => {

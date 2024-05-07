@@ -1,10 +1,10 @@
 import React from "react"
-import { Modal as RNModal, Platform } from "react-native" //@ts-ignore
+import { Modal as RNModal, Platform } from "react-native" // @ts-ignore
 
 import WebModal from "modal-enhanced-react-native-web"
 export const UniversalModal = (props) => {
   if (Platform.OS === "web") {
-    return /*#__PURE__*/ React.createElement(
+    return /* #__PURE__ */ React.createElement(
       WebModal,
       {
         isVisible: props.visible,
@@ -16,6 +16,6 @@ export const UniversalModal = (props) => {
     )
   }
 
-  return /*#__PURE__*/ React.createElement(RNModal, props)
+  return /* #__PURE__ */ React.createElement(RNModal, props)
 }
-//# sourceMappingURL=UniversalModal.js.map
+// # sourceMappingURL=UniversalModal.js.map

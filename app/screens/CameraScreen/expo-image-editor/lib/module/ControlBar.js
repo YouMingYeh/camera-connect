@@ -3,9 +3,8 @@ import { View, StyleSheet } from "react-native"
 import { useRecoilState } from "recoil"
 import { editingModeState, imageDataState, processingState } from "./Store"
 import { IconButton } from "./components/IconButton"
-import { useContext } from "react"
+import { useContext , useEffect } from "react"
 import { EditorContext } from "./index"
-import { useEffect } from "react"
 import { usePerformCrop } from "./customHooks/usePerformCrop"
 
 function ControlBar() {
@@ -47,17 +46,17 @@ function ControlBar() {
       onCloseEditor()
     }
   }, [imageData, editingMode])
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     View,
     {
       style: styles.container,
     },
-    /*#__PURE__*/ React.createElement(IconButton, {
+    /* #__PURE__ */ React.createElement(IconButton, {
       iconID: "arrow-back",
       text: "Back",
       onPress: onPressBack,
     }),
-    /*#__PURE__*/ React.createElement(IconButton, {
+    /* #__PURE__ */ React.createElement(IconButton, {
       iconID: "done",
       text: "Done",
       onPress: onFinishEditing,
@@ -69,13 +68,13 @@ function ControlBar() {
 export { ControlBar }
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: 80,
+    alignItems: "center",
     backgroundColor: "#333",
     flexDirection: "row",
+    height: 80,
     justifyContent: "space-between",
-    alignItems: "center",
     paddingHorizontal: 4,
+    width: "100%",
   },
 })
-//# sourceMappingURL=ControlBar.js.map
+// # sourceMappingURL=ControlBar.js.map

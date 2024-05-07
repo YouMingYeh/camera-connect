@@ -13,27 +13,27 @@ export function OperationBar() {
   const getOperationWindow = () => {
     switch (editingMode) {
       case "crop":
-        return /*#__PURE__*/ React.createElement(Crop, null)
+        return /* #__PURE__ */ React.createElement(Crop, null)
 
       case "rotate":
-        return /*#__PURE__*/ React.createElement(Rotate, null)
+        return /* #__PURE__ */ React.createElement(Rotate, null)
 
       case "blur":
-        return /*#__PURE__*/ React.createElement(Blur, null)
+        return /* #__PURE__ */ React.createElement(Blur, null)
 
       default:
         return null
     }
   }
 
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     View,
     {
       style: styles.container,
     },
-    /*#__PURE__*/ React.createElement(OperationSelection, null),
+    /* #__PURE__ */ React.createElement(OperationSelection, null),
     editingMode !== "operation-select" &&
-      /*#__PURE__*/ React.createElement(
+      /* #__PURE__ */ React.createElement(
         View,
         {
           style: [
@@ -49,10 +49,10 @@ export function OperationBar() {
 }
 const styles = StyleSheet.create({
   container: {
-    height: 160,
-    width: "100%",
     backgroundColor: "#333",
+    height: 160,
     justifyContent: "center",
+    width: "100%",
   },
 })
-//# sourceMappingURL=OperationBar.js.map
+// # sourceMappingURL=OperationBar.js.map

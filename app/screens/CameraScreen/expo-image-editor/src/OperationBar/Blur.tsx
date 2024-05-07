@@ -290,11 +290,11 @@ export function Blur() {
       // attach the texture as the first color attachment
       const attachmentPoint = gl.COLOR_ATTACHMENT0
       gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, firstPassTexture, 0)
-      //gl.viewport(0, 0, imageData.width, imageData.height);
+      // gl.viewport(0, 0, imageData.width, imageData.height);
       // Actually draw using the shader program we setup!
       gl.drawArrays(gl.TRIANGLES, 0, 6)
       gl.bindFramebuffer(gl.FRAMEBUFFER, null)
-      //gl.viewport(0, 0, imageData.width, imageData.height);
+      // gl.viewport(0, 0, imageData.width, imageData.height);
       gl.uniform1i(gl.getUniformLocation(program, "texture"), 1)
       gl.uniform1i(gl.getUniformLocation(program, "pass"), 1)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
@@ -347,10 +347,10 @@ export function Blur() {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
   },
   prompt: {
     color: "white",
@@ -358,17 +358,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   row: {
-    width: "100%",
-    height: 80,
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    flexDirection: "row",
+    height: 80,
+    justifyContent: "space-between",
     paddingHorizontal: "2%",
+    width: "100%",
   },
   slider: {
     height: 20,
-    width: "90%",
     maxWidth: 600,
+    width: "90%",
   },
   sliderTrack: {
     borderRadius: 10,

@@ -70,12 +70,12 @@ export function Rotate() {
     setRotation(rotateBy)
   }
 
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     View,
     {
       style: styles.container,
     },
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       View,
       {
         style: [
@@ -85,35 +85,35 @@ export function Rotate() {
           },
         ],
       },
-      /*#__PURE__*/ React.createElement(IconButton, {
+      /* #__PURE__ */ React.createElement(IconButton, {
         iconID: "rotate-left",
         text: "Rotate -90",
         onPress: () => rotate("ccw"),
       }),
-      /*#__PURE__*/ React.createElement(IconButton, {
+      /* #__PURE__ */ React.createElement(IconButton, {
         iconID: "rotate-right",
         text: "Rotate +90",
         onPress: () => rotate("cw"),
       }),
     ),
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       View,
       {
         style: styles.row,
       },
-      /*#__PURE__*/ React.createElement(IconButton, {
+      /* #__PURE__ */ React.createElement(IconButton, {
         iconID: "close",
         text: "Cancel",
         onPress: () => onClose(),
       }),
-      /*#__PURE__*/ React.createElement(
+      /* #__PURE__ */ React.createElement(
         Text,
         {
           style: styles.prompt,
         },
         "Rotate",
       ),
-      /*#__PURE__*/ React.createElement(IconButton, {
+      /* #__PURE__ */ React.createElement(IconButton, {
         iconID: "check",
         text: "Done",
         onPress: () => setEditingMode("operation-select"),
@@ -123,10 +123,10 @@ export function Rotate() {
 }
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
   },
   prompt: {
     color: "#fff",
@@ -134,12 +134,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   row: {
-    width: "100%",
-    height: 80,
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    flexDirection: "row",
+    height: 80,
+    justifyContent: "space-between",
     paddingHorizontal: "2%",
+    width: "100%",
   },
 })
-//# sourceMappingURL=Rotate.js.map
+// # sourceMappingURL=Rotate.js.map

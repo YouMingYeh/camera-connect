@@ -5,24 +5,24 @@ Object.defineProperty(exports, "__esModule", {
 })
 exports.OperationSelection = OperationSelection
 
-var React = _interopRequireWildcard(require("react"))
+const React = _interopRequireWildcard(require("react"))
 
-var _reactNative = require("react-native")
+const _reactNative = require("react-native")
 
-var _Icon = require("../components/Icon")
+const _Icon = require("../components/Icon")
 
-var _IconButton = require("../components/IconButton")
+const _IconButton = require("../components/IconButton")
 
-var _Store = require("../Store")
+const _Store = require("../Store")
 
-var _recoil = require("recoil")
+const _recoil = require("recoil")
 
-var _ = require("..")
+const _ = require("..")
 
 function _getRequireWildcardCache(nodeInterop) {
   if (typeof WeakMap !== "function") return null
-  var cacheBabelInterop = new WeakMap()
-  var cacheNodeInterop = new WeakMap()
+  const cacheBabelInterop = new WeakMap()
+  const cacheNodeInterop = new WeakMap()
   return (_getRequireWildcardCache = function (nodeInterop) {
     return nodeInterop ? cacheNodeInterop : cacheBabelInterop
   })(nodeInterop)
@@ -35,15 +35,15 @@ function _interopRequireWildcard(obj, nodeInterop) {
   if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
     return { default: obj }
   }
-  var cache = _getRequireWildcardCache(nodeInterop)
+  const cache = _getRequireWildcardCache(nodeInterop)
   if (cache && cache.has(obj)) {
     return cache.get(obj)
   }
-  var newObj = {}
-  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
-  for (var key in obj) {
+  const newObj = {}
+  const hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
+  for (const key in obj) {
     if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
-      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
+      const desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
       if (desc && (desc.get || desc.set)) {
         Object.defineProperty(newObj, key, desc)
       } else {
@@ -123,23 +123,23 @@ function OperationSelection() {
       adjust: filteredAdjustments,
     }
   }, [allowedTransformOperations, allowedAdjustmentOperations, isTransformOnly, isAdjustmentOnly])
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     React.Fragment,
     null,
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       _reactNative.ScrollView,
       {
         style: styles.opRow,
         horizontal: true,
-      }, //@ts-ignore
+      }, // @ts-ignore
       filteredOperations[selectedOperationGroup].map((item, index) =>
-        /*#__PURE__*/ React.createElement(
+        /* #__PURE__ */ React.createElement(
           _reactNative.View,
           {
             style: styles.opContainer,
             key: item.title,
           },
-          /*#__PURE__*/ React.createElement(_IconButton.IconButton, {
+          /* #__PURE__ */ React.createElement(_IconButton.IconButton, {
             text: item.title,
             iconID: item.iconID,
             onPress: () => setEditingMode(item.operationID),
@@ -148,12 +148,12 @@ function OperationSelection() {
       ),
     ),
     !isTransformOnly && !isAdjustmentOnly
-      ? /*#__PURE__*/ React.createElement(
+      ? /* #__PURE__ */ React.createElement(
           _reactNative.View,
           {
             style: styles.modeRow,
           },
-          /*#__PURE__*/ React.createElement(
+          /* #__PURE__ */ React.createElement(
             _reactNative.TouchableOpacity,
             {
               style: [
@@ -164,12 +164,12 @@ function OperationSelection() {
               ],
               onPress: () => setSelectedOperationGroup("transform"),
             },
-            /*#__PURE__*/ React.createElement(_Icon.Icon, {
+            /* #__PURE__ */ React.createElement(_Icon.Icon, {
               iconID: "transform",
               text: "Transform",
             }),
           ),
-          /*#__PURE__*/ React.createElement(
+          /* #__PURE__ */ React.createElement(
             _reactNative.TouchableOpacity,
             {
               style: [
@@ -180,7 +180,7 @@ function OperationSelection() {
               ],
               onPress: () => setSelectedOperationGroup("adjust"),
             },
-            /*#__PURE__*/ React.createElement(_Icon.Icon, {
+            /* #__PURE__ */ React.createElement(_Icon.Icon, {
               iconID: "tune",
               text: "Adjust",
             }),
@@ -217,4 +217,4 @@ const styles = _reactNative.StyleSheet.create({
     backgroundColor: "#222",
   },
 })
-//# sourceMappingURL=OperationSelection.js.map
+// # sourceMappingURL=OperationSelection.js.map

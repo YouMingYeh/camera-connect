@@ -2,17 +2,16 @@ import { observer } from "mobx-react-lite"
 import { View, Image, Text, ScrollView, StyleSheet, Pressable } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen } from "app/components"
-import { ExpandableSection } from "./ExpandableSection"
 import ProfileSettings from "./ProfileSettings"
 import Friends from "./Friends"
-import AlbumsContent from "./AlbumsContent"
+import Albums from "./Albums"
 import React, { FC, useEffect, useState } from "react"
 import { supabase, get_userid } from "../../utils/supabase"
 import { useStores } from "../../models"
 import { userStore } from "../../stores/userStore"
-interface ProfileScreenProps extends AppStackScreenProps<"Profile"> {}
 
 import type { SupabaseClient } from "@supabase/supabase-js"
+interface ProfileScreenProps extends AppStackScreenProps<"Profile"> {}
 async function readUserInfo(supabaseClient: SupabaseClient, userId: string) {
   const { data, error } = await supabaseClient
     .from("user")
@@ -71,7 +70,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
 
   return (
     <Screen preset="scroll">
-      <ScrollView contentContainerStyle={styles.contentContainerStyle} >
+      <ScrollView contentContainerStyle={styles.contentContainerStyle}>
         <View style={styles.avatarContainer}>
           <Image
             source={{ uri: userInfo.avatar_url || "default_avatar_placeholder.png" }}
@@ -81,11 +80,9 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
         <Text style={styles.name}>{userInfo.username || "Username"}</Text>
 
         <ProfileSettings />
-		<Friends />
-       
-        <ExpandableSection title="Albums">
-          <AlbumsContent />
-        </ExpandableSection>
+        <Friends />
+
+        <Albums />
         <Pressable style={styles.button} onPress={signout}>
           <Text style={styles.buttonText}>登出</Text>
         </Pressable>
@@ -94,41 +91,40 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
   )
 })
 const styles = StyleSheet.create({
-  contentContainerStyle: {
-    flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    paddingVertical: 32,
-	
+  avatar: {
+    borderRadius: 90,
+    height: 180,
+    width: 180,
   },
   avatarContainer: {
     marginTop: 32,
   },
-  avatar: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
-  },
-  name: {
-    fontWeight: "800",
-    fontSize: 28,
-    marginTop: 16,
-    marginBottom: 16,
-  },
   button: {
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    backgroundColor: "black",
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: "black",
-    marginTop: 10,
     height: 60,
+    justifyContent: "center",
+    marginTop: 10,
+    paddingHorizontal: 32,
+    paddingVertical: 12,
     width: 300,
   },
   buttonText: {
     color: "white",
     fontSize: 16,
+  },
+  contentContainerStyle: {
+    alignItems: "center",
+    flexGrow: 1,
+    justifyContent: "flex-start",
+    paddingVertical: 32,
+  },
+  name: {
+    fontSize: 28,
+    fontWeight: "800",
+    marginBottom: 16,
+    marginTop: 16,
   },
 })

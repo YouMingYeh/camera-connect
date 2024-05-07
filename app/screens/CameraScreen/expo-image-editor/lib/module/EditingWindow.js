@@ -36,7 +36,7 @@ function EditingWindow() {
       const editingWindowAspectRatio = layout.height / layout.width //
 
       const imageAspectRatio = imageData.height / imageData.width
-      let bounds = {
+      const bounds = {
         x: 0,
         y: 0,
         width: 0,
@@ -100,18 +100,18 @@ function EditingWindow() {
     setGLContext(gl)
   }
 
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     View,
     {
       style: styles.container,
     },
     usesGL
-      ? /*#__PURE__*/ React.createElement(
+      ? /* #__PURE__ */ React.createElement(
           View,
           {
             style: styles.glContainer,
           },
-          /*#__PURE__*/ React.createElement(GLView, {
+          /* #__PURE__ */ React.createElement(GLView, {
             style: [
               {
                 height: 1,
@@ -128,7 +128,7 @@ function EditingWindow() {
             onContextCreate: onGLContextCreate,
           }),
         )
-      : /*#__PURE__*/ React.createElement(Image, {
+      : /* #__PURE__ */ React.createElement(Image, {
           style: styles.image,
           source: {
             uri: imageData.uri,
@@ -136,7 +136,7 @@ function EditingWindow() {
           onLayout: ({ nativeEvent }) => getImageFrame(nativeEvent.layout),
         }),
     isCropping && imageLayout != null
-      ? /*#__PURE__*/ React.createElement(ImageCropOverlay, null)
+      ? /* #__PURE__ */ React.createElement(ImageCropOverlay, null)
       : null,
   )
 }
@@ -146,14 +146,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  glContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+  },
   image: {
     flex: 1,
     resizeMode: "contain",
   },
-  glContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
 })
-//# sourceMappingURL=EditingWindow.js.map
+// # sourceMappingURL=EditingWindow.js.map

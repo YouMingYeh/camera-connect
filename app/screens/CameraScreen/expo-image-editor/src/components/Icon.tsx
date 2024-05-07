@@ -19,19 +19,19 @@ export function Icon(props: IIconProps) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 64,
-    width: 80,
-    flexDirection: "column",
-    justifyContent: "space-between",
     alignItems: "center",
+    flexDirection: "column",
+    height: 64,
+    justifyContent: "space-between",
     paddingVertical: 8,
-  },
-  text: {
-    color: "white",
-    textAlign: "center",
+    width: 80,
   },
   distableText: {
     color: "grey",
+    textAlign: "center",
+  },
+  text: {
+    color: "white",
     textAlign: "center",
   },
 })

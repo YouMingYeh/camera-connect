@@ -2,78 +2,76 @@ import React, { useState } from "react"
 import { View, TextInput, StyleSheet, Pressable, Text, Image, FlatList } from "react-native"
 import { Feather } from "@expo/vector-icons"
 import { supabase, get_userid } from "../../utils/supabase"
-interface User {
+
+interface Album {
   id: string
-  username: string
-  avatar_url: string
-  email: string
+  album_name: string
+  cover_url: string
 }
-const Friends = () => {
+const Albums = () => {
   const [expanded, setExpanded] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [searchResults, setSearchResults] = useState<User[]>([])
+  const [albums, setAlbums] = useState<Album[]>([])
 
   const handlePress = () => {
+    if (expanded) {
+      setSearchQuery("")
+      setAlbums([])
+    }
     setExpanded(!expanded)
   }
 
   const handleSearch = async () => {
-    console.log("Searching for:", searchQuery)
-    try {
-      const { data, error } = await supabase
-        .from("user")
-        .select("id, username, avatar_url, email")
-        .or(`email.eq.${searchQuery},username.ilike.%${searchQuery}%`)
-
-      if (error) {
-        console.error("Search error:", error.message)
-        return
-      }
-      console.log("Search results:", data)
-      setSearchResults(data)
-    } catch (err) {
-      console.error("An error occurred:", err)
-    }
-  }
-
-  const addFriend = async (receiverId: string) => {
     const userId = await get_userid()
-
     if (!userId) {
       console.error("User ID not found")
       return
     }
 
     try {
+      const { data: joinData, error: joinError } = await supabase
+        .from("join_album")
+        .select("album_id")
+        .eq("user_id", userId)
+
+      if (joinError) {
+        console.error("Error fetching album IDs:", joinError.message)
+        return
+      }
+
+      const albumIds = joinData.map((j) => j.album_id)
+
       const { data, error } = await supabase
-        .from("friends_with")
-        .insert([{ sender_id: userId, receiver_id: receiverId }])
+        .from("album")
+        .select("id, album_name, cover_url")
+        .in("id", albumIds)
+        .ilike("album_name", `%${searchQuery}%`)
 
       if (error) {
-        console.error("Error adding friend:", error.message)
+        console.error("Error fetching albums:", error.message)
+        return
       }
+
+      setAlbums(data)
     } catch (err) {
-      console.error("An error occurred:", err)
+      console.error("An error occurred while fetching albums:", err)
     }
   }
 
-  const renderItem = ({ item }: { item: User }) => (
-    <View style={styles.userRow}>
+  const renderItem = ({ item }: { item: Album }) => (
+    <View style={styles.albumRow}>
       <Image
-        source={{ uri: item.avatar_url || "default_avatar_placeholder.png" }}
-        style={styles.avatar}
+        source={{ uri: item.cover_url || "default_album_placeholder.png" }}
+        style={styles.albumCover}
       />
-      <Text style={styles.username}>{item.username}</Text>
-      <Pressable style={styles.addButton} onPress={() => addFriend(item.id)}>
-        <Text style={styles.addButtonText}>Add Friend</Text>
-      </Pressable>
+      <Text style={styles.albumName}>{item.album_name}</Text>
     </View>
   )
 
   return (
     <View>
       <Pressable style={styles.expandButton} onPress={handlePress}>
-        <Text style={styles.expandButtonText}>Friends</Text>
+        <Text style={styles.expandButtonText}>Albums</Text>
         <Feather
           style={styles.expandButtonIcon}
           name={expanded ? "chevron-up" : "chevron-down"}
@@ -93,7 +91,7 @@ const Friends = () => {
           <Pressable style={styles.button} onPress={handleSearch}>
             <Text style={styles.buttonText}>Search</Text>
           </Pressable>
-          <FlatList data={searchResults} renderItem={renderItem} keyExtractor={(item) => item.id} />
+          <FlatList data={albums} renderItem={renderItem} keyExtractor={(item) => item.id} />
         </View>
       )}
     </View>
@@ -101,20 +99,23 @@ const Friends = () => {
 }
 
 const styles = StyleSheet.create({
-  addButton: {
-    backgroundColor: "black",
-    borderRadius: 4,
-    marginLeft: 12,
-    padding: 10,
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 14,
-  },
-  avatar: {
+  albumCover: {
     borderRadius: 25,
     height: 50,
     width: 50,
+  },
+  albumName: {
+    flex: 1,
+    fontSize: 16,
+    marginLeft: 12,
+  },
+  albumRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    width: "100%",
   },
   button: {
     alignItems: "center",
@@ -126,6 +127,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     paddingVertical: 12,
   },
+
   buttonText: {
     color: "white",
     fontSize: 16,
@@ -134,7 +136,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
-
   expandButton: {
     alignItems: "center",
     backgroundColor: "black",
@@ -164,19 +165,6 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "80%",
   },
-  userRow: {
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    width: "100%",
-  },
-  username: {
-    flex: 1,
-    fontSize: 16,
-    marginLeft: 12,
-  },
 })
 
-export default Friends
+export default Albums

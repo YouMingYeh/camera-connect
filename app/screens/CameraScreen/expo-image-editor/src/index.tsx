@@ -91,7 +91,7 @@ function ImageEditorCore(props: ImageEditorProps) {
       }
       // Platform check
       if (Platform.OS === "web") {
-        let img = document.createElement("img")
+        const img = document.createElement("img")
         img.onload = () => {
           setImageData({
             uri: props.imageUri ?? "",
@@ -197,7 +197,7 @@ export function ImageEditor(props: ImageEditorProps) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#222",
+    flex: 1,
   },
 })

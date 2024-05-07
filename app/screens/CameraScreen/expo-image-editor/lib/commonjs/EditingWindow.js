@@ -5,22 +5,22 @@ Object.defineProperty(exports, "__esModule", {
 })
 exports.EditingWindow = EditingWindow
 
-var React = _interopRequireWildcard(require("react"))
+const React = _interopRequireWildcard(require("react"))
 
-var _reactNative = require("react-native")
+const _reactNative = require("react-native")
 
-var _ImageCropOverlay = require("./ImageCropOverlay")
+const _ImageCropOverlay = require("./ImageCropOverlay")
 
-var _recoil = require("recoil")
+const _recoil = require("recoil")
 
-var _Store = require("./Store")
+const _Store = require("./Store")
 
-var _expoGl = require("expo-gl")
+const _expoGl = require("expo-gl")
 
 function _getRequireWildcardCache(nodeInterop) {
   if (typeof WeakMap !== "function") return null
-  var cacheBabelInterop = new WeakMap()
-  var cacheNodeInterop = new WeakMap()
+  const cacheBabelInterop = new WeakMap()
+  const cacheNodeInterop = new WeakMap()
   return (_getRequireWildcardCache = function (nodeInterop) {
     return nodeInterop ? cacheNodeInterop : cacheBabelInterop
   })(nodeInterop)
@@ -33,15 +33,15 @@ function _interopRequireWildcard(obj, nodeInterop) {
   if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
     return { default: obj }
   }
-  var cache = _getRequireWildcardCache(nodeInterop)
+  const cache = _getRequireWildcardCache(nodeInterop)
   if (cache && cache.has(obj)) {
     return cache.get(obj)
   }
-  var newObj = {}
-  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
-  for (var key in obj) {
+  const newObj = {}
+  const hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
+  for (const key in obj) {
     if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
-      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
+      const desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
       if (desc && (desc.get || desc.set)) {
         Object.defineProperty(newObj, key, desc)
       } else {
@@ -81,7 +81,7 @@ function EditingWindow() {
       const editingWindowAspectRatio = layout.height / layout.width //
 
       const imageAspectRatio = imageData.height / imageData.width
-      let bounds = {
+      const bounds = {
         x: 0,
         y: 0,
         width: 0,
@@ -145,18 +145,18 @@ function EditingWindow() {
     setGLContext(gl)
   }
 
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     _reactNative.View,
     {
       style: styles.container,
     },
     usesGL
-      ? /*#__PURE__*/ React.createElement(
+      ? /* #__PURE__ */ React.createElement(
           _reactNative.View,
           {
             style: styles.glContainer,
           },
-          /*#__PURE__*/ React.createElement(_expoGl.GLView, {
+          /* #__PURE__ */ React.createElement(_expoGl.GLView, {
             style: [
               {
                 height: 1,
@@ -173,7 +173,7 @@ function EditingWindow() {
             onContextCreate: onGLContextCreate,
           }),
         )
-      : /*#__PURE__*/ React.createElement(_reactNative.Image, {
+      : /* #__PURE__ */ React.createElement(_reactNative.Image, {
           style: styles.image,
           source: {
             uri: imageData.uri,
@@ -181,7 +181,7 @@ function EditingWindow() {
           onLayout: ({ nativeEvent }) => getImageFrame(nativeEvent.layout),
         }),
     isCropping && imageLayout != null
-      ? /*#__PURE__*/ React.createElement(_ImageCropOverlay.ImageCropOverlay, null)
+      ? /* #__PURE__ */ React.createElement(_ImageCropOverlay.ImageCropOverlay, null)
       : null,
   )
 }
@@ -200,4 +200,4 @@ const styles = _reactNative.StyleSheet.create({
     alignItems: "center",
   },
 })
-//# sourceMappingURL=EditingWindow.js.map
+// # sourceMappingURL=EditingWindow.js.map

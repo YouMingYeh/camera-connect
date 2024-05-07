@@ -4,9 +4,8 @@ import _ from "lodash"
 import { useRecoilState } from "recoil"
 import { editingModeState, imageDataState, processingState } from "./Store"
 import { IconButton } from "./components/IconButton"
-import { useContext } from "react"
+import { useContext , useEffect } from "react"
 import { EditorContext } from "./index"
-import { useEffect } from "react"
 import { usePerformCrop } from "./customHooks/usePerformCrop"
 
 function ControlBar() {
@@ -69,12 +68,12 @@ export { ControlBar }
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
-    height: 80,
+    alignItems: "center",
     backgroundColor: "black",
     flexDirection: "row",
+    height: 80,
     justifyContent: "space-between",
-    alignItems: "center",
     paddingHorizontal: 4,
+    width: "100%",
   },
 })

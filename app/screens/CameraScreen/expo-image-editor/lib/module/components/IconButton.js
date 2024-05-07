@@ -8,10 +8,10 @@ export function IconButton(props) {
     iconID,
     disabled: buttonProps.disabled,
   }
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     TouchableOpacity,
     buttonProps,
-    /*#__PURE__*/ React.createElement(Icon, iconProps),
+    /* #__PURE__ */ React.createElement(Icon, iconProps),
   )
 }
-//# sourceMappingURL=IconButton.js.map
+// # sourceMappingURL=IconButton.js.map

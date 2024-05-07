@@ -5,34 +5,34 @@ Object.defineProperty(exports, "__esModule", {
 })
 exports.Blur = Blur
 
-var React = _interopRequireWildcard(require("react"))
+const React = _interopRequireWildcard(require("react"))
 
-var _reactNative = require("react-native")
+const _reactNative = require("react-native")
 
-var _recoil = require("recoil")
+const _recoil = require("recoil")
 
-var _IconButton = require("../components/IconButton")
+const _IconButton = require("../components/IconButton")
 
-var _Store = require("../Store")
+const _Store = require("../Store")
 
-var _reactNativeSlider = require("@miblanchard/react-native-slider")
+const _reactNativeSlider = require("@miblanchard/react-native-slider")
 
-var _expoAsset = require("expo-asset")
+const _expoAsset = require("expo-asset")
 
-var _expoGl = require("expo-gl")
+const _expoGl = require("expo-gl")
 
-var ImageManinpulator = _interopRequireWildcard(require("expo-image-manipulator"))
+const ImageManinpulator = _interopRequireWildcard(require("expo-image-manipulator"))
 
-var FileSystem = _interopRequireWildcard(require("expo-file-system"))
+const FileSystem = _interopRequireWildcard(require("expo-file-system"))
 
-var _lodash = require("lodash")
+const _lodash = require("lodash")
 
-var _index = require("../index")
+const _index = require("../index")
 
 function _getRequireWildcardCache(nodeInterop) {
   if (typeof WeakMap !== "function") return null
-  var cacheBabelInterop = new WeakMap()
-  var cacheNodeInterop = new WeakMap()
+  const cacheBabelInterop = new WeakMap()
+  const cacheNodeInterop = new WeakMap()
   return (_getRequireWildcardCache = function (nodeInterop) {
     return nodeInterop ? cacheNodeInterop : cacheBabelInterop
   })(nodeInterop)
@@ -45,15 +45,15 @@ function _interopRequireWildcard(obj, nodeInterop) {
   if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
     return { default: obj }
   }
-  var cache = _getRequireWildcardCache(nodeInterop)
+  const cache = _getRequireWildcardCache(nodeInterop)
   if (cache && cache.has(obj)) {
     return cache.get(obj)
   }
-  var newObj = {}
-  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
-  for (var key in obj) {
+  const newObj = {}
+  const hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
+  for (const key in obj) {
     if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
-      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
+      const desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
       if (desc && (desc.get || desc.set)) {
         Object.defineProperty(newObj, key, desc)
       } else {
@@ -347,11 +347,11 @@ function Blur() {
       gl.bindFramebuffer(gl.FRAMEBUFFER, fb) // attach the texture as the first color attachment
 
       const attachmentPoint = gl.COLOR_ATTACHMENT0
-      gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, firstPassTexture, 0) //gl.viewport(0, 0, imageData.width, imageData.height);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, firstPassTexture, 0) // gl.viewport(0, 0, imageData.width, imageData.height);
       // Actually draw using the shader program we setup!
 
       gl.drawArrays(gl.TRIANGLES, 0, 6)
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null) //gl.viewport(0, 0, imageData.width, imageData.height);
+      gl.bindFramebuffer(gl.FRAMEBUFFER, null) // gl.viewport(0, 0, imageData.width, imageData.height);
 
       gl.uniform1i(gl.getUniformLocation(program, "texture"), 1)
       gl.uniform1i(gl.getUniformLocation(program, "pass"), 1)
@@ -372,12 +372,12 @@ function Blur() {
     return null
   }
 
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     _reactNative.View,
     {
       style: styles.container,
     },
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       _reactNative.View,
       {
         style: [
@@ -387,7 +387,7 @@ function Blur() {
           },
         ],
       },
-      /*#__PURE__*/ React.createElement(_reactNativeSlider.Slider, {
+      /* #__PURE__ */ React.createElement(_reactNativeSlider.Slider, {
         value: sliderValue,
         onValueChange: (value) => {
           setSliderValue(value[0])
@@ -407,17 +407,17 @@ function Blur() {
         trackStyle: styles.sliderTrack,
       }),
     ),
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       _reactNative.View,
       {
         style: styles.row,
       },
-      /*#__PURE__*/ React.createElement(_IconButton.IconButton, {
+      /* #__PURE__ */ React.createElement(_IconButton.IconButton, {
         iconID: "close",
         text: "Cancel",
         onPress: () => onClose(),
       }),
-      /*#__PURE__*/ React.createElement(
+      /* #__PURE__ */ React.createElement(
         _reactNative.Text,
         {
           style: styles.prompt,
@@ -425,7 +425,7 @@ function Blur() {
         "Blur Radius: ",
         Math.round(sliderValue),
       ),
-      /*#__PURE__*/ React.createElement(_IconButton.IconButton, {
+      /* #__PURE__ */ React.createElement(_IconButton.IconButton, {
         iconID: "check",
         text: "Done",
         onPress: () => onSaveWithBlur(),
@@ -463,4 +463,4 @@ const styles = _reactNative.StyleSheet.create({
     borderRadius: 10,
   },
 })
-//# sourceMappingURL=Blur.js.map
+// # sourceMappingURL=Blur.js.map

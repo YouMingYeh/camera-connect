@@ -60,7 +60,7 @@ const ImageCropOverlay = () => {
 
   React.useEffect(() => {
     // Update the size of the crop window based on the new image bounds
-    let newSize = { width: 0, height: 0 }
+    const newSize = { width: 0, height: 0 }
     const { width, height } = imageBounds
     const imageAspectRatio = width / height
     // Then check if the cropping aspect ratio is smaller
@@ -210,7 +210,7 @@ const ImageCropOverlay = () => {
     // Is the new x pos plus crop width going to exceed the right hand bound
     else if (accDx + cropSize.width > imageBounds.width + imageBounds.x) {
       // Then set the x pos so the crop frame touches the right hand edge
-      let limitedXPos = imageBounds.x + imageBounds.width - cropSize.width
+      const limitedXPos = imageBounds.x + imageBounds.width - cropSize.width
       accDx = limitedXPos
     } else {
       // It's somewhere in between - no formatting required
@@ -225,7 +225,7 @@ const ImageCropOverlay = () => {
     // Is the new y pos plus crop height going to exceed the bottom bound
     else if (accDy + cropSize.height > imageBounds.height + imageBounds.y) {
       // Then set the y pos so the crop frame touches the bottom edge
-      let limitedYPos = imageBounds.y + imageBounds.height - cropSize.height
+      const limitedYPos = imageBounds.y + imageBounds.height - cropSize.height
       accDy = limitedYPos
     } else {
       // It's somewhere in between - no formatting required
@@ -308,7 +308,7 @@ const ImageCropOverlay = () => {
                   {verticalSections.map((vsection) => {
                     const key = hsection + vsection
                     return (
-                      <View style={[styles.defaultSection]} key={key}>
+                      <View style={styles.defaultSection} key={key}>
                         {
                           // Add the corner markers to the topleft,
                           // topright, bottomleft and bottomright corners to indicate resizing
@@ -347,31 +347,31 @@ export { ImageCropOverlay }
 const styles = StyleSheet.create({
   container: {
     height: "100%",
-    width: "100%",
     position: "absolute",
+    width: "100%",
+  },
+  cornerMarker: {
+    borderColor: "#ffffff",
+    height: 30,
+    position: "absolute",
+    width: 30,
+  },
+  defaultSection: {
+    alignItems: "center",
+    borderColor: "#ffffff88",
+    borderWidth: 0.5,
+    flex: 1,
+    justifyContent: "center",
   },
   overlay: {
-    height: 40,
-    width: 40,
     backgroundColor: "#33333355",
     borderColor: "#ffffff88",
     borderWidth: 1,
+    height: 40,
+    width: 40,
   },
   sectionRow: {
     flexDirection: "row",
     flex: 1,
-  },
-  defaultSection: {
-    flex: 1,
-    borderWidth: 0.5,
-    borderColor: "#ffffff88",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  cornerMarker: {
-    position: "absolute",
-    borderColor: "#ffffff",
-    height: 30,
-    width: 30,
   },
 })

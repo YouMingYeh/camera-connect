@@ -7,24 +7,24 @@ import { usePerformCrop } from "../customHooks/usePerformCrop"
 export function Crop() {
   const [, setEditingMode] = useRecoilState(editingModeState)
   const onPerformCrop = usePerformCrop()
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     View,
     {
       style: styles.container,
     },
-    /*#__PURE__*/ React.createElement(IconButton, {
+    /* #__PURE__ */ React.createElement(IconButton, {
       iconID: "close",
       text: "Cancel",
       onPress: () => setEditingMode("operation-select"),
     }),
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       Text,
       {
         style: styles.prompt,
       },
       "Adjust window to crop",
     ),
-    /*#__PURE__*/ React.createElement(IconButton, {
+    /* #__PURE__ */ React.createElement(IconButton, {
       iconID: "check",
       text: "Done",
       onPress: onPerformCrop,
@@ -33,10 +33,10 @@ export function Crop() {
 }
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
     paddingHorizontal: "2%",
   },
   prompt: {
@@ -45,4 +45,4 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 })
-//# sourceMappingURL=Crop.js.map
+// # sourceMappingURL=Crop.js.map

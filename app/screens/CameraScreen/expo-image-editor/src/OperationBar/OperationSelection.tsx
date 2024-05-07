@@ -6,9 +6,8 @@ import { Icon } from "../components/Icon"
 import { IconButton } from "../components/IconButton"
 import { editingModeState, EditingModes } from "../Store"
 import { useRecoilState } from "recoil"
-import { useContext } from "react"
+import { useContext , useMemo } from "react"
 import { AdjustmentOperations, EditingOperations, EditorContext, TransformOperations } from ".."
-import { useMemo } from "react"
 
 interface Operation<T> {
   title: string
@@ -131,29 +130,29 @@ export function OperationSelection() {
 }
 
 const styles = StyleSheet.create({
+  modeButton: {
+    alignItems: "center",
+    backgroundColor: "black",
+    flex: 1,
+    height: 80,
+    justifyContent: "center",
+  },
+  modeRow: {
+    alignItems: "center",
+    flexDirection: "row",
+    height: 80,
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  opContainer: {
+    alignItems: "center",
+    height: "100%",
+    justifyContent: "center",
+    marginLeft: 16,
+  },
   opRow: {
     height: 80,
     width: "100%",
     // backgroundColor: "#333",
-  },
-  opContainer: {
-    height: "100%",
-    justifyContent: "center",
-    alignItems: "center",
-    marginLeft: 16,
-  },
-  modeRow: {
-    height: 80,
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-around",
-  },
-  modeButton: {
-    height: 80,
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
   },
 })

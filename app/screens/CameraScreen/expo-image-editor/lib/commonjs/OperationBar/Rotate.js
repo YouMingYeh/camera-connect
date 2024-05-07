@@ -5,22 +5,22 @@ Object.defineProperty(exports, "__esModule", {
 })
 exports.Rotate = Rotate
 
-var React = _interopRequireWildcard(require("react"))
+const React = _interopRequireWildcard(require("react"))
 
-var _reactNative = require("react-native")
+const _reactNative = require("react-native")
 
-var _recoil = require("recoil")
+const _recoil = require("recoil")
 
-var _IconButton = require("../components/IconButton")
+const _IconButton = require("../components/IconButton")
 
-var _Store = require("../Store")
+const _Store = require("../Store")
 
-var ImageManipulator = _interopRequireWildcard(require("expo-image-manipulator"))
+const ImageManipulator = _interopRequireWildcard(require("expo-image-manipulator"))
 
 function _getRequireWildcardCache(nodeInterop) {
   if (typeof WeakMap !== "function") return null
-  var cacheBabelInterop = new WeakMap()
-  var cacheNodeInterop = new WeakMap()
+  const cacheBabelInterop = new WeakMap()
+  const cacheNodeInterop = new WeakMap()
   return (_getRequireWildcardCache = function (nodeInterop) {
     return nodeInterop ? cacheNodeInterop : cacheBabelInterop
   })(nodeInterop)
@@ -33,15 +33,15 @@ function _interopRequireWildcard(obj, nodeInterop) {
   if (obj === null || (typeof obj !== "object" && typeof obj !== "function")) {
     return { default: obj }
   }
-  var cache = _getRequireWildcardCache(nodeInterop)
+  const cache = _getRequireWildcardCache(nodeInterop)
   if (cache && cache.has(obj)) {
     return cache.get(obj)
   }
-  var newObj = {}
-  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
-  for (var key in obj) {
+  const newObj = {}
+  const hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor
+  for (const key in obj) {
     if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
-      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
+      const desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null
       if (desc && (desc.get || desc.set)) {
         Object.defineProperty(newObj, key, desc)
       } else {
@@ -122,12 +122,12 @@ function Rotate() {
     setRotation(rotateBy)
   }
 
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     _reactNative.View,
     {
       style: styles.container,
     },
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       _reactNative.View,
       {
         style: [
@@ -137,35 +137,35 @@ function Rotate() {
           },
         ],
       },
-      /*#__PURE__*/ React.createElement(_IconButton.IconButton, {
+      /* #__PURE__ */ React.createElement(_IconButton.IconButton, {
         iconID: "rotate-left",
         text: "Rotate -90",
         onPress: () => rotate("ccw"),
       }),
-      /*#__PURE__*/ React.createElement(_IconButton.IconButton, {
+      /* #__PURE__ */ React.createElement(_IconButton.IconButton, {
         iconID: "rotate-right",
         text: "Rotate +90",
         onPress: () => rotate("cw"),
       }),
     ),
-    /*#__PURE__*/ React.createElement(
+    /* #__PURE__ */ React.createElement(
       _reactNative.View,
       {
         style: styles.row,
       },
-      /*#__PURE__*/ React.createElement(_IconButton.IconButton, {
+      /* #__PURE__ */ React.createElement(_IconButton.IconButton, {
         iconID: "close",
         text: "Cancel",
         onPress: () => onClose(),
       }),
-      /*#__PURE__*/ React.createElement(
+      /* #__PURE__ */ React.createElement(
         _reactNative.Text,
         {
           style: styles.prompt,
         },
         "Rotate",
       ),
-      /*#__PURE__*/ React.createElement(_IconButton.IconButton, {
+      /* #__PURE__ */ React.createElement(_IconButton.IconButton, {
         iconID: "check",
         text: "Done",
         onPress: () => setEditingMode("operation-select"),
@@ -195,4 +195,4 @@ const styles = _reactNative.StyleSheet.create({
     paddingHorizontal: "2%",
   },
 })
-//# sourceMappingURL=Rotate.js.map
+// # sourceMappingURL=Rotate.js.map

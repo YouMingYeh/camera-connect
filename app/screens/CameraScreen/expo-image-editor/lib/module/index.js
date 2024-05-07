@@ -11,7 +11,7 @@ import { UniversalModal } from "./UniversalModal"
 
 const noScroll = require("no-scroll")
 
-export const EditorContext = /*#__PURE__*/ React.createContext({
+export const EditorContext = /* #__PURE__ */ React.createContext({
   throttleBlur: true,
   minimumCropDimensions: {
     width: 0,
@@ -52,10 +52,10 @@ function ImageEditorCore(props) {
         } // Platform check
 
         if (Platform.OS === "web") {
-          let img = document.createElement("img")
+          const img = document.createElement("img")
 
           img.onload = () => {
-            var _props$imageUri
+            let _props$imageUri
 
             setImageData({
               uri:
@@ -103,7 +103,7 @@ function ImageEditorCore(props) {
       setEditingMode("crop")
     }
   }, [props.visible])
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     EditorContext.Provider,
     {
       value: {
@@ -118,19 +118,19 @@ function ImageEditorCore(props) {
         onEditingComplete: props.onEditingComplete,
       },
     },
-    /*#__PURE__*/ React.createElement(StatusBar, {
+    /* #__PURE__ */ React.createElement(StatusBar, {
       hidden: props.visible,
     }),
     props.asView
-      ? /*#__PURE__*/ React.createElement(ImageEditorView, props)
-      : /*#__PURE__*/ React.createElement(
+      ? /* #__PURE__ */ React.createElement(ImageEditorView, props)
+      : /* #__PURE__ */ React.createElement(
           UniversalModal,
           {
             visible: props.visible,
             presentationStyle: "fullScreen",
             statusBarTranslucent: true,
           },
-          /*#__PURE__*/ React.createElement(ImageEditorView, props),
+          /* #__PURE__ */ React.createElement(ImageEditorView, props),
         ),
   )
 }
@@ -140,35 +140,35 @@ export function ImageEditorView(props) {
   const { mode = "full" } = props
   const [ready, setReady] = useRecoilState(readyState)
   const [processing, setProcessing] = useRecoilState(processingState)
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     React.Fragment,
     null,
     ready
-      ? /*#__PURE__*/ React.createElement(
+      ? /* #__PURE__ */ React.createElement(
           View,
           {
             style: styles.container,
           },
-          /*#__PURE__*/ React.createElement(ControlBar, null),
-          /*#__PURE__*/ React.createElement(EditingWindow, null),
-          mode === "full" && /*#__PURE__*/ React.createElement(OperationBar, null),
+          /* #__PURE__ */ React.createElement(ControlBar, null),
+          /* #__PURE__ */ React.createElement(EditingWindow, null),
+          mode === "full" && /* #__PURE__ */ React.createElement(OperationBar, null),
         )
       : null,
-    processing ? /*#__PURE__*/ React.createElement(Processing, null) : null,
+    processing ? /* #__PURE__ */ React.createElement(Processing, null) : null,
   )
 }
 export function ImageEditor(props) {
   //
-  return /*#__PURE__*/ React.createElement(
+  return /* #__PURE__ */ React.createElement(
     RecoilRoot,
     null,
-    /*#__PURE__*/ React.createElement(ImageEditorCore, props),
+    /* #__PURE__ */ React.createElement(ImageEditorCore, props),
   )
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#222",
+    flex: 1,
   },
 })
-//# sourceMappingURL=index.js.map
+// # sourceMappingURL=index.js.map

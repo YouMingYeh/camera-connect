@@ -15,7 +15,7 @@ exports.readyState =
   exports.accumulatedPanState =
     void 0
 
-var _recoil = require("recoil")
+const _recoil = require("recoil")
 
 const imageDataState = (0, _recoil.atom)({
   key: "imageDataState",
@@ -82,4 +82,4 @@ const glProgramState = (0, _recoil.atom)({
   default: null,
 })
 exports.glProgramState = glProgramState
-//# sourceMappingURL=Store.js.map
+// # sourceMappingURL=Store.js.map

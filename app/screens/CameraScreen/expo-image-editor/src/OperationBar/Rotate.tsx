@@ -82,10 +82,10 @@ export function Rotate() {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: "center",
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
   },
   prompt: {
     color: "black",
@@ -93,11 +93,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   row: {
-    width: "100%",
-    height: 80,
-    flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    flexDirection: "row",
+    height: 80,
+    justifyContent: "space-between",
     paddingHorizontal: "2%",
+    width: "100%",
   },
 })
