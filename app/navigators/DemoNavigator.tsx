@@ -10,11 +10,12 @@ import {
   DemoShowroomScreen,
   // DemoDebugScreen,
   CameraScreen,
-  AlbumScreen,
+  AlbumFeedScreen,
   ExploreScreen,
   NotificationsScreen,
   // SettingsScreen,
   ProfileScreen,
+  DemoDebugScreen,
 } from "../screens"
 // import { DemoPodcastListScreen } from "../screens/DemoPodcastListScreen"
 import { colors, spacing, typography } from "../theme"
@@ -26,7 +27,7 @@ export type DemoTabParamList = {
   DemoDebug: undefined
   DemoPodcastList: undefined
   Camera: undefined
-  Album: undefined
+  AlbumFeed: undefined
   Explore: undefined
   Notifications: undefined
   Settings: undefined
@@ -79,8 +80,8 @@ export function DemoNavigator() {
       />
 
       <Tab.Screen
-        name="Album"
-        component={AlbumScreen}
+        name="AlbumFeed"
+        component={AlbumFeedScreen}
         options={{
           tabBarLabel: translate("demoNavigator.albumTab"),
           tabBarIcon: ({ focused }) => (
@@ -163,9 +164,9 @@ export function DemoNavigator() {
             <Icon icon="podcast" color={focused ? colors.tint : undefined} size={30} />
           ),
         }}
-      />
+      /> */}
 
-      <Tab.Screen
+      {/* <Tab.Screen
         name="DemoDebug"
         component={DemoDebugScreen}
         options={{
