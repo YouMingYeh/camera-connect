@@ -1,13 +1,4 @@
-import {
-  View,
-  TextInput,
-  Pressable,
-  Image,
-  StyleSheet,
-  Text,
-  Alert,
-  TouchableOpacity,
-} from "react-native"
+import { View, TextInput, Pressable, Image, StyleSheet, Text, Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import { userStore } from "../../stores/userStore"
 import { v4 as uuidv4 } from "uuid"
@@ -116,7 +107,7 @@ const ProfileSettingsContent = () => {
 
   return (
     <View>
-      <TouchableOpacity style={styles.expandButton} onPress={handlePress}>
+      <Pressable style={styles.expandButton} onPress={handlePress}>
         <Text style={styles.expandButtonText}>Profile Settings</Text>
         <Feather
           style={styles.expandButtonIcon}
@@ -124,7 +115,7 @@ const ProfileSettingsContent = () => {
           size={24}
           color="white"
         />
-      </TouchableOpacity>
+      </Pressable>
       {expanded && (
         <View style={styles.container}>
           <TextInput
