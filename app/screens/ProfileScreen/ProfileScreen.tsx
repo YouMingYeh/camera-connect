@@ -34,7 +34,6 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
   } = useStores()
   const { userInfo } = userStore
   const [userID, setUserID] = useState("")
-
   async function signout() {
     const { error } = await supabase.auth.signOut()
     if (error) return
@@ -71,7 +70,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
   }, [userID])
 
   return (
-    <Screen preset="fixed">
+    <Screen preset="scroll">
       <ScrollView contentContainerStyle={styles.contentContainerStyle} >
         <View style={styles.avatarContainer}>
           <Image
@@ -102,6 +101,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingVertical: 32,
+	
   },
   avatarContainer: {
     marginTop: 32,
