@@ -73,7 +73,7 @@ const Friends = () => {
 	return (
 	<View>
 	<Pressable style={styles.expandButton} onPress={handlePress}>
-		<Text style={styles.expandButtonText}>Search Friends</Text>
+		<Text style={styles.expandButtonText}>Friends</Text>
 		<Feather
 		style={styles.expandButtonIcon}
 		name={expanded ? "chevron-up" : "chevron-down"}
@@ -106,32 +106,31 @@ const Friends = () => {
 
 const styles = StyleSheet.create({
 	container: {
-	alignItems: 'center',
-	width: '100%',
-	},
+		alignItems: "center",
+		justifyContent: "center",
+	  },
 	input: {
-	height: 40,
-	marginVertical: 12,
-	borderWidth: 1,
-	borderColor: '#ccc',
-	padding: 10,
-	width: '80%',
-	backgroundColor: 'white',
-	},
-	button: {
-	alignItems: 'center',
-	justifyContent: 'center',
-	paddingVertical: 12,
-	paddingHorizontal: 32,
-	borderRadius: 4,
-	elevation: 3,
-	backgroundColor: 'black',
-	marginTop: 10,
-	},
-	buttonText: {
-	color: 'white',
-	fontSize: 16,
-	},
+		height: 40,
+		margin: 12,
+		borderWidth: 1,
+		padding: 10,
+		width: "80%",
+		backgroundColor: "white",
+	  },
+	  button: {
+		alignItems: "center",
+		justifyContent: "center",
+		paddingVertical: 12,
+		paddingHorizontal: 32,
+		borderRadius: 4,
+		elevation: 3,
+		backgroundColor: "black",
+		marginTop: 10,
+	  },
+	  buttonText: {
+		color: "white",
+		fontSize: 16,
+	  },
 	expandButton: {
 	position: "relative",
 	alignItems: "center",
