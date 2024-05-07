@@ -23,7 +23,7 @@ export const get_userid = async (safecheck = true) => {
     if (data.length == 0) {
       const { error } = await supabase
         .from("user")
-        .insert({ id: user.id, username: user.email || "Unnamed User" })
+        .insert({ id: user.id, username: user.email, email: user.email || "Unnamed User" })
       if (error) {
         throw Error("Failed to insert user column")
       }

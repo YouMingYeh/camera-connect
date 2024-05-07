@@ -4,7 +4,7 @@ import { AppStackScreenProps } from "app/navigators"
 import { Screen } from "app/components"
 import { ExpandableSection } from "./ExpandableSection"
 import ProfileSettings from "./ProfileSettings"
-import FriendsContent from "./FriendsContent"
+import Friends from "./Friends"
 import AlbumsContent from "./AlbumsContent"
 import React, { FC, useEffect, useState } from "react"
 import { supabase, get_userid } from "../../utils/supabase"
@@ -81,10 +81,8 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
         <Text style={styles.name}>{userInfo.username || "Username"}</Text>
 
         <ProfileSettings />
-
-        <ExpandableSection title="Friends">
-          <FriendsContent />
-        </ExpandableSection>
+		<Friends />
+       
         <ExpandableSection title="Albums">
           <AlbumsContent />
         </ExpandableSection>
