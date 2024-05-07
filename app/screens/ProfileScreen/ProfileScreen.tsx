@@ -10,9 +10,9 @@ import React, { FC, useEffect, useState } from "react"
 import { supabase, get_userid } from "../../utils/supabase"
 import { useStores } from "../../models"
 import { userStore } from "../../stores/userStore"
-interface ProfileScreenProps extends AppStackScreenProps<"Profile"> {}
 
 import type { SupabaseClient } from "@supabase/supabase-js"
+interface ProfileScreenProps extends AppStackScreenProps<"Profile"> {}
 async function readUserInfo(supabaseClient: SupabaseClient, userId: string) {
   const { data, error } = await supabaseClient
     .from("user")
