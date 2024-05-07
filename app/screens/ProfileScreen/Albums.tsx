@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { View, TextInput, StyleSheet, Pressable, Text, Image, FlatList } from "react-native"
+import { View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native"
 import { Feather } from "@expo/vector-icons"
 import { supabase, get_userid } from "../../utils/supabase"
 
@@ -58,16 +58,6 @@ const Albums = () => {
     }
   }
 
-  const renderItem = ({ item }: { item: Album }) => (
-    <View style={styles.albumRow}>
-      <Image
-        source={{ uri: item.cover_url || "default_album_placeholder.png" }}
-        style={styles.albumCover}
-      />
-      <Text style={styles.albumName}>{item.album_name}</Text>
-    </View>
-  )
-
   return (
     <View>
       <Pressable style={styles.expandButton} onPress={handlePress}>
@@ -91,7 +81,15 @@ const Albums = () => {
           <Pressable style={styles.button} onPress={handleSearch}>
             <Text style={styles.buttonText}>Search</Text>
           </Pressable>
-          <FlatList data={albums} renderItem={renderItem} keyExtractor={(item) => item.id} />
+          {albums.map((item) => (
+            <View style={styles.albumRow}>
+              <Image
+                source={{ uri: item.cover_url || "default_album_placeholder.png" }}
+                style={styles.albumCover}
+              />
+              <Text style={styles.albumName}>{item.album_name}</Text>
+            </View>
+          ))}
         </View>
       )}
     </View>
@@ -99,6 +97,10 @@ const Albums = () => {
 }
 
 const styles = StyleSheet.create({
+  scrollContentContainer: {
+    alignItems: "center",
+    paddingBottom: 20,
+  },
   albumCover: {
     borderRadius: 25,
     height: 50,
@@ -145,6 +147,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     position: "relative",
     width: 300,
+    alignSelf: "center",
   },
   expandButtonIcon: {
     position: "absolute",

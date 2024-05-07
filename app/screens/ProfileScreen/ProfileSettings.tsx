@@ -1,12 +1,4 @@
-import {
-  View,
-  TextInput,
-  Pressable,
-  Image,
-  StyleSheet,
-  Text,
-  Alert,
-} from "react-native"
+import { View, TextInput, Pressable, Image, StyleSheet, Text, Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
 import { userStore } from "../../stores/userStore"
 import { v4 as uuidv4 } from "uuid"

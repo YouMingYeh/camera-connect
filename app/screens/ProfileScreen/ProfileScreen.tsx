@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { View, Image, Text, ScrollView, StyleSheet, Pressable } from "react-native"
+import { View, Image, Text, StyleSheet, Pressable } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Screen } from "app/components"
 import ProfileSettings from "./ProfileSettings"
