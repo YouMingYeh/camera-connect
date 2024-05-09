@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native"
 import { Feather } from "@expo/vector-icons"
 import { supabase, get_userid } from "../../utils/supabase"
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from "react-native-qrcode-svg"
 interface User {
   id: string
   username: string
@@ -10,7 +10,7 @@ interface User {
   email: string
   isFriend: boolean
 }
-export const checkFriendshipStatus = async (userID:string, userIDToCheck: string) => {
+export const checkFriendshipStatus = async (userID: string, userIDToCheck: string) => {
   try {
     const { data, error } = await supabase
       .from("friends_with")
@@ -42,7 +42,6 @@ const Friends = () => {
     }
     setExpanded(!expanded)
   }
-  
 
   const handleSearch = async () => {
     try {
@@ -143,8 +142,8 @@ const Friends = () => {
           {userID && (
             <View style={styles.qrCodeContainer}>
               <QRCode
-                value={JSON.stringify({ type: 'friendRequest', data: userID })} 
-                size={200} 
+                value={JSON.stringify({ type: "friendRequest", data: userID })}
+                size={200}
                 color="black"
                 backgroundColor="white"
               />
@@ -267,14 +266,14 @@ const styles = StyleSheet.create({
   qrCodeContainer: {
     marginTop: 20,
     marginBottom: 20,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   qrCodeText: {
     marginTop: 10,
     fontSize: 16,
-    color: 'black',
-  }
+    color: "black",
+  },
 })
 
 export default Friends
