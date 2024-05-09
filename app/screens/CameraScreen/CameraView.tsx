@@ -1,17 +1,21 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
 import { StatusBar } from "expo-status-bar"
+import { Camera, FlashMode, CameraType, CameraCapturedPicture, BarCodeScanningResult } from 'expo-camera/legacy';
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Image, Linking } from "react-native"
-import { Camera, FlashMode, CameraType, CameraCapturedPicture, BarCodeScanningResult } from "expo-camera"
 import CameraPreview from "./CameraPreview"
 import { ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
 import { ResizeMode, Video } from "expo-av"
 import * as ImageManinpulator from "expo-image-manipulator"
-
+import { supabase, get_userid } from "../../utils/supabase"
+import { checkFriendshipStatus } from "../../screens/ProfileScreen/Friends"
 let camera: Camera
-
+interface BarCodeEvent {
+  type: string;
+  data: string;
+}
 export default function App() {
   const [startCamera, setStartCamera] = React.useState(false)
   const [previewVisible, setPreviewVisible] = React.useState(false)
@@ -19,9 +23,10 @@ export default function App() {
   const [cameraType, setCameraType] = React.useState(CameraType.back)
   const [flashMode, setFlashMode] = React.useState(FlashMode.off)
   const [recording, setRecording] = React.useState(false)
-
+  const [userID, setUserID] = useState("")
   const [recordingMode, setRecordingMode] = React.useState(false)
   const [qrcode, setQRCode] = React.useState<string>("")
+  const [isProcessingScan, setIsProcessingScan] = useState(false);
 
   const __startCamera = async () => {
     const cameraStatus = await Camera.requestCameraPermissionsAsync()
@@ -122,11 +127,66 @@ export default function App() {
     setPreviewVisible(true)
   }
 
-  const __handleQRCodeScanned = (scanningResult: BarCodeScanningResult) => {
-    if (qrcode !== "") return;
-    setQRCode(scanningResult.data)
-  }
+  const handleBarCodeScanned = async ({ type, data }: BarCodeEvent) => {
+    if (isProcessingScan) return;  
+    setIsProcessingScan(true);     
+  
+    try {
+      const scannedUserID = data;
+  
+      const isAlreadyFriend = await checkFriendshipStatus(userID, scannedUserID);
+      if (isAlreadyFriend) {
+        Alert.alert("Friendship Status", "You are already friends!");
+      } else {
+        Alert.alert(
+          "Add Friend",
+          "Do you want to add this user as a friend?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel"
+            },
+            {
+              text: "Add",
+              onPress: () => addFriend(scannedUserID)
+            }
+          ]
+        );
+      }
+    } catch (error) {
+      console.error("Scanning error:", error);
+      Alert.alert("Error", "Failed to process QR code");
+    }
+    setTimeout(() => {
+      setIsProcessingScan(false);
+    }, 3000); 
+  };
+  
+  const addFriend = async (scannedUserID: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("friends_with")
+        .insert([{ sender_id: userID, receiver_id: scannedUserID }]);
+  
+      if (error) throw new Error(error.message);
+  
+      console.log("Friend added:", data);
+      Alert.alert("Success", "Friend added successfully!");
+    } catch (err) {
+      console.error("Failed to add friend:", err);
+      Alert.alert("Error", "Failed to add friend");
+    }
+  };
+  useEffect(() => {
+    const fetchAndSetUserID = async () => {
+      const fetchedUserID = await get_userid()
+      if (fetchedUserID && fetchedUserID !== "") {
+        setUserID(fetchedUserID)
+      }
+    }
 
+    fetchAndSetUserID()
+  }, [])
   useEffect(() => {
     if (qrcode !== "" && qrcode) {
       Alert.alert(
@@ -194,7 +254,7 @@ export default function App() {
               }}
               useCamera2Api={true}
               autoFocus={customAutoFocus}
-              onBarCodeScanned={__handleQRCodeScanned}
+              onBarCodeScanned={handleBarCodeScanned}
             >
               <View
                 style={{

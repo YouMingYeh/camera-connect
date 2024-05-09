@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native"
 import { Feather } from "@expo/vector-icons"
 import { supabase, get_userid } from "../../utils/supabase"
+import QRCode from 'react-native-qrcode-svg';
 interface User {
   id: string
   username: string
@@ -9,11 +10,30 @@ interface User {
   email: string
   isFriend: boolean
 }
+export const checkFriendshipStatus = async (userID:string, userIDToCheck: string) => {
+  try {
+    const { data, error } = await supabase
+      .from("friends_with")
+      .select("receiver_id, sender_id")
+      .or(
+        `and(sender_id.eq.${userID},receiver_id.eq.${userIDToCheck}),and(receiver_id.eq.${userID},sender_id.eq.${userIDToCheck})`,
+      )
+
+    if (error) {
+      console.error("Failed to fetch friendship status:", error.message)
+      return false
+    }
+    return data.length > 0
+  } catch (err) {
+    console.error("An error occurred while fetching friendship status:", err)
+    return false
+  }
+}
 const Friends = () => {
   const [expanded, setExpanded] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState<User[]>([])
-  const [userId, setUserId] = useState("")
+  const [userID, setUserId] = useState("")
 
   const handlePress = () => {
     if (expanded) {
@@ -22,32 +42,14 @@ const Friends = () => {
     }
     setExpanded(!expanded)
   }
-  const checkFriendshipStatus = async (userIdToCheck: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("friends_with")
-        .select("receiver_id, sender_id")
-        .or(
-          `and(sender_id.eq.${userId},receiver_id.eq.${userIdToCheck}),and(receiver_id.eq.${userId},sender_id.eq.${userIdToCheck})`,
-        )
-
-      if (error) {
-        console.error("Failed to fetch friendship status:", error.message)
-        return false
-      }
-      return data.length > 0
-    } catch (err) {
-      console.error("An error occurred while fetching friendship status:", err)
-      return false
-    }
-  }
+  
 
   const handleSearch = async () => {
     try {
       const { data, error } = await supabase
         .from("user")
         .select("id, username, avatar_url, email")
-        .neq("id", userId)
+        .neq("id", userID)
         .or(`email.ilike.%${searchQuery}%,username.ilike.%${searchQuery}%`)
 
       if (error) {
@@ -57,7 +59,7 @@ const Friends = () => {
 
       const enrichedData = await Promise.all(
         data.map(async (user) => {
-          const isFriend = await checkFriendshipStatus(user.id)
+          const isFriend = await checkFriendshipStatus(userID, user.id)
           return {
             ...user,
             isFriend: isFriend,
@@ -78,7 +80,7 @@ const Friends = () => {
           .from("friends_with")
           .delete()
           .or(
-            `and(sender_id.eq.${userId},receiver_id.eq.${receiverId}),and(receiver_id.eq.${userId},sender_id.eq.${receiverId})`,
+            `and(sender_id.eq.${userID},receiver_id.eq.${receiverId}),and(receiver_id.eq.${userID},sender_id.eq.${receiverId})`,
           )
         if (error) {
           console.error("Failed to delete friend:", error.message)
@@ -97,7 +99,7 @@ const Friends = () => {
       try {
         const { error } = await supabase
           .from("friends_with")
-          .insert([{ sender_id: userId, receiver_id: receiverId }])
+          .insert([{ sender_id: userID, receiver_id: receiverId }])
 
         if (error) {
           console.error("Failed to add friend:", error.message)
@@ -138,6 +140,17 @@ const Friends = () => {
       </Pressable>
       {expanded && (
         <View style={styles.container}>
+          {userID && (
+            <View style={styles.qrCodeContainer}>
+              <QRCode
+                value={JSON.stringify({ type: 'friendRequest', data: userID })} 
+                size={200} 
+                color="black"
+                backgroundColor="white"
+              />
+              <Text style={styles.qrCodeText}>Scan to add me as a friend!</Text>
+            </View>
+          )}
           <TextInput
             style={styles.input}
             onChangeText={setSearchQuery}
@@ -251,6 +264,17 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
   },
+  qrCodeContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  qrCodeText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: 'black',
+  }
 })
 
 export default Friends
