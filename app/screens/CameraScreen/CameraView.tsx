@@ -2,8 +2,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import { StatusBar } from "expo-status-bar"
 import React, { useEffect, useState } from "react"
-import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from "react-native"
-import { Camera, FlashMode, CameraType, CameraCapturedPicture } from "expo-camera"
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Image, Linking } from "react-native"
+import { Camera, FlashMode, CameraType, CameraCapturedPicture, BarCodeScanningResult } from "expo-camera"
 import CameraPreview from "./CameraPreview"
 import { ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
@@ -21,6 +21,7 @@ export default function App() {
   const [recording, setRecording] = React.useState(false)
 
   const [recordingMode, setRecordingMode] = React.useState(false)
+  const [qrcode, setQRCode] = React.useState<string>("")
 
   const __startCamera = async () => {
     const cameraStatus = await Camera.requestCameraPermissionsAsync()
@@ -93,7 +94,7 @@ export default function App() {
 
   const __savePhoto = () => {
     if (!capturedMedia) {
-      return
+      // return
     }
   }
   const __retakePicture = () => {
@@ -121,6 +122,35 @@ export default function App() {
     setPreviewVisible(true)
   }
 
+  const __handleQRCodeScanned = (scanningResult: BarCodeScanningResult) => {
+    if (qrcode !== "") return;
+    setQRCode(scanningResult.data)
+  }
+
+  useEffect(() => {
+    if (qrcode !== "" && qrcode) {
+      Alert.alert(
+        "Open Link",
+        qrcode,
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+          },
+          {
+            text: "Open",
+            onPress: () => Linking.openURL(qrcode),
+          },
+        ],
+        { cancelable: false },
+      )
+      setTimeout(() => {
+        setQRCode("")
+      }, 5000)
+    }
+  }, [qrcode])
+
+  
   useEffect(() => {
     __startCamera()
   }, [])
@@ -164,6 +194,7 @@ export default function App() {
               }}
               useCamera2Api={true}
               autoFocus={customAutoFocus}
+              onBarCodeScanned={__handleQRCodeScanned}
             >
               <View
                 style={{
