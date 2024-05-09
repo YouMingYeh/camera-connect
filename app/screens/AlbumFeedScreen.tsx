@@ -1,4 +1,4 @@
-import React, { FC } from "react"
+import React, { FC, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import {
   View,
@@ -14,6 +14,8 @@ import { Screen, Text } from "app/components"
 import Carousel from "react-native-reanimated-carousel"
 import { DemoDivider } from "./DemoShowroomScreen/DemoDivider"
 import { DemoUseCase } from "./DemoShowroomScreen/DemoUseCase"
+import { useStores } from "app/models"
+import { supabase, getUserId } from "../utils/supabase"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -22,10 +24,10 @@ import { DemoUseCase } from "./DemoShowroomScreen/DemoUseCase"
 interface AlbumFeedScreenProps extends AppStackScreenProps<"AlbumFeed"> {}
 
 type Data = {
-  id: number
+  id: string
   title: string
-  description: string
-  image: string
+  description: string | null
+  image: string | null
 }
 
 export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function AlbumScreen(_props) {
@@ -36,6 +38,21 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
   // const navigation = useNavigation()
 
   const { navigation } = _props
+  const { joinAlbumStore } = useStores()
+  const [userID, setUserID] = React.useState("")
+
+  useEffect(() => {
+    getUserId().then((id: string) => {
+      setUserID(id)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (userID === "") return
+    joinAlbumStore.fetchJoinAlbums(supabase, userID).then(() => {
+      console.log(JSON.stringify(joinAlbumStore.joinAlbumsForList))
+    })
+  }, [userID])
 
   function goNext(albumId: string) {
     navigation.navigate("Album", { albumId: albumId })
@@ -44,39 +61,46 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
   const [currentIndex, setCurrentIndex] = React.useState(0)
 
   const width = Dimensions.get("window").width
-
-  const data: Data[] = [
-    {
-      id: 1,
-      title: "Title 1",
-      description: "Description 1",
-      image: "https://picsum.photos/200/300",
-    },
-    {
-      id: 2,
-      title: "Title 2",
-      description: "Description 2",
-      image: "https://picsum.photos/200/300",
-    },
-    {
-      id: 3,
-      title: "Title 3",
-      description: "Description 3",
-      image: "https://picsum.photos/200/300",
-    },
-    {
-      id: 4,
-      title: "Title 4",
-      description: "Description 4",
-      image: "https://picsum.photos/200/300",
-    },
-    {
-      id: 5,
-      title: "Title 5",
-      description: "Description 5",
-      image: "https://picsum.photos/200/300",
-    },
-  ]
+  const data: Data[] = joinAlbumStore.joinAlbumsForList.map((joinAlbum) => {
+    return {
+      id: joinAlbum.album.id,
+      title: joinAlbum.album.album_name,
+      description: joinAlbum.album.description,
+      image: joinAlbum.album.cover_url,
+    }
+  })
+  // const data: Data[] = [
+  //   {
+  //     id: 1,
+  //     title: "Title 1",
+  //     description: "Description 1",
+  //     image: "https://picsum.photos/200/300",
+  //   },
+  //   {
+  //     id: 2,
+  //     title: "Title 2",
+  //     description: "Description 2",
+  //     image: "https://picsum.photos/200/300",
+  //   },
+  //   {
+  //     id: 3,
+  //     title: "Title 3",
+  //     description: "Description 3",
+  //     image: "https://picsum.photos/200/300",
+  //   },
+  //   {
+  //     id: 4,
+  //     title: "Title 4",
+  //     description: "Description 4",
+  //     image: "https://picsum.photos/200/300",
+  //   },
+  //   {
+  //     id: 5,
+  //     title: "Title 5",
+  //     description: "Description 5",
+  //     image: "https://picsum.photos/200/300",
+  //   },
+  // ]
 
   return (
     <Screen style={$root} preset="scroll">
@@ -97,7 +121,10 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
           onSnapToItem={setCurrentIndex}
           renderItem={({ item }) => (
             <View style={$item}>
-              <Image source={{ uri: item.image }} style={$image} />
+              <Image
+                source={{ uri: item.image ? item.image : "https://picsum.photos/200/300" }}
+                style={$image}
+              />
               {/* <Text style={$text}>{item.title}</Text> */}
             </View>
           )}
@@ -126,7 +153,10 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
             <View style={$item}>
               {/* <Text style={$text}>{item.title}</Text> */}
               <TouchableOpacity onPress={() => goNext(item.id.toString())}>
-                <Image source={{ uri: item.image }} style={$image} />
+                <Image
+                  source={{ uri: item.image ? item.image : "https://picsum.photos/200/300" }}
+                  style={$image}
+                />
               </TouchableOpacity>
             </View>
           )}

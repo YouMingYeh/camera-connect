@@ -6,7 +6,7 @@ import ProfileSettings from "./ProfileSettings"
 import Friends from "./Friends"
 import Albums from "./Albums"
 import React, { FC, useEffect, useState } from "react"
-import { supabase, get_userid } from "../../utils/supabase"
+import { supabase, getUserId } from "../../utils/supabase"
 import { useStores } from "../../models"
 import { userStore } from "../../stores/userStore"
 
@@ -40,7 +40,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
   }
   useEffect(() => {
     const fetchAndSetUserID = async () => {
-      const fetchedUserID = await get_userid()
+      const fetchedUserID = await getUserId()
       if (fetchedUserID && fetchedUserID !== "") {
         setUserID(fetchedUserID)
       }

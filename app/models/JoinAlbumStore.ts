@@ -6,9 +6,20 @@ import { SupabaseClient } from "@supabase/supabase-js"
 async function readJoinAlbums(supabaseClient: SupabaseClient, userId: string) {
   const { data, error } = await supabaseClient
   .from("join_album")
-  .select()
-  .eq("id", userId)
-  .select()
+  .select(`
+  user_id,
+  album (
+    id,
+    created_at,
+    description,
+    cover_url,
+    album_name
+  ),
+  created_at
+`)
+  .eq("user_id", userId)
+
+
 
   if (error) {
     console.error("Failed to fetch join_album:", error.message)
@@ -24,7 +35,10 @@ export const JoinAlbumStoreModel = types
     joinAlbums: types.array(JoinAlbumModel),
   })
   .actions(withSetPropAction)
-  .views(() => ({
+  .views((store) => ({
+    get joinAlbumsForList(): JoinAlbum[] { // Add return type annotation
+      return store.joinAlbums
+    }
     
   }))
   .actions((store) => ({
@@ -33,7 +47,7 @@ export const JoinAlbumStoreModel = types
       if (joinAlbums) {
         store.setProp("joinAlbums", joinAlbums)
       } else {
-        console.error(`Error fetching episodes: ${JSON.stringify(joinAlbums)}`)
+        console.error(`Error fetching joinAlbums: ${JSON.stringify(joinAlbums)}`)
       }
     },
     addJoinAlbum(joinAlbum: JoinAlbum) {

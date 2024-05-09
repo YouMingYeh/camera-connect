@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native"
 import { Feather } from "@expo/vector-icons"
-import { supabase, get_userid } from "../../utils/supabase"
+import { supabase, getUserId } from "../../utils/supabase"
 
 interface Album {
   id: string
@@ -22,7 +22,7 @@ const Albums = () => {
   }
 
   const handleSearch = async () => {
-    const userId = await get_userid()
+    const userId = await getUserId()
     if (!userId) {
       console.error("User ID not found")
       return
