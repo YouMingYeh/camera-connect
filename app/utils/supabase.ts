@@ -7,7 +7,7 @@ const project_public_key =
 
 export const supabase = createClient(project_url, project_public_key)
 
-export const get_userid = async (safecheck = true) => {
+export const getUserId = async (safecheck = true) => {
   const {
     data: { user },
   } = await supabase.auth.getUser()

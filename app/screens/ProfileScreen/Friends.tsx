@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native"
 import { Feather } from "@expo/vector-icons"
-import { supabase, get_userid } from "../../utils/supabase"
+import { supabase, getUserId } from "../../utils/supabase"
 import QRCode from "react-native-qrcode-svg"
 interface User {
   id: string
@@ -118,7 +118,7 @@ const Friends = () => {
   }
   useEffect(() => {
     const fetchAndSetUserID = async () => {
-      const fetchedUserID = await get_userid()
+      const fetchedUserID = await getUserId()
       if (fetchedUserID && fetchedUserID !== "") {
         setUserId(fetchedUserID)
       }

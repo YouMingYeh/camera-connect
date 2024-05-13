@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { View, TextInput, StyleSheet, Pressable, Text, Image, Platform } from "react-native"
 import { Feather } from "@expo/vector-icons"
-import { supabase, get_userid } from "../../utils/supabase"
+import { supabase, getUserId } from "../../utils/supabase"
 import QRCode from "react-native-qrcode-svg"
 import RNPickerSelect from "react-native-picker-select"
 interface Album {
@@ -25,7 +25,7 @@ const Albums = () => {
 
   useEffect(() => {
     const fetchAlbums = async () => {
-      const userId = await get_userid()
+      const userId = await getUserId()
       if (!userId) {
         console.error("User ID not found")
         return

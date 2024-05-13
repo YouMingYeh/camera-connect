@@ -7,7 +7,7 @@ import { Feather } from "@expo/vector-icons"
 import React, { useEffect, useState } from "react"
 import type { SupabaseClient } from "@supabase/supabase-js"
 
-import { supabase, get_userid } from "../../utils/supabase"
+import { supabase, getUserId } from "../../utils/supabase"
 type User = {
   username: string
   id: string
@@ -99,7 +99,7 @@ const ProfileSettingsContent = () => {
 
   useEffect(() => {
     ;(async () => {
-      setUserID(await get_userid())
+      setUserID(await getUserId())
     })()
   }, [])
 
