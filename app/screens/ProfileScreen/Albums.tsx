@@ -1,8 +1,9 @@
-import React, { useState } from "react"
-import { View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native"
+import React, { useState, useEffect } from "react"
+import { View, TextInput, StyleSheet, Pressable, Text, Image, Platform } from "react-native"
 import { Feather } from "@expo/vector-icons"
 import { supabase, get_userid } from "../../utils/supabase"
-
+import QRCode from "react-native-qrcode-svg"
+import RNPickerSelect from "react-native-picker-select"
 interface Album {
   id: string
   album_name: string
@@ -12,6 +13,7 @@ const Albums = () => {
   const [expanded, setExpanded] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [albums, setAlbums] = useState<Album[]>([])
+  const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null)
 
   const handlePress = () => {
     if (expanded) {
@@ -21,42 +23,44 @@ const Albums = () => {
     setExpanded(!expanded)
   }
 
-  const handleSearch = async () => {
-    const userId = await get_userid()
-    if (!userId) {
-      console.error("User ID not found")
-      return
-    }
-
-    try {
-      const { data: joinData, error: joinError } = await supabase
-        .from("join_album")
-        .select("album_id")
-        .eq("user_id", userId)
-
-      if (joinError) {
-        console.error("Error fetching album IDs:", joinError.message)
+  useEffect(() => {
+    const fetchAlbums = async () => {
+      const userId = await get_userid()
+      if (!userId) {
+        console.error("User ID not found")
         return
       }
 
-      const albumIds = joinData.map((j) => j.album_id)
+      try {
+        const { data: joinData, error: joinError } = await supabase
+          .from("join_album")
+          .select("album_id")
+          .eq("user_id", userId)
 
-      const { data, error } = await supabase
-        .from("album")
-        .select("id, album_name, cover_url")
-        .in("id", albumIds)
-        .ilike("album_name", `%${searchQuery}%`)
+        if (joinError) {
+          console.error("Error fetching album IDs:", joinError.message)
+          return
+        }
 
-      if (error) {
-        console.error("Error fetching albums:", error.message)
-        return
+        const albumIds = joinData.map((j) => j.album_id)
+        const { data, error } = await supabase
+          .from("album")
+          .select("id, album_name, cover_url")
+          .in("id", albumIds)
+
+        if (error) {
+          console.error("Error fetching albums:", error.message)
+          return
+        }
+
+        setAlbums(data)
+      } catch (err) {
+        console.error("An error occurred while fetching albums:", err)
       }
-
-      setAlbums(data)
-    } catch (err) {
-      console.error("An error occurred while fetching albums:", err)
     }
-  }
+
+    fetchAlbums()
+  }, [])
 
   return (
     <View>
@@ -71,25 +75,41 @@ const Albums = () => {
       </Pressable>
       {expanded && (
         <View style={styles.container}>
-          <TextInput
-            style={styles.input}
-            onChangeText={setSearchQuery}
-            value={searchQuery}
-            placeholder="Enter email or name"
-            placeholderTextColor="#666"
+          <RNPickerSelect
+            onValueChange={(value) => {
+              if (value === "Select an album...") {
+                setSelectedAlbumId(null)
+              } else {
+                setSelectedAlbumId(value)
+              }
+            }}
+            items={albums.map((album) => ({
+              label: album.album_name,
+              value: album.id,
+              key: album.id,
+            }))}
+            style={{
+              ...pickerSelectStyles,
+              inputIOS: pickerSelectStyles.inputIOS,
+              inputAndroid: pickerSelectStyles.inputAndroid,
+              inputWeb: Platform.OS === "web" ? pickerSelectStyles.inputWeb : {},
+            }}
+            placeholder={{
+              label: "Select an album...",
+              value: null,
+            }}
           />
-          <Pressable style={styles.button} onPress={handleSearch}>
-            <Text style={styles.buttonText}>Search</Text>
-          </Pressable>
-          {albums.map((item) => (
-            <View style={styles.albumRow}>
-              <Image
-                source={{ uri: item.cover_url || "default_album_placeholder.png" }}
-                style={styles.albumCover}
+          {selectedAlbumId ? (
+            <View style={styles.qrCodeContainer}>
+              <QRCode
+                value={JSON.stringify({ type: "joinAlbum", data: selectedAlbumId })}
+                size={200}
+                color="black"
+                backgroundColor="white"
               />
-              <Text style={styles.albumName}>{item.album_name}</Text>
+              <Text style={styles.qrCodeText}>Scan to join this album</Text>
             </View>
-          ))}
+          ) : null}
         </View>
       )}
     </View>
@@ -97,6 +117,15 @@ const Albums = () => {
 }
 
 const styles = StyleSheet.create({
+  qrCodeContainer: {
+    marginTop: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  qrCodeText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
   scrollContentContainer: {
     alignItems: "center",
     paddingBottom: 20,
@@ -134,6 +163,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   container: {
+    paddingTop: 16,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -165,6 +195,40 @@ const styles = StyleSheet.create({
     padding: 10,
     width: "80%",
     backgroundColor: "white",
+  },
+})
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 4,
+    color: "black",
+    paddingRight: 30,
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: "purple",
+    borderRadius: 8,
+    color: "black",
+    paddingRight: 30,
+  },
+  inputWeb: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 4,
+    color: "black",
+    paddingRight: 30,
+    marginBottom: 5,
   },
 })
 

@@ -1,17 +1,26 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
 import { StatusBar } from "expo-status-bar"
+import {
+  Camera,
+  FlashMode,
+  CameraType,
+  CameraCapturedPicture,
+} from "expo-camera/legacy"
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Image, Linking } from "react-native"
-import { Camera, FlashMode, CameraType, CameraCapturedPicture, BarCodeScanningResult } from "expo-camera"
 import CameraPreview from "./CameraPreview"
 import { ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
 import { ResizeMode, Video } from "expo-av"
 import * as ImageManinpulator from "expo-image-manipulator"
-
+import { supabase, get_userid } from "../../utils/supabase"
+import { checkFriendshipStatus } from "../../screens/ProfileScreen/Friends"
 let camera: Camera
-
+interface BarCodeEvent {
+  type: string
+  data: string
+}
 export default function App() {
   const [startCamera, setStartCamera] = React.useState(false)
   const [previewVisible, setPreviewVisible] = React.useState(false)
@@ -19,9 +28,9 @@ export default function App() {
   const [cameraType, setCameraType] = React.useState(CameraType.back)
   const [flashMode, setFlashMode] = React.useState(FlashMode.off)
   const [recording, setRecording] = React.useState(false)
-
+  const [userID, setUserID] = useState("")
   const [recordingMode, setRecordingMode] = React.useState(false)
-  const [qrcode, setQRCode] = React.useState<string>("")
+  const [isProcessingScan, setIsProcessingScan] = useState(false)
 
   const __startCamera = async () => {
     const cameraStatus = await Camera.requestCameraPermissionsAsync()
@@ -122,35 +131,146 @@ export default function App() {
     setPreviewVisible(true)
   }
 
-  const __handleQRCodeScanned = (scanningResult: BarCodeScanningResult) => {
-    if (qrcode !== "") return;
-    setQRCode(scanningResult.data)
+  const __handleBarCodeScanned = async ({ type, data }: BarCodeEvent) => {
+    if (isProcessingScan) return
+    setIsProcessingScan(true)
+
+    try {
+      let payload
+      try {
+        payload = JSON.parse(data)
+        if (payload.type) {
+          switch (payload.type) {
+            case "friendRequest":
+              await __handleFriendRequest(payload.data)
+              break
+            case "joinAlbum":
+              await __joinAlbum(payload.data)
+              break
+            default:
+              __handleDefaultQRAction(data)
+              break
+          }
+        } else {
+          __handleDefaultQRAction(data)
+        }
+      } catch (jsonError) {
+        __handleDefaultQRAction(data)
+      }
+    } catch (error) {
+      console.error("Error processing QR code:", error)
+      Alert.alert("Error", "Failed to process QR code")
+    }
+
+    setTimeout(() => {
+      setIsProcessingScan(false)
+    }, 3000)
   }
 
-  useEffect(() => {
-    if (qrcode !== "" && qrcode) {
+  const __handleDefaultQRAction = (data: string) => {
+    if (/^https?:\/\//.test(data)) {
       Alert.alert(
         "Open Link",
-        qrcode,
+        "Do you want to open this link?",
         [
-          {
-            text: "Cancel",
-            style: "cancel",
-          },
-          {
-            text: "Open",
-            onPress: () => Linking.openURL(qrcode),
-          },
+          { text: "Cancel", style: "cancel" },
+          { text: "Open", onPress: () => Linking.openURL(data) },
         ],
         { cancelable: false },
       )
-      setTimeout(() => {
-        setQRCode("")
-      }, 5000)
+    } else {
+      Alert.alert("Unrecognized QR Code", "The scanned code is not recognized.")
     }
-  }, [qrcode])
+  }
 
-  
+  const __handleFriendRequest = async (userID: string) => {
+    const currentUserID = await get_userid()
+    if (!currentUserID) {
+      Alert.alert("Error", "User not logged in")
+      return
+    }
+
+    if (currentUserID === userID) {
+      Alert.alert("Error", "You cannot add yourself as a friend.")
+      return
+    }
+
+    const isAlreadyFriend = await checkFriendshipStatus(currentUserID, userID)
+    if (isAlreadyFriend) {
+      Alert.alert("Friendship Status", "You are already friends!")
+    } else {
+      Alert.alert("Add Friend", "Do you want to add this user as a friend?", [
+        { text: "Cancel", style: "cancel" },
+        { text: "Add", onPress: () => __addFriend(currentUserID) },
+      ])
+    }
+  }
+  const __addFriend = async (scannedUserID: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("friends_with")
+        .insert([{ sender_id: userID, receiver_id: scannedUserID }])
+
+      if (error) throw new Error(error.message)
+
+      console.log("Friend added:", data)
+      Alert.alert("Success", "Friend added successfully!")
+    } catch (err) {
+      console.error("Failed to add friend:", err)
+      Alert.alert("Error", "Failed to add friend")
+    }
+  }
+  const __joinAlbum = async (albumId: string) => {
+    const userID = await get_userid()
+    if (!userID) {
+      Alert.alert("Error", "User not logged in")
+      return
+    }
+
+    try {
+      const { data: existingEntries, error: existingError } = await supabase
+        .from("join_album")
+        .select("*")
+        .eq("user_id", userID)
+        .eq("album_id", albumId)
+
+      if (existingError) throw existingError
+
+      if (existingEntries.length > 0) {
+        Alert.alert("Album Membership", "You are already a member of this album.")
+        return
+      }
+    } catch (error) {
+      console.error("Error checking album membership:", error)
+      Alert.alert("Error", "Failed to check album membership")
+      return
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("join_album")
+        .insert([{ user_id: userID, album_id: albumId }])
+
+      if (error) throw new Error(error.message)
+
+      Alert.alert("Success", "You have joined the album successfully!")
+    } catch (err) {
+      console.error("Failed to join album:", err)
+      Alert.alert("Error", "Failed to join album")
+    }
+  }
+
+  useEffect(() => {
+    const fetchAndSetUserID = async () => {
+      const fetchedUserID = await get_userid()
+      if (fetchedUserID && fetchedUserID !== "") {
+        setUserID(fetchedUserID)
+      }
+    }
+
+    fetchAndSetUserID()
+  }, [])
+
   useEffect(() => {
     __startCamera()
   }, [])
@@ -194,7 +314,7 @@ export default function App() {
               }}
               useCamera2Api={true}
               autoFocus={customAutoFocus}
-              onBarCodeScanned={__handleQRCodeScanned}
+              onBarCodeScanned={__handleBarCodeScanned}
             >
               <View
                 style={{

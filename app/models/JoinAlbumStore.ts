@@ -4,18 +4,14 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 import { SupabaseClient } from "@supabase/supabase-js"
 
 async function readJoinAlbums(supabaseClient: SupabaseClient, userId: string) {
-  const { data, error } = await supabaseClient
-  .from("join_album")
-  .select()
-  .eq("id", userId)
-  .select()
+  const { data, error } = await supabaseClient.from("join_album").select().eq("id", userId).select()
 
   if (error) {
     console.error("Failed to fetch join_album:", error.message)
     return null
   }
 
-return data
+  return data
 }
 
 export const JoinAlbumStoreModel = types
@@ -24,9 +20,7 @@ export const JoinAlbumStoreModel = types
     joinAlbums: types.array(JoinAlbumModel),
   })
   .actions(withSetPropAction)
-  .views(() => ({
-    
-  }))
+  .views(() => ({}))
   .actions((store) => ({
     async fetchJoinAlbums(supabaseClient: SupabaseClient, userId: string) {
       const joinAlbums = await readJoinAlbums(supabaseClient, userId)
@@ -41,7 +35,7 @@ export const JoinAlbumStoreModel = types
     },
     removeJoinAlbum(joinAlbum: JoinAlbum) {
       store.joinAlbums.remove(joinAlbum)
-    }
+    },
   }))
 
 export interface AuthenticationStore extends Instance<typeof JoinAlbumStoreModel> {}
