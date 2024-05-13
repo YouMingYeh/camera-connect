@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { View, TextInput, StyleSheet, Pressable, Text, Image, Platform } from "react-native"
+import { View, StyleSheet, Pressable, Text, Platform } from "react-native"
 import { Feather } from "@expo/vector-icons"
 import { supabase, getUserId } from "../../utils/supabase"
 import QRCode from "react-native-qrcode-svg"
@@ -11,13 +11,12 @@ interface Album {
 }
 const Albums = () => {
   const [expanded, setExpanded] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
   const [albums, setAlbums] = useState<Album[]>([])
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null)
 
   const handlePress = () => {
     if (expanded) {
-      setSearchQuery("")
+      setSelectedAlbumId(null)
       setAlbums([])
     }
     setExpanded(!expanded)
