@@ -26,7 +26,7 @@ async function readJoinAlbums(supabaseClient: SupabaseClient, userId: string) {
     return null
   }
 
-return data
+  return data
 }
 
 export const JoinAlbumStoreModel = types
@@ -55,7 +55,7 @@ export const JoinAlbumStoreModel = types
     },
     removeJoinAlbum(joinAlbum: JoinAlbum) {
       store.joinAlbums.remove(joinAlbum)
-    }
+    },
   }))
 
 export interface AuthenticationStore extends Instance<typeof JoinAlbumStoreModel> {}

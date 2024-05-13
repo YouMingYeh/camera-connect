@@ -25,7 +25,7 @@ interface AlbumFeedScreenProps extends AppStackScreenProps<"AlbumFeed"> {}
 
 type Data = {
   id: string
-  title: string
+  title: string | null
   description: string | null
   image: string | null
 }
