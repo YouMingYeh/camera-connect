@@ -1,12 +1,7 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
 import { StatusBar } from "expo-status-bar"
-import {
-  Camera,
-  FlashMode,
-  CameraType,
-  CameraCapturedPicture,
-} from "expo-camera/legacy"
+import { Camera, FlashMode, CameraType, CameraCapturedPicture } from "expo-camera/legacy"
 import React, { useEffect, useState } from "react"
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Image, Linking } from "react-native"
 import CameraPreview from "./CameraPreview"
@@ -14,7 +9,7 @@ import { ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
 import { ResizeMode, Video } from "expo-av"
 import * as ImageManinpulator from "expo-image-manipulator"
-import { supabase, get_userid } from "../../utils/supabase"
+import { supabase, getUserId } from "../../utils/supabase"
 import { checkFriendshipStatus } from "../../screens/ProfileScreen/Friends"
 let camera: Camera
 interface BarCodeEvent {
@@ -183,25 +178,24 @@ export default function App() {
     }
   }
 
-  const __handleFriendRequest = async (userID: string) => {
-    const currentUserID = await get_userid()
-    if (!currentUserID) {
+  const __handleFriendRequest = async (scannedUserID: string) => {
+    if (!userID) {
       Alert.alert("Error", "User not logged in")
       return
     }
 
-    if (currentUserID === userID) {
+    if (userID === scannedUserID) {
       Alert.alert("Error", "You cannot add yourself as a friend.")
       return
     }
 
-    const isAlreadyFriend = await checkFriendshipStatus(currentUserID, userID)
+    const isAlreadyFriend = await checkFriendshipStatus(userID, scannedUserID)
     if (isAlreadyFriend) {
       Alert.alert("Friendship Status", "You are already friends!")
     } else {
       Alert.alert("Add Friend", "Do you want to add this user as a friend?", [
         { text: "Cancel", style: "cancel" },
-        { text: "Add", onPress: () => __addFriend(currentUserID) },
+        { text: "Add", onPress: () => __addFriend(scannedUserID) },
       ])
     }
   }
@@ -221,7 +215,6 @@ export default function App() {
     }
   }
   const __joinAlbum = async (albumId: string) => {
-    const userID = await get_userid()
     if (!userID) {
       Alert.alert("Error", "User not logged in")
       return
@@ -262,7 +255,7 @@ export default function App() {
 
   useEffect(() => {
     const fetchAndSetUserID = async () => {
-      const fetchedUserID = await get_userid()
+      const fetchedUserID = await getUserId()
       if (fetchedUserID && fetchedUserID !== "") {
         setUserID(fetchedUserID)
       }
