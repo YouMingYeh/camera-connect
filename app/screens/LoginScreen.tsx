@@ -48,13 +48,18 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         ? await supabase.auth.signUp({
           email: authEmail,
           password: authPassword,
+        }).then(async()=>{
+          return await supabase.auth.signInWithPassword({
+            email: authEmail,
+            password: authPassword,
+          })
         })
         : await supabase.auth.signInWithPassword({
           email: authEmail,
           password: authPassword,
         })
-      if (!data.user) throw "Can't fetch from Supabase"
-      if (error) throw "Encounter Supabase Error"
+      if (!data.user) throw "Can't Validate Identity"
+      if (error) throw "Can't Validate Identity"
       if (validationError) throw "Can't Validate Identity"
 
       // Make a request to your server to get an authentication token.
