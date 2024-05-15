@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
-import { TextInput, TextStyle, ViewStyle, Switch, View, Alert , Platform } from "react-native"
+import { TextInput, TextStyle, ViewStyle, View, Alert, Platform } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
@@ -40,6 +40,15 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
   const error = isSubmitted ? validationError : ""
 
+  function expoAlert(message: any) {
+    if (Platform.OS === "web") {
+      alert(message)
+    }
+    else {
+      Alert.alert(message)
+    }
+  }
+
   async function login() {
     try {
       setIsSubmitted(true)
@@ -48,19 +57,22 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         ? await supabase.auth.signUp({
           email: authEmail,
           password: authPassword,
-        }).then(async()=>{
+        }).then(async () => {
+          expoAlert("Check your email for confirmation mail")
           return await supabase.auth.signInWithPassword({
             email: authEmail,
             password: authPassword,
           })
+
         })
         : await supabase.auth.signInWithPassword({
           email: authEmail,
           password: authPassword,
         })
-      if (!data.user) throw "Can't Validate Identity"
-      if (error) throw "Can't Validate Identity"
-      if (validationError) throw "Can't Validate Identity"
+      if (!data.user || error || validationError) {
+        throw "Can't Validate Identity"
+      }
+
 
       // Make a request to your server to get an authentication token.
       // If successful, reset the fields and set the token.
@@ -70,16 +82,10 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
       // set auth token to supabase
       setAuthToken(String(data.session?.access_token))
-    }catch (e){
-      console.log("Error occured")
-      if (Platform.OS === "web"){
-        alert("Failed to login"+`Error message:${e}`)
-      }
-      else{
-        Alert.alert("Failed to login",`Error message:${e}`)
-      }
+    } catch (e) {
+      expoAlert(e)
     }
-    
+
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -139,9 +145,10 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       />
       {testing_signup ? (
         <View style={$signupContainer}>
-          <Text>註冊</Text>
-          <Switch value={isSignUp} onValueChange={setSignUp}></Switch>
-          <Text style={{ color: "red" }}>這個功能僅供測試</Text>
+          <Button
+            tx = "loginScreen.tapToChange"
+            onPress={()=>setSignUp(!isSignUp)}
+          />
         </View>
       ) : (
         ""
@@ -149,7 +156,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
       <Button
         testID="login-button"
-        tx="loginScreen.tapToSignIn"
+        tx={isSignUp? "loginScreen.tapToSignUp":"loginScreen.tapToSignIn"}
         style={$tapButton}
         preset="reversed"
         onPress={login}
