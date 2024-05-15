@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
-import { TextInput, TextStyle, ViewStyle, Switch, View } from "react-native"
+import { TextInput, TextStyle, ViewStyle, View, Alert, Platform } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
@@ -8,7 +8,7 @@ import { colors, spacing } from "../theme"
 
 import { supabase } from "../utils/supabase"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
+interface LoginScreenProps extends AppStackScreenProps<"Login"> { }
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
   const authPasswordInput = useRef<TextInput>(null)
@@ -40,30 +40,52 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
   const error = isSubmitted ? validationError : ""
 
+  function expoAlert(message: any) {
+    if (Platform.OS === "web") {
+      alert(message)
+    }
+    else {
+      Alert.alert(message)
+    }
+  }
+
   async function login() {
-    setIsSubmitted(true)
-    setAttemptsCount(attemptsCount + 1)
-    const { data, error } = isSignUp
-      ? await supabase.auth.signUp({
+    try {
+      setIsSubmitted(true)
+      setAttemptsCount(attemptsCount + 1)
+      const { data, error } = isSignUp
+        ? await supabase.auth.signUp({
+          email: authEmail,
+          password: authPassword,
+        }).then(async () => {
+          expoAlert("Check your email for confirmation mail")
+          return await supabase.auth.signInWithPassword({
+            email: authEmail,
+            password: authPassword,
+          })
+
+        })
+        : await supabase.auth.signInWithPassword({
           email: authEmail,
           password: authPassword,
         })
-      : await supabase.auth.signInWithPassword({
-          email: authEmail,
-          password: authPassword,
-        })
-    if (!data.user) return
-    if (error) return
-    if (validationError) return
+      if (!data.user || error || validationError) {
+        throw "Can't Validate Identity"
+      }
 
-    // Make a request to your server to get an authentication token.
-    // If successful, reset the fields and set the token.
-    setIsSubmitted(false)
-    setAuthPassword("")
-    setAuthEmail("")
 
-    // set auth token to supabase
-    setAuthToken(String(data.session?.access_token))
+      // Make a request to your server to get an authentication token.
+      // If successful, reset the fields and set the token.
+      setIsSubmitted(false)
+      setAuthPassword("")
+      setAuthEmail("")
+
+      // set auth token to supabase
+      setAuthToken(String(data.session?.access_token))
+    } catch (e) {
+      expoAlert(e)
+    }
+
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -123,9 +145,10 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       />
       {testing_signup ? (
         <View style={$signupContainer}>
-          <Text>註冊</Text>
-          <Switch value={isSignUp} onValueChange={setSignUp}></Switch>
-          <Text style={{ color: "red" }}>這個功能僅供測試</Text>
+          <Button
+            tx = "loginScreen.tapToChange"
+            onPress={()=>setSignUp(!isSignUp)}
+          />
         </View>
       ) : (
         ""
@@ -133,7 +156,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
       <Button
         testID="login-button"
-        tx="loginScreen.tapToSignIn"
+        tx={isSignUp? "loginScreen.tapToSignUp":"loginScreen.tapToSignIn"}
         style={$tapButton}
         preset="reversed"
         onPress={login}

@@ -8,29 +8,34 @@ const project_public_key =
 export const supabase = createClient(project_url, project_public_key)
 
 export const getUserId = async (safecheck = true) => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (user === null) {
-    throw Error("User not logged in")
-  }
-
-  if (safecheck) {
-    const { data, error } = await supabase.from("user").select().eq("id", user.id)
-    if (error) {
-      throw Error("Supabase data format incorrect")
+  try {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (user === null) {
+      throw Error("User not logged in")
     }
-    if (data.length == 0) {
-      const { error } = await supabase
-        .from("user")
-        .insert({ id: user.id, username: user.email, email: user.email || "Unnamed User" })
+
+    if (safecheck) {
+      const { data, error } = await supabase.from("user").select().eq("id", user.id)
       if (error) {
-        throw Error("Failed to insert user column")
+        throw Error("Supabase data format incorrect")
       }
-    } else if (data.length != 1) {
-      throw Error("Supabase duplicated user column")
-    }
-  }
+      if (data.length == 0) {
+        const { error } = await supabase
+          .from("user")
+          .insert({ id: user.id, username: user.email, email: user.email || "Unnamed User" })
+        if (error) {
+          throw Error("Failed to insert user column")
+        }
+      } else if (data.length != 1) {
+        throw Error("Supabase duplicated user column")
+      }
 
-  return user.id
+    }
+    return user.id
+  }
+  catch(e){
+    return null
+  }
 }
