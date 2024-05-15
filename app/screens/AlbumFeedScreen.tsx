@@ -38,8 +38,12 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
   // const navigation = useNavigation()
 
   const { navigation } = _props
-  const { joinAlbumStore } = useStores()
+  const { joinAlbumStore, authenticationStore } = useStores()
   const [userID, setUserID] = React.useState("")
+
+  if (!authenticationStore.isAuthenticated) {
+    _props.navigation.navigate("Welcome")
+  }
 
   useEffect(() => {
     getUserId().then((id: string) => {
@@ -49,9 +53,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
 
   useEffect(() => {
     if (userID === "") return
-    joinAlbumStore.fetchJoinAlbums(supabase, userID).then(() => {
-      console.log(JSON.stringify(joinAlbumStore.joinAlbumsForList))
-    })
+    joinAlbumStore.fetchJoinAlbums(supabase, userID)
   }, [userID])
 
   function goNext(albumId: string) {

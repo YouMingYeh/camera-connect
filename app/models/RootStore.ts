@@ -3,6 +3,7 @@ import { AuthenticationStoreModel } from "./AuthenticationStore"
 import { EpisodeStoreModel } from "./EpisodeStore"
 import { JoinAlbumStoreModel } from "./JoinAlbumStore"
 import { UserStoreModel } from "./UserStore"
+import { MediaStoreModel } from "./MediaStore"
 /**
  * A RootStore model.
  */
@@ -11,6 +12,7 @@ export const RootStoreModel = types.model("RootStore").props({
   episodeStore: types.optional(EpisodeStoreModel, {}),
   joinAlbumStore: types.optional(JoinAlbumStoreModel, {}),
   userStores: types.optional(UserStoreModel, {}),
+  mediaStore: types.optional(MediaStoreModel, {}),
 })
 
 /**

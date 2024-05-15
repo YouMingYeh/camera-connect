@@ -39,6 +39,7 @@
     "@react-navigation/bottom-tabs": "^6.3.2",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.0.2",
+    "@react-spring/native": "^9.5.5",
     "@shopify/flash-list": "1.6.4",
     "@supabase/supabase-js": "^2.42.5",
     "@types/react-native-snap-carousel": "^3.8.11",
@@ -67,6 +68,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.1",
+    "react-native-awesome-gallery": "^0.3.9",
     "react-native-bouncy-checkbox": "^4.0.0",
     "react-native-drawer-layout": "4.0.0-alpha.1",
     "react-native-gesture-handler": "~2.16.1",
@@ -87,6 +89,7 @@
     "react-native-vector-icons": "^10.0.3",
     "react-native-view-shot": "^3.8.0",
     "react-native-web": "~0.19.6",
+    "react-tinder-card": "^1.6.4",
     "recoil": "^0.7.7",
     "uuid": "^9.0.1",
     "with-rn-image-crop-picker": "^0.2.0"

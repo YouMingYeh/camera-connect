@@ -76,8 +76,8 @@ const AppStack = observer(function AppStack() {
       {isAuthenticated ? (
         <>
           <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
-
           <Stack.Screen name="Demo" component={DemoNavigator} />
+          <Stack.Screen name="Album" component={Screens.AlbumScreen} />
         </>
       ) : (
         <>
@@ -86,13 +86,7 @@ const AppStack = observer(function AppStack() {
       )}
 
       {/** 🔥 Your screens go here */}
-      <Stack.Screen name="Camera" component={Screens.CameraScreen} />
-      <Stack.Screen name="AlbumFeed" component={Screens.AlbumFeedScreen} />
-      <Stack.Screen name="Explore" component={Screens.ExploreScreen} />
-      <Stack.Screen name="Notifications" component={Screens.NotificationsScreen} />
-      <Stack.Screen name="Settings" component={Screens.SettingsScreen} />
-      <Stack.Screen name="Profile" component={Screens.ProfileScreen} />
-      <Stack.Screen name="Album" component={Screens.AlbumScreen} />
+      
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

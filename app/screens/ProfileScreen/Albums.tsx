@@ -117,28 +117,32 @@ const Albums = () => {
 
 const styles = StyleSheet.create({
   qrCodeContainer: {
-    marginTop: 20,
     alignItems: "center",
     justifyContent: "center",
+    marginTop: 20,
   },
   qrCodeText: {
-    marginTop: 10,
     fontSize: 16,
+    marginTop: 10,
   },
+  // eslint-disable-next-line react-native/no-unused-styles
   scrollContentContainer: {
     alignItems: "center",
     paddingBottom: 20,
   },
+  // eslint-disable-next-line react-native/sort-styles, react-native/no-unused-styles
   albumCover: {
     borderRadius: 25,
     height: 50,
     width: 50,
   },
+  // eslint-disable-next-line react-native/no-unused-styles
   albumName: {
     flex: 1,
     fontSize: 16,
     marginLeft: 12,
   },
+  // eslint-disable-next-line react-native/no-unused-styles
   albumRow: {
     alignItems: "center",
     flexDirection: "row",
@@ -147,27 +151,31 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     width: "100%",
   },
+  // eslint-disable-next-line react-native/no-unused-styles, react-native/no-color-literals
   button: {
     alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 32,
+    backgroundColor: "black",
     borderRadius: 4,
     elevation: 3,
-    backgroundColor: "black",
+    justifyContent: "center",
     marginTop: 10,
+    paddingHorizontal: 32,
+    paddingVertical: 12,
   },
+  // eslint-disable-next-line react-native/no-unused-styles, react-native/no-color-literals
   buttonText: {
     color: "white",
     fontSize: 16,
   },
   container: {
-    paddingTop: 16,
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 16,
   },
+  // eslint-disable-next-line react-native/no-color-literals
   expandButton: {
     alignItems: "center",
+    alignSelf: "center",
     backgroundColor: "black",
     borderRadius: 4,
     height: 60,
@@ -176,58 +184,62 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     position: "relative",
     width: 300,
-    alignSelf: "center",
   },
   expandButtonIcon: {
     position: "absolute",
     right: 16,
   },
+  // eslint-disable-next-line react-native/no-color-literals
   expandButtonText: {
     color: "white",
     fontSize: 18,
     fontWeight: "500",
   },
+  // eslint-disable-next-line react-native/no-unused-styles, react-native/no-color-literals
   input: {
+    backgroundColor: "white",
+    borderWidth: 1,
     height: 40,
     margin: 12,
-    borderWidth: 1,
     padding: 10,
     width: "80%",
-    backgroundColor: "white",
   },
 })
 
 const pickerSelectStyles = StyleSheet.create({
+  // eslint-disable-next-line react-native/no-color-literals
   inputIOS: {
-    fontSize: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 10,
-    borderWidth: 1,
     borderColor: "gray",
     borderRadius: 4,
+    borderWidth: 1,
     color: "black",
-    paddingRight: 30,
-  },
-  inputAndroid: {
     fontSize: 16,
     paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 0.5,
+    paddingRight: 30,
+    paddingVertical: 12,
+  },
+  // eslint-disable-next-line react-native/no-color-literals, react-native/sort-styles
+  inputAndroid: {
     borderColor: "purple",
     borderRadius: 8,
+    borderWidth: 0.5,
     color: "black",
-    paddingRight: 30,
-  },
-  inputWeb: {
     fontSize: 16,
-    paddingVertical: 12,
     paddingHorizontal: 10,
-    borderWidth: 1,
+    paddingRight: 30,
+    paddingVertical: 8,
+  },
+  // eslint-disable-next-line react-native/no-color-literals
+  inputWeb: {
     borderColor: "gray",
     borderRadius: 4,
+    borderWidth: 1,
     color: "black",
-    paddingRight: 30,
+    fontSize: 16,
     marginBottom: 5,
+    paddingHorizontal: 10,
+    paddingRight: 30,
+    paddingVertical: 12,
   },
 })
 
