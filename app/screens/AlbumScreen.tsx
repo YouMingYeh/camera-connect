@@ -7,7 +7,7 @@ import { useStores } from "app/models"
 import { getUserId, supabase } from "app/utils/supabase"
 import TinderCard from "react-tinder-card"
 import { Media } from "app/models/Media"
-import AwesomeGallery, { RenderItemInfo } from "react-native-awesome-gallery"
+import Gallery from "app/components/Gallery"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -50,24 +50,11 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     })
   }
 
-  const renderItem = ({
-    item
-  }: RenderItemInfo<{ uri: string }>) => {
-    console.log(item.uri)
-    return (
-      <Image
-      key={item.uri}
-        source={{ uri: item.uri }}
-        style={StyleSheet.absoluteFillObject}
-      />
-    );
-  };
-
   return (
     <Screen style={$root} preset="scroll">
       <Button text="Go back" onPress={goBack} />
       <Text text="Swipe to like" style={$text} />
-      
+
       <View style={$container}>
         {medias.map((media) => (
           <TinderCard
@@ -82,19 +69,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
           </TinderCard>
         ))}
       </View>
-      <AwesomeGallery
-        data={medias.map((media) => ({ uri: media.url  }))}
-        keyExtractor={(item) => item.uri}
-        renderItem={renderItem}
-        doubleTapInterval={150}
-        onSwipeToClose={goBack}
-        loop
-        onScaleEnd={(scale) => {
-          if (scale < 0.8) {
-            goBack();
-          }
-        }}
-      />
+      {mediaStore.medias && <Gallery images={medias.map((media) => ({ id: media.id, url: media.url }))} />}
     </Screen>
   )
 })
