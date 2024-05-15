@@ -10,7 +10,7 @@ export const AlbumModel = types
     id: "",
     created_at: "",
     description: types.maybeNull(types.string),
-    cover_url:  types.maybeNull(types.string),
+    cover_url: types.maybeNull(types.string),
     album_name: "",
   })
   .actions(withSetPropAction)

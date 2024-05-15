@@ -8,7 +8,6 @@ import Albums from "./Albums"
 import React, { FC, useEffect, useState } from "react"
 import { supabase, getUserId } from "../../utils/supabase"
 import { useStores } from "../../models"
-import { userStore } from "../../stores/userStore"
 
 import type { SupabaseClient } from "@supabase/supabase-js"
 interface ProfileScreenProps extends AppStackScreenProps<"Profile"> {}
@@ -31,7 +30,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
   const {
     authenticationStore: { setAuthToken },
   } = useStores()
-  const { userInfo } = userStore
+  const { userStores } = useStores()
   const [userID, setUserID] = useState("")
   async function signout() {
     const { error } = await supabase.auth.signOut()
@@ -54,7 +53,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
       if (userID) {
         const userData = await readUserInfo(supabase, userID)
         if (userData) {
-          userStore.setUserInfo(userData)
+          userStores.setUserInfo(userData)
         } else {
           console.error("No user data returned with userID: ", userID)
         }
@@ -73,11 +72,11 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
       <View style={styles.contentContainerStyle}>
         <View style={styles.avatarContainer}>
           <Image
-            source={{ uri: userInfo.avatar_url || "default_avatar_placeholder.png" }}
+            source={{ uri: userStores.userInfo.avatar_url || "default_avatar_placeholder.png" }}
             style={styles.avatar}
           />
         </View>
-        <Text style={styles.name}>{userInfo.username || "Username"}</Text>
+        <Text style={styles.name}>{userStores.userInfo.username || "Username"}</Text>
 
         <ProfileSettings />
         <Friends />

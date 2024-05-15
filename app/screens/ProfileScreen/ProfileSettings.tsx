@@ -1,6 +1,6 @@
 import { View, TextInput, Pressable, Image, StyleSheet, Text, Alert } from "react-native"
 import * as ImagePicker from "expo-image-picker"
-import { userStore } from "../../stores/userStore"
+import { useStores } from "../../models"
 import { v4 as uuidv4 } from "uuid"
 import { Buffer } from "buffer"
 import { Feather } from "@expo/vector-icons"
@@ -33,6 +33,7 @@ const ProfileSettingsContent = () => {
   const [username, setUsername] = useState("")
   const [avatar, setAvatar] = useState("")
   const [expanded, setExpanded] = useState(false)
+  const { userStores } = useStores()
 
   const uploadAvatar = async (filename: string, base64: string) => {
     let { data, error } = await supabase.storage
@@ -66,7 +67,7 @@ const ProfileSettingsContent = () => {
           id: userID,
           ...updates,
         })
-        userStore.setUserInfo(updatedUser)
+        userStores.setUserInfo(updatedUser)
       }
     } catch (error) {
       console.error("Error updating profile:", error)
