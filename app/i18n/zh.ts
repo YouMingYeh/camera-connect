@@ -39,6 +39,8 @@ const zh = {
     emailFieldPlaceholder: "輸入你的電子郵件地址",
     passwordFieldPlaceholder: "在這裡輸入超級秘密的密碼",
     tapToSignIn: "點擊登入！",
+    tapToSignUp: "點擊註冊！",
+    tapToChange: "登入？切換？",
     hint: "提示：你可以使用任何電子郵件地址和你最喜歡的密碼 :)",
   },
   demoNavigator: {
