@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-color-literals */
 import React, { useState } from 'react';
 import { View, Image, TouchableOpacity, Modal, StyleSheet, Text, Dimensions } from 'react-native';
 
@@ -53,33 +54,33 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    width: '100%',
     height: '100%',
+    width: '100%',
   },
   image: {
     height: 100,
   },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalImage: {
-    width: '90%',
-    height: '70%',
-    resizeMode: 'contain',
-  },
   modalCloseButton: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     borderRadius: 5,
+    padding: 10,
+    position: 'absolute',
+    right: 20,
+    top: 40,
   },
   modalCloseText: {
     color: '#fff',
     fontSize: 18,
+  },
+  modalContainer: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  modalImage: {
+    height: '70%',
+    resizeMode: 'contain',
+    width: '90%',
   },
 });

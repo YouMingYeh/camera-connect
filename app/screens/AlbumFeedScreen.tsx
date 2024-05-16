@@ -15,7 +15,7 @@ import Carousel from "react-native-reanimated-carousel"
 import { DemoDivider } from "./DemoShowroomScreen/DemoDivider"
 import { DemoUseCase } from "./DemoShowroomScreen/DemoUseCase"
 import { useStores } from "app/models"
-import { supabase, getUserId } from "../utils/supabase"
+import { getUserId } from "../utils/supabase"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -38,26 +38,19 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
   // const navigation = useNavigation()
 
   const { navigation } = _props
-  const { joinAlbumStore, authenticationStore } = useStores()
+  const { joinAlbumStore } = useStores()
   const [userID, setUserID] = React.useState("")
 
-  if (!authenticationStore.isAuthenticated) {
-    _props.navigation.navigate("Welcome")
-  }
-
   useEffect(() => {
-    getUserId().then((id: string) => {
-      setUserID(id)
+    getUserId().then((id: string | null) => {
+      if (id !== null) {
+        setUserID(id)
+      }
     })
   }, [])
 
-  useEffect(() => {
-    if (userID === "") return
-    joinAlbumStore.fetchJoinAlbums(supabase, userID)
-  }, [userID])
-
   function goNext(albumId: string) {
-    navigation.navigate("Album", { albumId: albumId })
+    navigation.navigate("Album", { albumId })
   }
 
   const [currentIndex, setCurrentIndex] = React.useState(0)
@@ -131,8 +124,8 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
             </View>
           )}
         />
-        <Text style={$text}>{data[currentIndex].title}</Text>
-        <Text style={$text}>{data[currentIndex].description}</Text>
+        {data[currentIndex] && <Text style={$text}>{data[currentIndex].title}</Text>}
+        {data[currentIndex] && <Text style={$text}>{data[currentIndex].description}</Text>}
       </DemoUseCase>
 
       <DemoDivider size={10} />
@@ -163,8 +156,8 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
             </View>
           )}
         />
-        <Text style={$text}>{data[currentIndex].title}</Text>
-        <Text style={$text}>{data[currentIndex].description}</Text>
+        {data[currentIndex] && <Text style={$text}>{data[currentIndex].title}</Text>}
+        {data[currentIndex] && <Text style={$text}>{data[currentIndex].description}</Text>}
       </DemoUseCase>
     </Screen>
   )
