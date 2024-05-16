@@ -97,6 +97,14 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
   //   },
   // ]
 
+  if (data.length === 0) {
+    return (
+      <Screen style={$root} preset="scroll">
+        <Text>No album</Text>
+      </Screen>
+    )
+  }
+
   return (
     <Screen style={$root} preset="scroll">
       <DemoDivider size={50} />

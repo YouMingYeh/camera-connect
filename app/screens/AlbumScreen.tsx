@@ -119,7 +119,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
         <BlurView intensity={intensity} style={[$backdrop, { zIndex: intensity < 10 ? -1 : 10 }]} />
         {medias.length !== 0 && (
           <View style={$container}>
-            <Text text="Swipe left or right" style={{color: colors.background, alignSelf: "center"}} />
+            <Text text="Swipe left or right" style={{color: colors.text, alignSelf: "center"}} />
             {medias.map((media) => (
               <TinderCard
                 key={media.id}

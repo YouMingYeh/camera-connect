@@ -13,7 +13,7 @@ export const getUserId = async (safecheck = true) => {
       data: { user },
     } = await supabase.auth.getUser()
     if (user === null) {
-      throw Error("User not logged in")
+      return null
     }
 
     if (safecheck) {

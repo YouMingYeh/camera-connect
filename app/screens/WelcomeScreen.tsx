@@ -33,7 +33,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   function goNext() {
     navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
   }
-  useEffect(() => { checkSupabaseAuth() }, [])
+  // useEffect(() => { checkSupabaseAuth() }, [])
   useHeader(
     {
       rightTx: "common.logOut",
