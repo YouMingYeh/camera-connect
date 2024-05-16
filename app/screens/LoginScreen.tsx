@@ -70,7 +70,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
           password: authPassword,
         })
       if (!data.user || error || validationError) {
-        throw "Can't Validate Identity"
+        alert("Error: " + error?.message + " " + validationError)
+        throw new Error("Can't Validate Identity")
       }
 
 
@@ -81,8 +82,9 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       setAuthEmail("")
 
       // set auth token to supabase
-      setAuthToken(String(data.session?.access_token))
+      setAuthToken(data.session?.access_token)
     } catch (e) {
+      console.log(e)
       expoAlert(e)
     }
 

@@ -1,42 +1,39 @@
----
-patch:
-  path: "app/components/index.ts"
-  append: "export * from \"./GoBackButton\"\n"
-  skip: 
----
 import * as React from "react"
-import { StyleProp, TextStyle, View, ViewStyle } from "react-native"
+import { TextStyle, TouchableOpacity, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
-import { colors, typography } from "app/theme"
+import { typography } from "app/theme"
 import { Text } from "app/components/Text"
 
 export interface GoBackButtonProps {
+
   /**
-   * An optional style override useful for padding & margin.
+   * An optional text to display.
    */
-  style?: StyleProp<ViewStyle>
+  children?: React.ReactNode
+
+  goBack: () => void
 }
 
 /**
  * Describe your component here
  */
 export const GoBackButton = observer(function GoBackButton(props: GoBackButtonProps) {
-  const { style } = props
-  const $styles = [$container, style]
+  const { children, goBack} = props
 
   return (
-    <View style={$styles}>
-      <Text style={$text}>Hello</Text>
-    </View>
+    <TouchableOpacity onPress={goBack} style={$container}>
+      {children || <Text text={"< Go Back"} style={$text}/>}
+    </TouchableOpacity>
   )
 })
 
 const $container: ViewStyle = {
-  justifyContent: "center",
+  justifyContent: "flex-start",
+  padding: 10
 }
 
 const $text: TextStyle = {
   fontFamily: typography.primary.normal,
-  fontSize: 14,
-  color: colors.palette.primary500,
+  fontSize: 24,
+  padding: 5,
 }

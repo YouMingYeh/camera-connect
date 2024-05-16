@@ -1,9 +1,17 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { FC, useEffect } from "react"
 import { observer } from "mobx-react-lite"
-import { Image, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import {
+  Image,
+  ImageStyle,
+  TextStyle,
+  View,
+  ViewStyle,
+  Animated,
+  TouchableOpacity,
+} from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Button, Card, Screen, Text } from "app/components"
+import { Card, Icon, Screen, Text } from "app/components"
 import { useStores } from "app/models"
 import { supabase } from "app/utils/supabase"
 import TinderCard from "react-tinder-card"
@@ -11,6 +19,8 @@ import { Media } from "app/models/Media"
 import Gallery from "app/components/Gallery"
 import { ScrollView } from "react-native-gesture-handler"
 import { BlurView } from "expo-blur"
+import { colors } from "app/theme"
+import { GoBackButton } from "app/components/GoBackButton"
 
 interface AlbumScreenProps extends AppStackScreenProps<"Album"> {}
 
@@ -21,13 +31,23 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   const [direction, setDirection] = React.useState("")
   const [swipedDirection, setSwipedDirection] = React.useState("")
   const [intensity, setIntensity] = React.useState(10)
+  const [showingHeart, setShowingHeart] = React.useState(false)
+  const [heartScale, setHeartScale] = React.useState(new Animated.Value(0))
+  const [thumb, setThumb] = React.useState(false)
+  const [sad, setSad] = React.useState(false)
+  const [smile, setSmile] = React.useState(false)
+  const [angry, setAngry] = React.useState(false)
 
-  if (!authenticationStore.isAuthenticated) {
-    _props.navigation.navigate("Welcome")
+  function animateHeart() {
+    Animated.timing(heartScale, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start()
   }
 
   function goBack() {
-    _props.navigation.navigate("Welcome")
+    _props.navigation.goBack()
   }
 
   useEffect(() => {
@@ -38,6 +58,18 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
   function onSwipe(direction: string) {
     setDirection(direction)
+    if (direction === "right") {
+      setShowingHeart(true)
+      animateHeart()
+      setTimeout(() => {
+        setShowingHeart(false)
+        heartScale.setValue(0) // Reset the animation
+      }, 1000)
+    }
+    setThumb(false)
+    setSad(false)
+    setSmile(false)
+    setAngry(false)
   }
 
   function onCardLeftScreen(myIdentifier: string) {
@@ -65,13 +97,29 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     }
   }, [medias])
 
+  function handleToggleReaction(reaction: string) {
+    if (reaction === "thumb") {
+      setThumb(!thumb)
+    } else if (reaction === "sad") {
+      setSad(!sad)
+    } else if (reaction === "smile") {
+      setSmile(!smile)
+    } else if (reaction === "angry") {
+      setAngry(!angry)
+    }
+  }
+
   return (
     <Screen style={$root}>
+      <GoBackButton goBack={goBack}>
+        {/* <Text text="< Go Back" /> */}
+      </GoBackButton>
       <View style={$screen}>
-        <Button text="Back" onPress={goBack} />
+        
         <BlurView intensity={intensity} style={[$backdrop, { zIndex: intensity < 10 ? -1 : 10 }]} />
         {medias.length !== 0 && (
           <View style={$container}>
+            <Text text="Swipe left or right" style={{color: colors.background, alignSelf: "center"}} />
             {medias.map((media) => (
               <TinderCard
                 key={media.id}
@@ -84,6 +132,20 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                 </View>
               </TinderCard>
             ))}
+            {showingHeart && (
+              <Animated.View
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  zIndex: 80,
+                  transform: [{ translateX: -5 }, { translateY: 250 }, { scale: heartScale }],
+                }}
+              >
+                <View>
+                  <Icon icon="heartFill" size={60} color="red" />
+                </View>
+              </Animated.View>
+            )}
             <Card
               style={$descriptionCard}
               ContentComponent={
@@ -115,15 +177,43 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                   />
                 </>
               }
-            ></Card>
+            />
+            <View style={$reactCard}>
+              <Text text="What are you thinking?" />
+              <View style={$icons}>
+                <TouchableOpacity onPress={() => handleToggleReaction("thumb")}>
+                  <Icon
+                    icon="thumb"
+                    size={30}
+                    color={thumb ? colors.tint : "black"}
+                    label="thumb"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
+                  <Icon icon="sad" size={30} color={sad ? colors.tint : "black"} label="sad" />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
+                  <Icon
+                    icon="heart"
+                    size={30}
+                    color={smile ? colors.tint : "black"}
+                    label="smile"
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => handleToggleReaction("angry")}>
+                  <Icon
+                    icon="angry"
+                    size={30}
+                    color={angry ? colors.tint : "black"}
+                    label="angry"
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         )}
         <ScrollView style={$galleryContainer}>
-          {mediaStore.medias && (
-            <Gallery
-              images={mediaStore.medias.map((media) => ({ id: media.id, url: media.url }))}
-            />
-          )}
+          {mediaStore.medias && <Gallery medias={mediaStore.medias} />}
         </ScrollView>
       </View>
     </Screen>
@@ -157,6 +247,22 @@ const $description: TextStyle = {
   color: "black",
   alignSelf: "center",
 }
+
+const $reactCard: ViewStyle = {
+  transform: [{ translateY: 330 }],
+  height: 100,
+  width: "100%",
+  flex: 1,
+  alignItems: "center",
+}
+
+const $icons: ViewStyle = {
+  flexDirection: "row",
+  justifyContent: "space-around",
+  width: "100%",
+  marginTop: 20,
+}
+
 const $backdrop: ViewStyle = {
   position: "absolute",
   width: "100%",
@@ -168,7 +274,7 @@ const $container: ViewStyle = {
   width: "100%",
   height: "100%",
   padding: 20,
-  zIndex: 100,
+  zIndex: 50,
   paddingTop: 100,
 }
 
@@ -185,4 +291,10 @@ const $galleryContainer: ViewStyle = {
   alignSelf: "stretch",
 }
 
-const $image: ImageStyle = { width: "100%", height: "100%", resizeMode: "cover", borderRadius: 20 }
+const $image: ImageStyle = {
+  width: "100%",
+  height: "100%",
+  resizeMode: "cover",
+  borderRadius: 20,
+  zIndex: 100,
+}

@@ -10,6 +10,7 @@ import {
   ViewProps,
   ViewStyle,
 } from "react-native"
+import { Text } from "./Text"
 
 export type IconTypes = keyof typeof iconRegistry
 
@@ -33,6 +34,11 @@ interface IconProps extends TouchableOpacityProps {
    * Style overrides for the icon image
    */
   style?: StyleProp<ImageStyle>
+
+  /**
+   * An optional label for the icon
+   */
+  label?: string
 
   /**
    * Style overrides for the icon container
@@ -81,6 +87,7 @@ export function Icon(props: IconProps) {
       style={$containerStyleOverride}
     >
       <Image style={$imageStyle} source={iconRegistry[icon]} />
+      {props.label && <Text style={{color}}>{props.label}</Text>}
     </Wrapper>
   )
 }
@@ -113,8 +120,14 @@ export const iconRegistry = {
   explore: require("../../assets/icons/explore.png"),
   notification: require("../../assets/icons/notification.png"),
   profile: require("../../assets/icons/profile.png"),
+  heartFill: require("../../assets/icons/heartFill.png"),
+  thumb: require("../../assets/icons/thumb.png"),
+  sad: require("../../assets/icons/sad.png"),
+  smile: require("../../assets/icons/smile.png"),
+  angry: require("../../assets/icons/angry.png"),
 }
 
 const $imageStyleBase: ImageStyle = {
   resizeMode: "contain",
+  alignSelf: "center"
 }
