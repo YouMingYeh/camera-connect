@@ -8,7 +8,7 @@ import { colors, spacing } from "../theme"
 
 import { supabase } from "../utils/supabase"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> { }
+interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
   const authPasswordInput = useRef<TextInput>(null)
@@ -22,7 +22,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
 
   const [isSignUp, setSignUp] = useState(false)
 
-  const testing_signup = true
+  const testingSignUp = true
 
   useEffect(() => {
     // Here is where you could fetch credentials from keychain or storage
@@ -43,8 +43,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   function expoAlert(message: any) {
     if (Platform.OS === "web") {
       alert(message)
-    }
-    else {
+    } else {
       Alert.alert(message)
     }
   }
@@ -54,26 +53,26 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       setIsSubmitted(true)
       setAttemptsCount(attemptsCount + 1)
       const { data, error } = isSignUp
-        ? await supabase.auth.signUp({
-          email: authEmail,
-          password: authPassword,
-        }).then(async () => {
-          expoAlert("Check your email for confirmation mail")
-          return await supabase.auth.signInWithPassword({
+        ? await supabase.auth
+            .signUp({
+              email: authEmail,
+              password: authPassword,
+            })
+            .then(async () => {
+              expoAlert("Check your email for confirmation mail")
+              return await supabase.auth.signInWithPassword({
+                email: authEmail,
+                password: authPassword,
+              })
+            })
+        : await supabase.auth.signInWithPassword({
             email: authEmail,
             password: authPassword,
           })
-
-        })
-        : await supabase.auth.signInWithPassword({
-          email: authEmail,
-          password: authPassword,
-        })
       if (!data.user || error || validationError) {
         alert("Error: " + error?.message + " " + validationError)
         throw new Error("Can't Validate Identity")
       }
-
 
       // Make a request to your server to get an authentication token.
       // If successful, reset the fields and set the token.
@@ -87,7 +86,6 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       console.log(e)
       expoAlert(e)
     }
-
   }
 
   const PasswordRightAccessory: ComponentType<TextFieldAccessoryProps> = useMemo(
@@ -145,24 +143,24 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         onSubmitEditing={login}
         RightAccessory={PasswordRightAccessory}
       />
-      {testing_signup ? (
+
+      <Button
+        testID="login-button"
+        tx={isSignUp ? "loginScreen.tapToSignUp" : "loginScreen.tapToSignIn"}
+        style={$tapButton}
+        preset="reversed"
+        onPress={login}
+      />
+      {testingSignUp ? (
         <View style={$signupContainer}>
           <Button
-            tx = "loginScreen.tapToChange"
-            onPress={()=>setSignUp(!isSignUp)}
+            tx={isSignUp ? "loginScreen.changeToSignIn" : "loginScreen.changeToSignUp"}
+            onPress={() => setSignUp(!isSignUp)}
           />
         </View>
       ) : (
         ""
       )}
-
-      <Button
-        testID="login-button"
-        tx={isSignUp? "loginScreen.tapToSignUp":"loginScreen.tapToSignIn"}
-        style={$tapButton}
-        preset="reversed"
-        onPress={login}
-      />
     </Screen>
   )
 })
@@ -196,4 +194,7 @@ const $tapButton: ViewStyle = {
 const $signupContainer: ViewStyle = {
   flexDirection: "row",
   columnGap: spacing.sm,
+  marginTop: spacing.lg,
+  flex: 1,
+  justifyContent: "flex-end",
 }

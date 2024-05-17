@@ -111,9 +111,9 @@ export default function Gallery({ medias }: GalleryProps) {
               <View style={styles.iconsContainer}>
                 <TouchableOpacity onPress={() => setHeart(!heart)}>
                   {heart ? (
-                    <Icon icon="heartFill" size={30} color={"red"} label="heart" />
+                    <Icon icon="heartFill" size={30} color={"red"} label="albumScreen.reaction.heart" />
                   ) : (
-                    <Icon icon="heart" size={30} color={"black"} label="heart" />
+                    <Icon icon="heart" size={30} color={"black"} label="albumScreen.reaction.heart" />
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setThumb(!thumb)}>
@@ -121,18 +121,23 @@ export default function Gallery({ medias }: GalleryProps) {
                     icon="thumb"
                     size={30}
                     color={thumb ? colors.tint : "black"}
-                    label="thumb"
+                    label="albumScreen.reaction.thumb"
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setSad(!sad)}>
-                  <Icon icon="sad" size={30} color={sad ? colors.tint : "black"} label="sad" />
+                  <Icon
+                    icon="sad"
+                    size={30}
+                    color={sad ? colors.tint : "black"}
+                    label="albumScreen.reaction.sad"
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setSmile(!smile)}>
                   <Icon
                     icon="smile"
                     size={30}
                     color={smile ? colors.tint : "black"}
-                    label="smile"
+                    label="albumScreen.reaction.smile"
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setAngry(!angry)}>
@@ -140,7 +145,7 @@ export default function Gallery({ medias }: GalleryProps) {
                     icon="angry"
                     size={30}
                     color={angry ? colors.tint : "black"}
-                    label="angry"
+                    label="albumScreen.reaction.angry"
                   />
                 </TouchableOpacity>
               </View>

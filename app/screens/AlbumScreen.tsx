@@ -88,7 +88,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
         if (intensity === 0) {
           clearInterval(interval as NodeJS.Timeout)
         }
-      }, 50)
+      }, 100)
     }
     return () => {
       if (interval) {
@@ -116,10 +116,10 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
       </GoBackButton>
       <View style={$screen}>
         
-        <BlurView intensity={intensity} style={[$backdrop, { zIndex: intensity < 10 ? -1 : 10 }]} />
+        <BlurView intensity={intensity} style={[$backdrop, { zIndex: intensity < 2 ? -1 : 10 }]} />
         {medias.length !== 0 && (
           <View style={$container}>
-            <Text text="Swipe left or right" style={{color: colors.text, alignSelf: "center"}} />
+            <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} />
             {medias.map((media) => (
               <TinderCard
                 key={media.id}
@@ -179,25 +179,25 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
               }
             />
             <View style={$reactCard}>
-              <Text text="What are you thinking?" />
+              <Text tx="albumScreen.reactionHint" />
               <View style={$icons}>
                 <TouchableOpacity onPress={() => handleToggleReaction("thumb")}>
                   <Icon
                     icon="thumb"
                     size={30}
                     color={thumb ? colors.tint : "black"}
-                    label="thumb"
+                    label="albumScreen.reaction.thumb"
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
-                  <Icon icon="sad" size={30} color={sad ? colors.tint : "black"} label="sad" />
+                  <Icon icon="sad" size={30} color={sad ? colors.tint : "black"} label="albumScreen.reaction.sad" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
                   <Icon
-                    icon="heart"
+                    icon="smile"
                     size={30}
                     color={smile ? colors.tint : "black"}
-                    label="smile"
+                    label="albumScreen.reaction.smile"
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleToggleReaction("angry")}>
@@ -205,7 +205,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                     icon="angry"
                     size={30}
                     color={angry ? colors.tint : "black"}
-                    label="angry"
+                    label="albumScreen.reaction.angry"
                   />
                 </TouchableOpacity>
               </View>

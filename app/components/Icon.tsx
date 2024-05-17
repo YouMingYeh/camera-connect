@@ -11,6 +11,7 @@ import {
   ViewStyle,
 } from "react-native"
 import { Text } from "./Text"
+import { TxKeyPath } from "app/i18n"
 
 export type IconTypes = keyof typeof iconRegistry
 
@@ -87,7 +88,7 @@ export function Icon(props: IconProps) {
       style={$containerStyleOverride}
     >
       <Image style={$imageStyle} source={iconRegistry[icon]} />
-      {props.label && <Text style={{color}}>{props.label}</Text>}
+      {props.label && <Text style={{color}} tx={props.label as TxKeyPath}></Text>}
     </Wrapper>
   )
 }

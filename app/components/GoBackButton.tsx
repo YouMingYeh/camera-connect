@@ -3,6 +3,7 @@ import { TextStyle, TouchableOpacity, ViewStyle } from "react-native"
 import { observer } from "mobx-react-lite"
 import { typography } from "app/theme"
 import { Text } from "app/components/Text"
+import { Icon } from "./Icon"
 
 export interface GoBackButtonProps {
 
@@ -22,14 +23,15 @@ export const GoBackButton = observer(function GoBackButton(props: GoBackButtonPr
 
   return (
     <TouchableOpacity onPress={goBack} style={$container}>
-      {children || <Text text={"< Go Back"} style={$text}/>}
+      <Icon icon="caretLeft" size={24} />
+      {children || <Text tx="common.back" style={$text}/>}
     </TouchableOpacity>
   )
 })
 
 const $container: ViewStyle = {
-  justifyContent: "flex-start",
-  padding: 10
+  padding: 10,
+  flexDirection: "row",
 }
 
 const $text: TextStyle = {

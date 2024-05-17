@@ -40,7 +40,9 @@ const en = {
     passwordFieldPlaceholder: "Super secret password here",
     tapToSignIn: "Tap to sign in!",
     tapToSignUp: "Tap to sign up!",
-    tapToChange: "Login? Signup?",
+    // tapToChange: "Login? Signup?",
+    changeToSignIn: "Already have an account? Sign in",
+    changeToSignUp: "Don't have an account? Sign up",
     hint: "Hint: you can use any email address and your favorite password :)",
   },
   demoNavigator: {
@@ -127,6 +129,17 @@ const en = {
         "No favorites have been added yet. Tap the heart on an episode to add it to your favorites!",
     },
   },
+  albumScreen: {
+    swipeHint: "Swipe left or right",
+    reactionHint: "What do you think?",
+    reaction: {
+      thumb: "Good",
+      sad: "Sad",
+      smile: "Happy",
+      angry: "Angry",
+      heart: "Love",
+    }
+  }
 }
 
 export default en

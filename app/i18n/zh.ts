@@ -40,7 +40,8 @@ const zh = {
     passwordFieldPlaceholder: "在這裡輸入超級秘密的密碼",
     tapToSignIn: "點擊登入！",
     tapToSignUp: "點擊註冊！",
-    tapToChange: "登入？切換？",
+    changeToSignIn: "已經有帳戶？登入",
+    changeToSignUp: "還沒有帳戶？註冊",
     hint: "提示：你可以使用任何電子郵件地址和你最喜歡的密碼 :)",
   },
   demoNavigator: {
@@ -119,6 +120,17 @@ const zh = {
       content: "還沒有添加任何收藏。點擊節目上的心形圖標，將它添加到你的收藏中！",
     },
   },
+  albumScreen: {
+    swipeHint: "左右滑動",
+    reactionHint: "你覺得怎麼樣？",
+    reaction: {
+      thumb: "讚",
+      sad: "難過",
+      smile: "開心",
+      angry: "生氣",
+      heart: "愛心"
+    }
+  }
 }
 
 export default zh
