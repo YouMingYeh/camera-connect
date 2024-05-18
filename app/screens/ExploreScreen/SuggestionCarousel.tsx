@@ -1,14 +1,22 @@
 import * as React from "react"
 import { StyleSheet, ActivityIndicator, Dimensions, View } from "react-native"
 
-import type { StyleProp, ViewStyle, ImageURISource, ImageSourcePropType } from "react-native"
+import type { StyleProp, ViewStyle, ImageSourcePropType } from "react-native"
 
 import { Image } from "expo-image"
 
 import Carousel from "react-native-reanimated-carousel"
 import { fetchRandomMedia } from "./fetchRandomMedia"
 import { MediaItem } from "./types"
-
+export const renderItem = (index: number, item: MediaItem) => (
+  <SBImageItem
+    showIndex={false}
+    key={index}
+    index={index}
+    style={{ borderRadius: 0 }}
+    img={{ uri: item.url }}
+  />
+)
 function Index() {
   const width = Dimensions.get("window").width
   const [entries, setEntries] = React.useState<MediaItem[]>([])
@@ -19,15 +27,7 @@ function Index() {
     }
     fetchData()
   }, [])
-  const renderItem = (index: number, item: MediaItem) => (
-    <SBImageItem
-      showIndex={false}
-      key={index}
-      index={index}
-      style={{ borderRadius: 0 }}
-      img={{ uri: item.url }}
-    />
-  )
+
   return (
     <View style={{ flex: 1 }}>
       <Carousel
@@ -57,16 +57,12 @@ interface Props {
   img?: ImageSourcePropType
 }
 
-export const SBImageItem: React.FC<Props> = ({ style, index: _index, showIndex = true, img }) => {
+export const SBImageItem: React.FC<Props> = ({ style, index: _index, img }) => {
   const index = _index ?? 0
-  const source = React.useRef<ImageURISource>({
-    uri: `https://picsum.photos/id/${index}/400/300`,
-  }).current
-
   return (
     <View style={[styles.container, style]}>
       <ActivityIndicator size="small" />
-      <Image cachePolicy={"memory-disk"} key={index} style={styles.image} source={img ?? source} />
+      <Image cachePolicy={"memory-disk"} key={index} style={styles.image} source={img} />
     </View>
   )
 }

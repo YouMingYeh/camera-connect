@@ -1,5 +1,5 @@
 export interface MediaItem {
-  uuid: string
+  id: string
   created_at: string
   title: string
   is_video: boolean
@@ -7,4 +7,12 @@ export interface MediaItem {
   album_id: string
   uploader_id: string
   hashtag: string[]
+}
+
+export interface SearchProps {
+  searchQuery: string
+  setSearchQuery: (query: string) => void
+  handleBack: () => void
+  type: string
+  setType: (type: string) => void
 }
