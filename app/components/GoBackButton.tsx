@@ -31,6 +31,7 @@ export const GoBackButton = observer(function GoBackButton(props: GoBackButtonPr
 const $container: ViewStyle = {
   padding: 10,
   flexDirection: "row",
+  width: "30%",
 }
 
 const $text: TextStyle = {

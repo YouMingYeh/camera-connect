@@ -126,6 +126,7 @@ export const iconRegistry = {
   sad: require("../../assets/icons/sad.png"),
   smile: require("../../assets/icons/smile.png"),
   angry: require("../../assets/icons/angry.png"),
+  upload: require("../../assets/icons/upload.png"),
 }
 
 const $imageStyleBase: ImageStyle = {

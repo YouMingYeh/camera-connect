@@ -192,10 +192,11 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
     flex: 1,
     justifyContent: "center",
     padding: 20,
+    
   },
   modalImage: {
     height: "50%",
