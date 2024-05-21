@@ -14,7 +14,7 @@ import {
 } from "react-native"
 import { v4 as uuidv4 } from "uuid"
 import { AppStackScreenProps } from "app/navigators"
-import { Button, Card, Screen, Text, TextField } from "app/components"
+import { Button, Card, Loading, Screen, Text, TextField } from "app/components"
 import Carousel from "react-native-reanimated-carousel"
 import { DemoDivider } from "./DemoShowroomScreen/DemoDivider"
 import { DemoUseCase } from "./DemoShowroomScreen/DemoUseCase"
@@ -23,6 +23,7 @@ import { supabase, getUserId } from "../utils/supabase"
 import * as ImagePicker from "expo-image-picker"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Buffer } from "buffer"
+import { GoBackButton } from "app/components/GoBackButton"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -38,6 +39,7 @@ type Data = {
 }
 
 type Album = {
+  id: string
   description: string
   cover_url: string
   album_name: string
@@ -104,6 +106,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     const filename = `media-${uuidv4()}`
 
     const album: Album = {
+      id: uuidv4(),
       description,
       cover_url:
         "https://adjixakqimigxsubirmn.supabase.co/storage/v1/object/public/media/" + filename,
@@ -113,6 +116,8 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     await createAlbum(supabase, album)
     await uploadImage(supabase, cover, filename)
     setModalOpen(false)
+    await joinAlbumStore.joinAlbum(supabase, userID, album.id)
+    await joinAlbumStore.fetchJoinAlbums(supabase, userID)
   }
 
   const width = Dimensions.get("window").width
@@ -132,8 +137,8 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
 
   if (data.length === 0) {
     return (
-      <Screen style={$root} preset="scroll">
-        <Text>No album</Text>
+      <Screen style={$root}>
+        <Loading />
       </Screen>
     )
   }
@@ -178,107 +183,117 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
 
   return (
     <Screen style={$root} preset="scroll">
-      <DemoDivider size={50} />
-      <DemoUseCase name="最近動態" description="你的相簿成員最近更新了這些照片！" layout="column">
-        <Carousel
-          loop
-          mode="parallax"
-          width={width * 0.9}
-          style={$carousel}
-          modeConfig={{
-            parallaxScrollingScale: 0.8,
-            parallaxScrollingOffset: 100,
-          }}
-          height={width / 2}
-          data={dummyData}
-          scrollAnimationDuration={200}
-          renderItem={({ item }) => (
-            <View style={$item}>
-              {item.image && (
-                <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
-              )}
-              <View style={$badge}>
-                <Text style={$text1}>{item.label}</Text>
+      <View style={$screen}>
+        <GoBackButton goBack={() => navigation.navigate("Welcome")} label={"相簿"} />
+        <DemoUseCase name="最近動態" description="你的相簿成員最近更新了這些照片！" layout="column">
+          <Carousel
+            loop
+            mode="parallax"
+            width={width * 0.9}
+            style={$carousel}
+            modeConfig={{
+              parallaxScrollingScale: 0.8,
+              parallaxScrollingOffset: 100,
+            }}
+            height={width / 2}
+            data={dummyData}
+            scrollAnimationDuration={200}
+            renderItem={({ item }) => (
+              <View style={$item}>
+                {item.image ? (
+                  <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
+                ) : (
+                  <Loading />
+                )}
+                <View style={$badge}>
+                  <Text style={$text1}>{item.label}</Text>
+                </View>
               </View>
-            </View>
-          )}
-        />
-      </DemoUseCase>
-
-      <DemoDivider size={10} />
-      <DemoUseCase name="你的相簿" description="你加入的相簿" layout="column">
-        <ScrollView style={$container}>
-          {data.map((item) => (
-            <TouchableOpacity key={item.id} onPress={() => goNext(item.id)}>
-              <Text style={$text2}>{item.title}</Text>
-              {item.image && (
-                <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
-              )}
-
-              <Text> </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </DemoUseCase>
-      <Button preset="reversed" onPress={() => setModalOpen(!modalOpen)}>
-        創建相簿
-      </Button>
-      <Modal animationType="fade" transparent={true} visible={modalOpen}>
-        <View style={$modal}>
-          <Card
-            style={$card}
-            ContentComponent={
-              <View
-                style={$cardContent}
-                onTouchStart={() => {
-                  Keyboard.dismiss()
-                }}
-              >
-                <TextField
-                  label="相簿名稱"
-                  value={title}
-                  placeholder="輸入相簿名稱"
-                  onChange={(e) => {
-                    setTitle(e.nativeEvent.text)
-                  }}
-                />
-                <TextField
-                  label="相簿描述"
-                  value={description}
-                  placeholder="輸入相簿描述"
-                  multiline
-                  onChange={(e) => {
-                    setDescription(e.nativeEvent.text)
-                  }}
-                />
-                <Text>選擇封面</Text>
-                <Image
-                  source={{ uri: `data:image/png;base64,${cover}` }}
-                  style={$image}
-                  resizeMode="cover"
-                />
-                <Button onPress={pickImage} preset="filled">
-                  上傳封面
-                </Button>
-              </View>
-            }
+            )}
           />
+        </DemoUseCase>
 
-          <Button style={$button} preset="reversed" onPress={handleCreateAlbum}>
-            確認
-          </Button>
-          <Button style={$button} onPress={() => setModalOpen(false)}>
-            關閉
-          </Button>
-        </View>
-      </Modal>
+        <DemoDivider size={10} />
+        <DemoUseCase name="你的相簿" description="你加入的相簿" layout="column">
+          <ScrollView style={$container}>
+            {data.map((item) => (
+              <TouchableOpacity key={item.id} onPress={() => goNext(item.id)}>
+                <Text style={$text2}>{item.title}</Text>
+                {item.image ? (
+                  <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
+                ) : (
+                  <Loading />
+                )}
+
+                <Text> </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </DemoUseCase>
+        <Button preset="reversed" onPress={() => setModalOpen(!modalOpen)}>
+          創建相簿
+        </Button>
+        <Modal animationType="fade" transparent={true} visible={modalOpen}>
+          <View style={$modal}>
+            <Card
+              style={$card}
+              ContentComponent={
+                <View
+                  style={$cardContent}
+                  onTouchStart={() => {
+                    Keyboard.dismiss()
+                  }}
+                >
+                  <TextField
+                    label="相簿名稱"
+                    value={title}
+                    placeholder="輸入相簿名稱"
+                    onChange={(e) => {
+                      setTitle(e.nativeEvent.text)
+                    }}
+                  />
+                  <TextField
+                    label="相簿描述"
+                    value={description}
+                    placeholder="輸入相簿描述"
+                    multiline
+                    onChange={(e) => {
+                      setDescription(e.nativeEvent.text)
+                    }}
+                  />
+                  <Text>選擇封面</Text>
+                  <Image
+                    source={{ uri: `data:image/png;base64,${cover}` }}
+                    style={$image}
+                    resizeMode="cover"
+                  />
+                  <Button onPress={pickImage} preset="filled">
+                    上傳封面
+                  </Button>
+                </View>
+              }
+            />
+
+            <Button style={$button} preset="reversed" onPress={handleCreateAlbum}>
+              確認
+            </Button>
+            <Button style={$button} onPress={() => setModalOpen(false)}>
+              關閉
+            </Button>
+          </View>
+        </Modal>
+      </View>
     </Screen>
   )
 })
 
 const $root: ViewStyle = {
   flex: 1,
+}
+
+const $screen: ViewStyle = {
   paddingHorizontal: 8,
+  paddingTop: 80,
 }
 
 const $modal: ViewStyle = {
@@ -313,7 +328,6 @@ const $button: ViewStyle = {
 
 const $item: ViewStyle = {
   flex: 1,
-  borderWidth: 1,
   justifyContent: "center",
 }
 
@@ -342,7 +356,6 @@ const $image: ImageStyle = {
 }
 
 const $carousel: ViewStyle = {
-  flex: 1,
   justifyContent: "center",
   alignItems: "center",
 }

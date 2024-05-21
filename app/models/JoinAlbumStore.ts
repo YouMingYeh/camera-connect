@@ -44,11 +44,30 @@ export const JoinAlbumStoreModel = types
   .actions((store) => ({
     async fetchJoinAlbums(supabaseClient: SupabaseClient, userId: string) {
       const joinAlbums = await readJoinAlbums(supabaseClient, userId)
+      if (joinAlbums?.length === 0) {
+        console.log("No joinAlbums found")
+        store.setProp("joinAlbums", [])
+        return
+      }
       if (joinAlbums) {
         store.setProp("joinAlbums", joinAlbums)
       } else {
         console.error(`Error fetching joinAlbums: ${JSON.stringify(joinAlbums)}`)
       }
+    },
+    async joinAlbum(supabaseClient: SupabaseClient, userId: string, albumId: string) {
+      const { data, error } = await supabaseClient.from("join_album").insert([
+        {
+          user_id: userId,
+          album_id: albumId,
+        },
+      ])
+
+      if (error) {
+        console.error("Failed to join album:", error.message)
+        return null
+      }
+      return data
     },
     addJoinAlbum(joinAlbum: JoinAlbum) {
       store.joinAlbums.push(joinAlbum)

@@ -119,7 +119,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
         <BlurView intensity={intensity} style={[$backdrop, { zIndex: intensity < 2 ? -1 : 10 }]} />
         {medias.length !== 0 && (
           <View style={$container}>
-            <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} />
+            {/* <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} /> */}
             {medias.map((media) => (
               <TinderCard
                 key={media.id}
@@ -179,7 +179,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
               }
             />
             <View style={$reactCard}>
-              <Text tx="albumScreen.reactionHint" />
+              {/* <Text tx="albumScreen.reactionHint" /> */}
               <View style={$icons}>
                 <TouchableOpacity onPress={() => handleToggleReaction("thumb")}>
                   <Icon
@@ -289,6 +289,7 @@ const $imageContainer: ViewStyle = {
 
 const $galleryContainer: ViewStyle = {
   alignSelf: "stretch",
+  backgroundColor: "rgba(0, 0, 0, 0.1)",
 }
 
 const $image: ImageStyle = {

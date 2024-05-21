@@ -6,11 +6,10 @@ import { Text } from "app/components/Text"
 import { Icon } from "./Icon"
 
 export interface GoBackButtonProps {
-
   /**
    * An optional text to display.
    */
-  children?: React.ReactNode
+  label?: string
 
   goBack: () => void
 }
@@ -19,12 +18,12 @@ export interface GoBackButtonProps {
  * Describe your component here
  */
 export const GoBackButton = observer(function GoBackButton(props: GoBackButtonProps) {
-  const { children, goBack} = props
+  const { label, goBack } = props
 
   return (
     <TouchableOpacity onPress={goBack} style={$container}>
       <Icon icon="caretLeft" size={24} />
-      {children || <Text tx="common.back" style={$text}/>}
+      {label ? <Text style={$text}>{label}</Text> : <Text tx="common.back" style={$text} />}
     </TouchableOpacity>
   )
 })

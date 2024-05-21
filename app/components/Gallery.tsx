@@ -71,7 +71,7 @@ export default function Gallery({ medias }: GalleryProps) {
       <Modal visible={modalVisible} transparent={true} onRequestClose={handleCloseImage}>
         <Animated.View style={{ ...styles.modalContainer, opacity: modalOpacity }}>
           <TouchableOpacity style={styles.modalCloseButton} onPress={handleCloseImage}>
-            <Icon size={30} icon="x" color="#fff" />
+            <Icon size={30} icon="x" color="black" />
           </TouchableOpacity>
 
           {activeIndex !== null && medias[activeIndex] && (
@@ -111,9 +111,19 @@ export default function Gallery({ medias }: GalleryProps) {
               <View style={styles.iconsContainer}>
                 <TouchableOpacity onPress={() => setHeart(!heart)}>
                   {heart ? (
-                    <Icon icon="heartFill" size={30} color={"red"} label="albumScreen.reaction.heart" />
+                    <Icon
+                      icon="heartFill"
+                      size={30}
+                      color={"red"}
+                      label="albumScreen.reaction.heart"
+                    />
                   ) : (
-                    <Icon icon="heart" size={30} color={"black"} label="albumScreen.reaction.heart" />
+                    <Icon
+                      icon="heart"
+                      size={30}
+                      color={"black"}
+                      label="albumScreen.reaction.heart"
+                    />
                   )}
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => setThumb(!thumb)}>
