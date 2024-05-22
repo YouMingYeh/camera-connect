@@ -23,7 +23,7 @@ import { supabase, getUserId } from "../utils/supabase"
 import * as ImagePicker from "expo-image-picker"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Buffer } from "buffer"
-import { GoBackButton } from "app/components/GoBackButton"
+import { useHeader } from "app/utils/useHeader"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -95,8 +95,8 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     })
   }, [])
 
-  function goNext(albumId: string) {
-    navigation.navigate("Album", { albumId })
+  function goNext(albumId: string, albumName: string) {
+    navigation.navigate("Album", { albumId, albumName })
   }
 
   async function handleCreateAlbum() {
@@ -149,21 +149,25 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
       id: "1",
       label: "Tagged",
       image: "https://i.pinimg.com/474x/99/3b/03/993b03ee99d99df1022ab8f79f00a340.jpg",
+      color: "red",
     },
     {
       id: "2",
       label: "New",
       image: "https://i.pinimg.com/474x/f9/4d/ea/f94dea422b19ac51bd7eec4f2333f30b.jpg",
+      color: "blue",
     },
     {
       id: "3",
       label: "Commented",
       image: "https://i.pinimg.com/474x/6b/15/bf/6b15bf365da2528c44449065c491bb8d.jpg",
+      color: "green",
     },
     {
       id: "4",
       label: "Reacted",
       image: "https://i.pinimg.com/474x/26/cb/16/26cb162da8274a03f516fdd386f883a3.jpg",
+      color: "orange",
     },
   ]
 
@@ -182,10 +186,22 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     }
   }
 
+  useHeader(
+    {
+      title: "相簿",
+      leftIcon: "caretLeft",
+      titleStyle: { fontSize: 24, padding: 10 },
+      onLeftPress: () => navigation.navigate("Welcome"),
+      rightText: "創建相簿",
+      onRightPress: () => setModalOpen(true),
+    },
+    [],
+  )
+
   return (
     <Screen style={$root} preset="scroll">
       <View style={$screen}>
-        <GoBackButton goBack={() => navigation.navigate("Welcome")} label={"相簿"} />
+        {/* <GoBackButton goBack={() => navigation.navigate("Welcome")} label={"相簿"} /> */}
         <DemoUseCase name="最近動態" description="你的相簿成員最近更新了這些照片！" layout="column">
           <Carousel
             loop
@@ -208,7 +224,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
                 ) : (
                   <Loading />
                 )}
-                <View style={$badge}>
+                <View style={[$badge, { backgroundColor: item.color }]}>
                   <Text style={$text1}>{item.label}</Text>
                 </View>
               </View>
@@ -232,7 +248,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
         <DemoUseCase name="你的相簿" description="你加入的相簿" layout="column">
           <ScrollView style={$container}>
             {data.map((item) => (
-              <TouchableOpacity key={item.id} onPress={() => goNext(item.id)}>
+              <TouchableOpacity key={item.id} onPress={() => goNext(item.id, item.title as string)}>
                 <Text style={$text2}>{item.title}</Text>
                 {item.image ? (
                   <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
@@ -289,12 +305,14 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
               }
             />
 
-            <Button style={$button} preset="reversed" onPress={handleCreateAlbum}>
-              確認
-            </Button>
-            <Button style={$button} onPress={() => setModalOpen(false)}>
-              關閉
-            </Button>
+            <View style={{ flexDirection: "row", gap: 20, width: "90%" }}>
+              <Button style={{ flex: 1 }} preset="reversed" onPress={handleCreateAlbum}>
+                確認
+              </Button>
+              <Button style={{ flex: 1 }} onPress={() => setModalOpen(false)}>
+                關閉
+              </Button>
+            </View>
           </View>
         </Modal>
       </View>
@@ -308,7 +326,6 @@ const $root: ViewStyle = {
 
 const $screen: ViewStyle = {
   paddingHorizontal: 8,
-  paddingTop: 80,
 }
 
 const $modal: ViewStyle = {
@@ -354,15 +371,14 @@ const $container: ViewStyle = {
 
 const $badge: ViewStyle = {
   position: "absolute",
-  top: 15,
+  top: 5,
   right: 5,
   borderRadius: 10,
-  backgroundColor: "white",
   padding: 5,
 }
-const $text1: TextStyle = { textAlign: "center", fontSize: 20 }
+const $text1: TextStyle = { textAlign: "center", fontSize: 20, color: "white", fontWeight: "bold"}
 
-const $text2: TextStyle = { fontSize: 24, fontWeight: "bold" }
+const $text2: TextStyle = { fontSize: 24, fontWeight: "bold", paddingTop: 5 }
 
 const $image: ImageStyle = {
   width: "100%",

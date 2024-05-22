@@ -71,7 +71,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
           })
       if (!data.user || error || validationError) {
         alert("Error: " + error?.message + " " + validationError)
-        throw new Error("Can't Validate Identity")
+        return
       }
 
       // Make a request to your server to get an authentication token.

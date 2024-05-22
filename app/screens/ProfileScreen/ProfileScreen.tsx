@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite"
 import { View, Image, Text, StyleSheet, Pressable } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Screen } from "app/components"
+import { LoadingModal, Screen } from "app/components"
 import ProfileSettings from "./ProfileSettings"
 import Friends from "./Friends"
 import Albums from "./Albums"
@@ -10,6 +10,7 @@ import { supabase, getUserId } from "../../utils/supabase"
 import { useStores } from "../../models"
 
 import type { SupabaseClient } from "@supabase/supabase-js"
+import { useHeader } from "app/utils/useHeader"
 interface ProfileScreenProps extends AppStackScreenProps<"Profile"> {}
 async function readUserInfo(supabaseClient: SupabaseClient, userId: string) {
   const { data, error } = await supabaseClient
@@ -26,7 +27,8 @@ async function readUserInfo(supabaseClient: SupabaseClient, userId: string) {
   return data
 }
 
-export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileScreen() {
+export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileScreen(_props) {
+  const { navigation } = _props
   const {
     authenticationStore: { setAuthToken },
   } = useStores()
@@ -47,6 +49,16 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
 
     fetchAndSetUserID()
   }, [])
+
+  useHeader(
+    {
+      title: "個人資料",
+      leftIcon: "caretLeft",
+      titleStyle: { fontSize: 24, padding: 10 },
+      onLeftPress: () => navigation.navigate("Welcome")
+    },
+    [],
+  )
 
   useEffect(() => {
     const fetchData = async () => {
@@ -69,6 +81,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
 
   return (
     <Screen preset="scroll">
+      <LoadingModal/>
       <View style={styles.contentContainerStyle}>
         <View style={styles.avatarContainer}>
           <Image

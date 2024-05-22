@@ -12,7 +12,7 @@ import {
   Modal,
 } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Button, Card, Icon, Screen, Text } from "app/components"
+import { Button, Card, Icon, LoadingModal, Screen, Text } from "app/components"
 import { useStores } from "app/models"
 import { getUserId, supabase } from "app/utils/supabase"
 import TinderCard from "react-tinder-card"
@@ -26,6 +26,7 @@ import { SupabaseClient } from "@supabase/supabase-js"
 import * as ImagePicker from "expo-image-picker"
 import { v4 as uuidv4 } from "uuid"
 import { Buffer } from "buffer"
+import { useHeader } from "app/utils/useHeader"
 
 interface AlbumScreenProps extends AppStackScreenProps<"Album"> {}
 
@@ -66,7 +67,7 @@ async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
 
 export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_props) {
   const { mediaStore } = useStores()
-  const albumId = _props.route.params.albumId
+  const { albumId, albumName } = _props.route.params
   const [medias, setMedias] = React.useState<Media[]>([])
   const [direction, setDirection] = React.useState("")
   const [swipedDirection, setSwipedDirection] = React.useState("")
@@ -202,20 +203,22 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     setModalVisible(false)
   }
 
+  useHeader(
+    {
+      title: albumName,
+      leftIcon: "caretLeft",
+      titleStyle: { fontSize: 24, padding: 10 },
+      onLeftPress: () => _props.navigation.goBack(),
+      rightIcon: "upload",
+      onRightPress: () => setModalVisible(true),
+    },
+    [],
+  )
+
   return (
     <Screen style={$root}>
-      <GoBackButton goBack={goBack}>{/* <Text text="< Go Back" /> */}</GoBackButton>
-      <TouchableOpacity
-        onPress={() => setModalVisible(true)}
-        style={{
-          position: "absolute",
-          right: 20,
-          top: 10,
-        }}
-      >
-        <Icon icon="upload" size={24} />
-      </TouchableOpacity>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+      <LoadingModal />
+      <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <View
           style={{
             flex: 1,
@@ -258,6 +261,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
             }
           />
           <View style={{ flexDirection: "row", gap: 20 }}>
+            <Button onPress={() => setModalVisible(false)}>Cancel</Button>
             <Button onPress={handleUploadImage} preset="filled">
               Select
             </Button>
@@ -313,10 +317,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
                   <Text
                     style={$description}
-                    text={
-                      
-                      new Date(medias[medias.length - 1].created_at).toLocaleDateString()
-                    }
+                    text={new Date(medias[medias.length - 1].created_at).toLocaleDateString()}
                   />
 
                   <Text
@@ -380,7 +381,6 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 const $root: ViewStyle = {
   flex: 1,
   display: "flex",
-  paddingTop: 80,
   flexDirection: "column",
 }
 
@@ -394,7 +394,7 @@ const $title: TextStyle = {
   fontWeight: "bold",
   alignSelf: "center",
   color: "black",
-  padding:10
+  padding: 10,
 }
 
 const $descriptionCard: ViewStyle = {

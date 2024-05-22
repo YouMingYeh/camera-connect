@@ -8,7 +8,7 @@ import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useHeader } from "../utils/useHeader"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { getUserId } from "app/utils/supabase"
+import { getUserId, supabase } from "app/utils/supabase"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
@@ -19,7 +19,10 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   async function checkSupabaseAuth() {
     const userID = await getUserId()
     if (!userID) {
-      setAuthToken("")
+      alert("You are not logged in")
+      const { error } = await supabase.auth.signOut()
+      if (error) return
+      setAuthToken(undefined)
     }
   }
 
@@ -29,7 +32,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   } = useStores()
 
   function goNext() {
-    navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
+    navigation.navigate("Demo", { screen: "Camera" })
   }
   useEffect(() => {
     checkSupabaseAuth()
