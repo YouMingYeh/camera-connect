@@ -1,23 +1,64 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
-import { Text, TouchableOpacity, View, Image, StyleSheet, ScrollView } from "react-native"
-import React, { useState } from "react"
+import { Text, TouchableOpacity, View, Image, StyleSheet, ScrollView, Modal } from "react-native"
+import React, { useEffect, useState } from "react"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { Media } from "./type"
 import { ResizeMode, Video } from "expo-av"
 import { ImageEditor } from "./expo-image-editor"
 import VideoTrimmer from "./VideoTrimmer"
+import { Picker } from "@react-native-picker/picker"
+import { Button, Card } from "app/components"
+import { useStores } from "app/models"
+import { getUserId, supabase } from "app/utils/supabase"
+import { SupabaseClient } from "@supabase/supabase-js"
+import { v4 as uuidv4 } from "uuid"
+import { Buffer } from "buffer"
+import * as ImageManinpulator from "expo-image-manipulator"
+
+type MediaCreate = {
+  id: string
+  title: string
+  is_video: boolean
+  url: string
+  album_id: string
+  uploader_id: string
+  hashtag: string[]
+}
+
+async function uploadImage(supabase: SupabaseClient, base64: string, filename: string) {
+  const { data, error } = await supabase.storage
+    .from("media")
+    .upload(filename, Buffer.from(base64, "base64"), {
+      contentType: "image/jpeg",
+      upsert: true,
+    })
+  if (error) {
+    console.log("Error uploading file: ", error.message)
+    alert("Error uploading file")
+    return
+  }
+  console.log("Success uploading file: ", data)
+}
+
+async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
+  const { data, error } = await supabase.from("media").insert(medias)
+  if (error) {
+    console.log("Error inserting media: ", error.message)
+    alert("Error inserting media")
+    return
+  }
+  console.log("Success inserting media: ", data)
+}
 
 const CameraPreview = ({
   medias,
   setMedias,
   retakePicture,
-  savePhoto,
 }: {
   medias: Media[]
   setMedias: (medias: Media[]) => void
   retakePicture: () => void
-  savePhoto: () => void
 }) => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0)
   const [selectedPhotos, setSelectedPhotos] = useState<Array<boolean>>(
@@ -26,6 +67,9 @@ const CameraPreview = ({
   const [editorVisible, setEditorVisible] = useState(false)
   const [videoEditorVisible, setVideoEditorVisible] = useState(false)
   const photo = medias[selectedPhotoIndex]
+  const [selectedAlbum, setSelectedAlbum] = useState<string | null>()
+  const [modelVisible, setModelVisible] = useState(false)
+  const { joinAlbumStore, mediaStore } = useStores()
 
   const selectPhoto = (index: number) => {
     setSelectedPhotoIndex(index)
@@ -44,6 +88,65 @@ const CameraPreview = ({
     setEditorVisible(true)
   }
 
+  async function handleUploadToAlbum() {
+    if (medias.length === 0) {
+      alert("No image selected")
+      return
+    }
+    const userId = await getUserId()
+    if (!userId) {
+      alert("User not found")
+      return
+    }
+    if (!selectedAlbum) {
+      alert("Please select an album")
+      return
+    }
+    const mediaCreates: MediaCreate[] = medias.map(() => {
+      const uuid = uuidv4()
+      return {
+        id: uuid,
+        title: "No title",
+        is_video: false,
+        url:
+          "https://adjixakqimigxsubirmn.supabase.co/storage/v1/object/public/media/media-" + uuid,
+        album_id: selectedAlbum,
+        uploader_id: userId,
+        hashtag: [],
+      }
+    })
+
+    for (let i = 0; i < medias.length; i++) {
+      const base64 = await ImageManinpulator.manipulateAsync(medias[i].data.uri, [], {
+        compress: 1,
+        format: ImageManinpulator.SaveFormat.JPEG,
+        base64: true,
+      })
+      if (!base64) {
+        alert("Error compressing image")
+        return
+      }
+      // const base64 = medias[i].data.uri
+      await uploadImage(supabase, base64.base64, "media-" + mediaCreates[i].id)
+    }
+
+    await createMedia(supabase, mediaCreates)
+    await mediaStore.fetchMedias(supabase, userId)
+    setModelVisible(false)
+  }
+
+  const fetchJoinAlbums = async () => {
+    const userId = await getUserId()
+    if (!userId) {
+      return
+    }
+    joinAlbumStore.fetchJoinAlbums(supabase, userId)
+  }
+
+  useEffect(() => {
+    fetchJoinAlbums()
+  }, [])
+
   return (
     <View
       style={{
@@ -53,6 +156,98 @@ const CameraPreview = ({
         height: "100%",
       }}
     >
+      <Modal transparent visible={modelVisible}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
+        >
+          <Card
+            style={{
+              width: "90%",
+            }}
+            ContentComponent={
+              <>
+                <Text
+                  style={{
+                    fontSize: 20,
+                    textAlign: "center",
+                  }}
+                >
+                  選擇上傳的相簿：
+                </Text>
+                <Picker
+                  style={{
+                    backgroundColor: "white",
+                    width: "100%",
+                  }}
+                  selectedValue={selectedAlbum}
+                  onValueChange={(itemValue) => setSelectedAlbum(itemValue)}
+                >
+                  {joinAlbumStore?.joinAlbums.map((album) => (
+                    <Picker.Item
+                      key={album.album.id}
+                      label={album.album.album_name}
+                      value={album.album.id}
+                    />
+                  ))}
+                </Picker>
+              </>
+            }
+          ></Card>
+          <View
+            style={{
+              flexDirection: "row",
+              width: "90%",
+              marginTop: 10,
+              gap: 10,
+            }}
+          >
+            <Button
+              style={{
+                flex: 1,
+              }}
+              onPress={() => setModelVisible(false)}
+            >
+              取消
+            </Button>
+            <Button
+              style={{
+                flex: 1,
+              }}
+              onPress={handleUploadToAlbum}
+              preset={"reversed"}
+            >
+              上傳
+            </Button>
+          </View>
+        </View>
+      </Modal>
+      <TouchableOpacity
+        onPress={() => {
+          setMedias([])
+          retakePicture()
+        }}
+        style={{
+          position: "absolute",
+          left: 20,
+          top: 30,
+          zIndex: 10,
+          padding: 10,
+        }}
+      >
+        <Text
+          style={{
+            color: "#fff",
+            fontSize: 20,
+          }}
+        >
+          重新拍攝
+        </Text>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={() => handleEdit()}
         style={{
@@ -69,7 +264,7 @@ const CameraPreview = ({
             fontSize: 20,
           }}
         >
-          Edit
+          編輯
         </Text>
       </TouchableOpacity>
       <ImageEditor
@@ -179,11 +374,11 @@ const CameraPreview = ({
                 fontSize: 20,
               }}
             >
-              Re-take
+              繼續拍攝
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={savePhoto}
+            onPress={() => setModelVisible(true)}
             style={{
               paddingEnd: 20,
               alignItems: "center",
@@ -196,7 +391,7 @@ const CameraPreview = ({
                 fontSize: 20,
               }}
             >
-              save photo
+              儲存
             </Text>
           </TouchableOpacity>
         </View>
