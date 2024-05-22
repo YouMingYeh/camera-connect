@@ -85,6 +85,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
   const [title, setTitle] = React.useState("")
   const [description, setDescription] = React.useState("")
   const [cover, setCover] = React.useState("")
+  const [zoomImage, setZoomImage] = React.useState<string | null>()
 
   useEffect(() => {
     getUserId().then((id: string | null) => {
@@ -201,7 +202,9 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
             renderItem={({ item }) => (
               <View style={$item}>
                 {item.image ? (
-                  <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
+                  <TouchableOpacity onPress={() => setZoomImage(item.image)}>
+                    <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
+                  </TouchableOpacity>
                 ) : (
                   <Loading />
                 )}
@@ -212,6 +215,18 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
             )}
           />
         </DemoUseCase>
+        {zoomImage && (
+          <Modal animationType="fade" transparent={true} visible={zoomImage !== null}>
+            <View style={$modal} onTouchEnd={() => setZoomImage(null)}>
+              <Image
+                source={{ uri: zoomImage }}
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{ width: "100%", height: "60%" }}
+                resizeMode="contain"
+              />
+            </View>
+          </Modal>
+        )}
 
         <DemoDivider size={10} />
         <DemoUseCase name="你的相簿" description="你加入的相簿" layout="column">
@@ -339,7 +354,7 @@ const $container: ViewStyle = {
 
 const $badge: ViewStyle = {
   position: "absolute",
-  top: 5,
+  top: 15,
   right: 5,
   borderRadius: 10,
   backgroundColor: "white",
