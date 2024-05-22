@@ -91,15 +91,12 @@ export default function Gallery({ medias }: GalleryProps) {
 
                     <Text
                       style={styles.description}
-                      text={
-                        "created at: " +
-                        new Date(medias[activeIndex].created_at).toLocaleDateString()
-                      }
+                      text={new Date(medias[activeIndex].created_at).toLocaleDateString()}
                     />
 
                     <Text
                       style={styles.description}
-                      text={"uploaded by: " + medias[activeIndex].uploader?.username}
+                      text={"上傳者：" + medias[activeIndex].uploader?.username}
                     />
                     <Text
                       style={styles.description}
@@ -206,6 +203,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     fontSize: 24,
     fontWeight: "bold",
+    padding: 10,
   },
   description: {
     alignSelf: "center",

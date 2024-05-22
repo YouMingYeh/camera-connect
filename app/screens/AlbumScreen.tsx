@@ -314,14 +314,14 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                   <Text
                     style={$description}
                     text={
-                      "created at: " +
+                      
                       new Date(medias[medias.length - 1].created_at).toLocaleDateString()
                     }
                   />
 
                   <Text
                     style={$description}
-                    text={"uploaded by: " + medias[medias.length - 1].uploader?.username}
+                    text={"上傳者：" + medias[medias.length - 1].uploader?.username}
                   />
                   <Text
                     style={$description}
@@ -394,6 +394,7 @@ const $title: TextStyle = {
   fontWeight: "bold",
   alignSelf: "center",
   color: "black",
+  padding:10
 }
 
 const $descriptionCard: ViewStyle = {
