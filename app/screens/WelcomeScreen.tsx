@@ -13,10 +13,9 @@ import { getUserId } from "app/utils/supabase"
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
 
-interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> { }
+interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
 
 export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen(_props) {
-
   async function checkSupabaseAuth() {
     const userID = await getUserId()
     if (!userID) {
@@ -32,7 +31,9 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   function goNext() {
     navigation.navigate("Demo", { screen: "DemoShowroom", params: {} })
   }
-  useEffect(() => { checkSupabaseAuth() }, [])
+  useEffect(() => {
+    checkSupabaseAuth()
+  }, [])
   useHeader(
     {
       rightTx: "common.logOut",

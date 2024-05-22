@@ -128,9 +128,9 @@ const zh = {
       sad: "難過",
       smile: "開心",
       angry: "生氣",
-      heart: "愛心"
-    }
-  }
+      heart: "愛心",
+    },
+  },
 }
 
 export default zh

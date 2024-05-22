@@ -131,5 +131,5 @@ export const iconRegistry = {
 
 const $imageStyleBase: ImageStyle = {
   resizeMode: "contain",
-  alignSelf: "center"
+  alignSelf: "center",
 }

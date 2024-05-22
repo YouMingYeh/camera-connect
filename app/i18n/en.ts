@@ -138,8 +138,8 @@ const en = {
       smile: "Happy",
       angry: "Angry",
       heart: "Love",
-    }
-  }
+    },
+  },
 }
 
 export default en

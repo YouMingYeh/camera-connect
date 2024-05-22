@@ -31,11 +31,9 @@ export const getUserId = async (safecheck = true) => {
       } else if (data.length != 1) {
         throw Error("Supabase duplicated user column")
       }
-
     }
     return user.id
-  }
-  catch(e){
+  } catch (e) {
     return null
   }
 }
