@@ -9,11 +9,12 @@ import {
   ViewStyle,
   Animated,
   TouchableOpacity,
+  Modal,
 } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Card, Icon, Screen, Text } from "app/components"
+import { Button, Card, Icon, Screen, Text } from "app/components"
 import { useStores } from "app/models"
-import { supabase } from "app/utils/supabase"
+import { getUserId, supabase } from "app/utils/supabase"
 import TinderCard from "react-tinder-card"
 import { Media } from "app/models/Media"
 import Gallery from "app/components/Gallery"
@@ -21,11 +22,50 @@ import { ScrollView } from "react-native-gesture-handler"
 import { BlurView } from "expo-blur"
 import { colors } from "app/theme"
 import { GoBackButton } from "app/components/GoBackButton"
+import { SupabaseClient } from "@supabase/supabase-js"
+import * as ImagePicker from "expo-image-picker"
+import { v4 as uuidv4 } from "uuid"
+import { Buffer } from "buffer"
 
 interface AlbumScreenProps extends AppStackScreenProps<"Album"> {}
 
+type MediaCreate = {
+  id: string
+  title: string
+  is_video: boolean
+  url: string
+  album_id: string
+  uploader_id: string
+  hashtag: string[]
+}
+
+async function uploadImage(supabase: SupabaseClient, base64: string, filename: string) {
+  const { data, error } = await supabase.storage
+    .from("media")
+    .upload(filename, Buffer.from(base64, "base64"), {
+      contentType: "image/jpeg",
+      upsert: true,
+    })
+  if (error) {
+    console.log("Error uploading file: ", error.message)
+    alert("Error uploading file")
+    return
+  }
+  console.log("Success uploading file: ", data)
+}
+
+async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
+  const { data, error } = await supabase.from("media").insert(medias)
+  if (error) {
+    console.log("Error inserting media: ", error.message)
+    alert("Error inserting media")
+    return
+  }
+  console.log("Success inserting media: ", data)
+}
+
 export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_props) {
-  const { mediaStore, authenticationStore } = useStores()
+  const { mediaStore } = useStores()
   const albumId = _props.route.params.albumId
   const [medias, setMedias] = React.useState<Media[]>([])
   const [direction, setDirection] = React.useState("")
@@ -37,6 +77,9 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   const [sad, setSad] = React.useState(false)
   const [smile, setSmile] = React.useState(false)
   const [angry, setAngry] = React.useState(false)
+  const [modalVisible, setModalVisible] = React.useState(false)
+
+  const [selectedImages, setSelectedImages] = React.useState<string[]>([])
 
   function animateHeart() {
     Animated.timing(heartScale, {
@@ -109,17 +152,126 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     }
   }
 
+  async function handleUploadImage() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true,
+      allowsMultipleSelection: true,
+    })
+
+    if (!result.canceled) {
+      setSelectedImages(result.assets.map((asset) => asset.base64 || ""))
+    }
+  }
+
+  async function handleUploadToAlbum() {
+    if (selectedImages.length === 0) {
+      alert("No image selected")
+      return
+    }
+    const userId = await getUserId()
+    if (!userId) {
+      alert("User not found")
+      return
+    }
+    const mediaCreates: MediaCreate[] = selectedImages.map(() => {
+      const uuid = uuidv4()
+      return {
+        id: uuid,
+        title: "No title",
+        is_video: false,
+        url:
+          "https://adjixakqimigxsubirmn.supabase.co/storage/v1/object/public/media/media-" + uuid,
+        album_id: albumId,
+        uploader_id: userId,
+        hashtag: [],
+      }
+    })
+
+    for (let i = 0; i < selectedImages.length; i++) {
+      await uploadImage(supabase, selectedImages[i], "media-" + mediaCreates[i].id)
+    }
+
+    await createMedia(supabase, mediaCreates)
+    await mediaStore.fetchMedias(supabase, albumId).then(() => {
+      setMedias(mediaStore.medias)
+    })
+    setSelectedImages([])
+    setModalVisible(false)
+  }
+
   return (
     <Screen style={$root}>
-      <GoBackButton goBack={goBack}>
-        {/* <Text text="< Go Back" /> */}
-      </GoBackButton>
+      <GoBackButton goBack={goBack}>{/* <Text text="< Go Back" /> */}</GoBackButton>
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        style={{
+          position: "absolute",
+          right: 20,
+          top: 10,
+        }}
+      >
+        <Icon icon="upload" size={24} />
+      </TouchableOpacity>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            gap: 10,
+          }}
+        >
+          <Card
+            style={{
+              width: "90%",
+              height: "50%",
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              alignItems: "center",
+            }}
+            ContentComponent={
+              <>
+                <Text text="Selected Images:" />
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    height: "100%",
+                    width: "100%",
+                  }}
+                >
+                  {selectedImages.map((base64, index) => (
+                    <Image
+                      key={index}
+                      source={{ uri: `data:image/jpg;base64,${base64}` }}
+                      style={{ height: 100, width: 100 }}
+                    />
+                  ))}
+                </View>
+              </>
+            }
+          />
+          <View style={{ flexDirection: "row", gap: 20 }}>
+            <Button onPress={handleUploadImage} preset="filled">
+              Select
+            </Button>
+            <Button onPress={handleUploadToAlbum} preset="reversed">
+              Upload
+            </Button>
+          </View>
+        </View>
+      </Modal>
       <View style={$screen}>
-        
         <BlurView intensity={intensity} style={[$backdrop, { zIndex: intensity < 2 ? -1 : 10 }]} />
         {medias.length !== 0 && (
           <View style={$container}>
-            <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} />
+            {/* <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} /> */}
             {medias.map((media) => (
               <TinderCard
                 key={media.id}
@@ -179,7 +331,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
               }
             />
             <View style={$reactCard}>
-              <Text tx="albumScreen.reactionHint" />
+              {/* <Text tx="albumScreen.reactionHint" /> */}
               <View style={$icons}>
                 <TouchableOpacity onPress={() => handleToggleReaction("thumb")}>
                   <Icon
@@ -190,7 +342,12 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                   />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
-                  <Icon icon="sad" size={30} color={sad ? colors.tint : "black"} label="albumScreen.reaction.sad" />
+                  <Icon
+                    icon="sad"
+                    size={30}
+                    color={sad ? colors.tint : "black"}
+                    label="albumScreen.reaction.sad"
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
                   <Icon
@@ -289,6 +446,7 @@ const $imageContainer: ViewStyle = {
 
 const $galleryContainer: ViewStyle = {
   alignSelf: "stretch",
+  backgroundColor: colors.palette.neutral300,
 }
 
 const $image: ImageStyle = {

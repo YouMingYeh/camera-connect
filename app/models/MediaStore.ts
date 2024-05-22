@@ -56,7 +56,11 @@ export const MediaStoreModel = types
           hashtag: media.hashtag,
         }
       })
-      console.log(mediaModels[0].uploader)
+      if (medias?.length === 0) {
+        console.log("No medias found")
+        store.setProp("medias", [])
+        return
+      }
       if (medias) {
         store.setProp("medias", mediaModels)
       } else {

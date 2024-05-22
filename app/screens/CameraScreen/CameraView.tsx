@@ -11,6 +11,7 @@ import { ResizeMode, Video } from "expo-av"
 import * as ImageManinpulator from "expo-image-manipulator"
 import { supabase, getUserId } from "../../utils/supabase"
 import { checkFriendshipStatus } from "../../screens/ProfileScreen/Friends"
+
 let camera: Camera
 interface BarCodeEvent {
   type: string
@@ -96,11 +97,6 @@ export default function App() {
     }
   }
 
-  const __savePhoto = () => {
-    if (!capturedMedia) {
-      // return
-    }
-  }
   const __retakePicture = () => {
     setPreviewVisible(false)
     __startCamera()
@@ -165,11 +161,11 @@ export default function App() {
   const __handleDefaultQRAction = (data: string) => {
     if (/^https?:\/\//.test(data)) {
       Alert.alert(
-        "Open Link",
-        "Do you want to open this link?",
+        "打開連結",
+        "你確定要打開這個連結嗎？",
         [
-          { text: "Cancel", style: "cancel" },
-          { text: "Open", onPress: () => Linking.openURL(data) },
+          { text: "取消", style: "cancel" },
+          { text: "開啟", onPress: () => Linking.openURL(data) },
         ],
         { cancelable: false },
       )
@@ -293,7 +289,6 @@ export default function App() {
           {previewVisible && capturedMedia ? (
             <CameraPreview
               medias={capturedMedia}
-              savePhoto={__savePhoto}
               retakePicture={__retakePicture}
               setMedias={setCapturedMedias}
             />
