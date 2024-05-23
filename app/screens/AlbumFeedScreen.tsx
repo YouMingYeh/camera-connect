@@ -136,13 +136,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     joinAlbumStore.fetchJoinAlbums(supabase, userID)
   }, [userID])
 
-  if (data.length === 0) {
-    return (
-      <Screen style={$root}>
-        <Loading />
-      </Screen>
-    )
-  }
+ 
 
   const dummyData = [
     {
@@ -197,6 +191,14 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     },
     [],
   )
+
+  if (data.length === 0) {
+    return (
+      <Screen style={$root}>
+        <Loading />
+      </Screen>
+    )
+  }
 
   return (
     <Screen style={$root} preset="scroll">

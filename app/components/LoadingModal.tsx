@@ -29,7 +29,7 @@ export const LoadingModal = observer(function LoadingModal(props: LoadingModalPr
   return (
     < >
       {modalVisible && (
-        <Modal style={$modalContent} visible={true}>
+        <Modal style={$modalContent} visible={true} >
           <View style={$container}>
           <Loading />
           </View>

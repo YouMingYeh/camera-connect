@@ -22,7 +22,7 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
       alert("You are not logged in")
       const { error } = await supabase.auth.signOut()
       if (error) return
-      setAuthToken(undefined)
+      setAuthToken("")
     }
   }
 

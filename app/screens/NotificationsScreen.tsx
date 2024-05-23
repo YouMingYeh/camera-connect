@@ -105,8 +105,8 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
                   <Text style={{ color: "white", fontWeight: "bold" }}>{notification.type}</Text>
                 </View>
               </View>
+              <DemoDivider />
             </TouchableOpacity>
-            <DemoDivider />
           </>
         ))}
       </Screen>

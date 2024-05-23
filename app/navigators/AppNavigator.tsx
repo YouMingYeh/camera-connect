@@ -45,7 +45,7 @@ export type AppStackParamList = {
   Notifications: undefined
   Settings: undefined
   Profile: undefined
-  Album: { albumId: string, albumName: string }
+  Album: { albumId: string; albumName: string }
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 

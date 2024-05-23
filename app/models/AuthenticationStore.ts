@@ -1,14 +1,15 @@
+import { getUserId, supabase } from "app/utils/supabase"
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
 
 export const AuthenticationStoreModel = types
   .model("AuthenticationStore")
   .props({
-    authToken: types.maybe(types.string),
+    authToken: "",
     authEmail: "",
   })
   .views((store) => ({
     get isAuthenticated() {
-      return !!store.authToken
+      return store.authToken !== ""
     },
     get validationError() {
       if (store.authEmail.length === 0) return "can't be blank"
@@ -19,7 +20,7 @@ export const AuthenticationStoreModel = types
     },
   }))
   .actions((store) => ({
-    setAuthToken(value?: string) {
+    setAuthToken(value: string) {
       store.authToken = value
     },
     setAuthEmail(value: string) {
