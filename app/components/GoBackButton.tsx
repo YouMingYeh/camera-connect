@@ -18,20 +18,12 @@ export interface GoBackButtonProps {
  * Describe your component here
  */
 export const GoBackButton = observer(function GoBackButton(props: GoBackButtonProps) {
-<<<<<<< HEAD
   const { label, goBack } = props
-=======
-  const { children, goBack } = props
->>>>>>> f93e431 (feat: Implement favorite and suggestion carousel)
 
   return (
     <TouchableOpacity onPress={goBack} style={$container}>
       <Icon icon="caretLeft" size={24} />
-<<<<<<< HEAD
       {label ? <Text style={$text}>{label}</Text> : <Text tx="common.back" style={$text} />}
-=======
-      {children || <Text tx="common.back" style={$text} />}
->>>>>>> f93e431 (feat: Implement favorite and suggestion carousel)
     </TouchableOpacity>
   )
 })
