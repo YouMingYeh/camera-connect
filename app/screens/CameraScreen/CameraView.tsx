@@ -204,10 +204,10 @@ export default function App() {
       if (error) throw new Error(error.message)
 
       console.log("Friend added:", data)
-      Alert.alert("Success", "Friend added successfully!")
+      Alert.alert("成功", "你成功加入朋友！")
     } catch (err) {
       console.error("Failed to add friend:", err)
-      Alert.alert("Error", "Failed to add friend")
+      Alert.alert("失敗", "加入朋友並沒有成功...")
     }
   }
   const __joinAlbum = async (albumId: string) => {
@@ -242,10 +242,10 @@ export default function App() {
 
       if (error) throw new Error(error.message)
 
-      Alert.alert("Success", "You have joined the album successfully!")
+      Alert.alert("成功", "你成功加入相簿")
     } catch (err) {
       console.error("Failed to join album:", err)
-      Alert.alert("Error", "Failed to join album")
+      Alert.alert("失敗", "加入相簿失敗了...")
     }
   }
 

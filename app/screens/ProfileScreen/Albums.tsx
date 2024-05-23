@@ -4,15 +4,14 @@ import { Feather } from "@expo/vector-icons"
 import { supabase, getUserId } from "../../utils/supabase"
 import QRCode from "react-native-qrcode-svg"
 import RNPickerSelect from "react-native-picker-select"
-interface Album {
-  id: string
-  album_name: string
-  cover_url: string
-}
+import { Album, useStores } from "app/models"
+
 const Albums = () => {
   const [expanded, setExpanded] = useState(false)
   const [albums, setAlbums] = useState<Album[]>([])
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null)
+
+  const { joinAlbumStore } = useStores()
 
   const handlePress = () => {
     if (expanded) {
@@ -29,33 +28,10 @@ const Albums = () => {
         console.error("User ID not found")
         return
       }
+      await joinAlbumStore.fetchJoinAlbums(supabase, userId);
+      const data = joinAlbumStore.joinAlbums.map((j) => j.album)
+      setAlbums(data)
 
-      try {
-        const { data: joinData, error: joinError } = await supabase
-          .from("join_album")
-          .select("album_id")
-          .eq("user_id", userId)
-
-        if (joinError) {
-          console.error("Error fetching album IDs:", joinError.message)
-          return
-        }
-
-        const albumIds = joinData.map((j) => j.album_id)
-        const { data, error } = await supabase
-          .from("album")
-          .select("id, album_name, cover_url")
-          .in("id", albumIds)
-
-        if (error) {
-          console.error("Error fetching albums:", error.message)
-          return
-        }
-
-        setAlbums(data)
-      } catch (err) {
-        console.error("An error occurred while fetching albums:", err)
-      }
     }
 
     fetchAlbums()
