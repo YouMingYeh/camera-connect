@@ -19,7 +19,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   async function checkSupabaseAuth() {
     const userID = await getUserId()
     if (!userID) {
-      alert("You are not logged in")
       const { error } = await supabase.auth.signOut()
       if (error) return
       setAuthToken("")
@@ -99,7 +98,7 @@ const $bottomContainer: ViewStyle = {
   justifyContent: "space-around",
 }
 const $welcomeLogo: ImageStyle = {
-  height: 88,
+  height: 160,
   width: "100%",
   marginBottom: spacing.xxl,
 }

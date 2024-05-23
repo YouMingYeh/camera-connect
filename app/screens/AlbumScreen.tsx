@@ -239,7 +239,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
             }}
             ContentComponent={
               <>
-                <Text text="Selected Images:" />
+                <Text text="你選擇的照片：" />
                 <View
                   style={{
                     flex: 1,
@@ -261,12 +261,12 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
             }
           />
           <View style={{ flexDirection: "row", gap: 20 }}>
-            <Button onPress={() => setModalVisible(false)}>Cancel</Button>
+            <Button onPress={() => setModalVisible(false)}>取消</Button>
             <Button onPress={handleUploadImage} preset="filled">
-              Select
+              從相簿中選擇
             </Button>
             <Button onPress={handleUploadToAlbum} preset="reversed">
-              Upload
+              立即上傳
             </Button>
           </View>
         </View>

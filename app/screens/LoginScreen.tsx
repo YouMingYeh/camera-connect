@@ -48,27 +48,39 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     }
   }
 
+  async function register() {
+    try {
+      setIsSubmitted(true)
+      setAttemptsCount(attemptsCount + 1)
+      const { data, error } = await supabase.auth.signUp({
+        email: authEmail,
+        password: authPassword,
+      })
+      if (!data.user || error || validationError) {
+        alert("Error: " + error?.message + " " + validationError)
+        return
+      }
+
+      // Make a request to your server to get an authentication token.
+      // If successful, reset the fields and set the token.
+      setIsSubmitted(false)
+      setSignUp(false)
+
+      // set auth token to supabase
+    } catch (e) {
+      console.log(e)
+      expoAlert(e)
+    }
+  }
+
   async function login() {
     try {
       setIsSubmitted(true)
       setAttemptsCount(attemptsCount + 1)
-      const { data, error } = isSignUp
-        ? await supabase.auth
-            .signUp({
-              email: authEmail,
-              password: authPassword,
-            })
-            .then(async () => {
-              expoAlert("Check your email for confirmation mail")
-              return await supabase.auth.signInWithPassword({
-                email: authEmail,
-                password: authPassword,
-              })
-            })
-        : await supabase.auth.signInWithPassword({
-            email: authEmail,
-            password: authPassword,
-          })
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: authEmail,
+        password: authPassword,
+      })
       if (!data.user || error || validationError) {
         alert("Error: " + error?.message + " " + validationError)
         return
@@ -140,7 +152,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         secureTextEntry={isAuthPasswordHidden}
         labelTx="loginScreen.passwordFieldLabel"
         placeholderTx="loginScreen.passwordFieldPlaceholder"
-        onSubmitEditing={login}
+        onSubmitEditing={isSignUp ? register : login}
         RightAccessory={PasswordRightAccessory}
       />
 
@@ -149,7 +161,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         tx={isSignUp ? "loginScreen.tapToSignUp" : "loginScreen.tapToSignIn"}
         style={$tapButton}
         preset="reversed"
-        onPress={login}
+        onPress={isSignUp ? register : login}
       />
       {testingSignUp ? (
         <View style={$signupContainer}>

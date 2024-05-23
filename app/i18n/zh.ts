@@ -7,9 +7,9 @@ const zh = {
   },
   welcomeScreen: {
     postscript:
-      "嘿 — 這可能不是你的應用程式實際的樣子。 (除非你的設計師交給你這些畫面，那樣的話，就這樣上線吧！)",
-    readyForLaunch: "你的應用程式，幾乎準備好要上線了！",
-    exciting: "（哦，這真令人興奮！）",
+      "你可以透過 Camera Connect 與他人共享相簿，並且使用拍照功能立即將你們的生活記錄到相簿裡，也可以管理、探索和分享你的照片，並與他人互動。",
+    readyForLaunch: "歡迎使用 Camera Connect！",
+    exciting: "（這真令人興奮！）",
     letsGo: "我們開始吧！",
   },
   errorScreen: {
@@ -33,15 +33,15 @@ const zh = {
   loginScreen: {
     signIn: "登入",
     enterDetails:
-      "在下面輸入你的詳細資料以解鎖極秘信息。你絕對猜不到我們在等什麼。或許你會猜到；這裡不是火箭科學。",
+      "在下面輸入你的電子郵件地址和密碼，或者點擊註冊以創建一個新帳戶。",
     emailFieldLabel: "電子郵件",
     passwordFieldLabel: "密碼",
     emailFieldPlaceholder: "輸入你的電子郵件地址",
     passwordFieldPlaceholder: "在這裡輸入超級秘密的密碼",
     tapToSignIn: "點擊登入！",
     tapToSignUp: "點擊註冊！",
-    changeToSignIn: "已經有帳戶？登入",
-    changeToSignUp: "還沒有帳戶？註冊",
+    changeToSignIn: "已經有帳戶？切換登入",
+    changeToSignUp: "還沒有帳戶？切換註冊",
     hint: "提示：你可以使用任何電子郵件地址和你最喜歡的密碼 :)",
   },
   demoNavigator: {
@@ -124,7 +124,7 @@ const zh = {
     swipeHint: "左右滑動",
     reactionHint: "你覺得怎麼樣？",
     reaction: {
-      thumb: "讚",
+      thumb: "推推",
       sad: "難過",
       smile: "開心",
       angry: "生氣",
