@@ -54,7 +54,7 @@ async function uploadImage(supabase: SupabaseClient, base64: string, filename: s
     })
   if (error) {
     console.log("Error uploading file: ", error.message)
-    alert("Error uploading file")
+    alert("上傳檔案出現錯誤...")
     return
   }
   console.log("Success uploading file: ", data)
@@ -64,7 +64,7 @@ async function createAlbum(supabase: SupabaseClient, album: Album) {
   const { data, error } = await supabase.from("album").insert([album])
   if (error) {
     console.log("Error inserting album: ", error.message)
-    alert("Error inserting album")
+    alert("創建相簿出現錯誤...")
     return
   }
   console.log("Success inserting album: ", data)

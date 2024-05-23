@@ -9,7 +9,7 @@ export * from "./ErrorScreen/ErrorBoundary"
 // export other screens here
 export * from "./CameraScreen/CameraScreen"
 export * from "./AlbumFeedScreen"
-export * from "./ExploreScreen"
+export * from "./ExploreScreen/ExploreScreen"
 export * from "./NotificationsScreen"
 export * from "./SettingsScreen"
 export * from "./ProfileScreen/ProfileScreen"

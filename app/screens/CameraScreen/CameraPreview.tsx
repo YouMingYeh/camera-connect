@@ -35,7 +35,7 @@ async function uploadImage(supabase: SupabaseClient, base64: string, filename: s
     })
   if (error) {
     console.log("Error uploading file: ", error.message)
-    alert("Error uploading file")
+    alert("上傳檔案失敗...")
     return
   }
   console.log("Success uploading file: ", data)
@@ -45,7 +45,7 @@ async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
   const { data, error } = await supabase.from("media").insert(medias)
   if (error) {
     console.log("Error inserting media: ", error.message)
-    alert("Error inserting media")
+    alert("上傳檔案失敗...")
     return
   }
   console.log("Success inserting media: ", data)
@@ -90,16 +90,16 @@ const CameraPreview = ({
 
   async function handleUploadToAlbum() {
     if (medias.length === 0) {
-      alert("No image selected")
+      alert("你沒有選擇照片")
       return
     }
     const userId = await getUserId()
     if (!userId) {
-      alert("User not found")
+      alert("找不到使用者")
       return
     }
     if (!selectedAlbum) {
-      alert("Please select an album")
+      alert("請選擇一個相簿")
       return
     }
     const mediaCreates: MediaCreate[] = medias.map(() => {
@@ -123,7 +123,7 @@ const CameraPreview = ({
         base64: true,
       })
       if (!base64) {
-        alert("Error compressing image")
+        alert("壓縮照片失敗...")
         return
       }
       // const base64 = medias[i].data.uri
