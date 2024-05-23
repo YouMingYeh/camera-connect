@@ -88,11 +88,7 @@ export function Icon(props: IconProps) {
       style={$containerStyleOverride}
     >
       <Image style={$imageStyle} source={iconRegistry[icon]} />
-<<<<<<< HEAD
       {/* {props.label && <Text style={{color}} tx={props.label as TxKeyPath}></Text>} */}
-=======
-      {props.label && <Text style={{ color }} tx={props.label as TxKeyPath}></Text>}
->>>>>>> f93e431 (feat: Implement favorite and suggestion carousel)
     </Wrapper>
   )
 }
