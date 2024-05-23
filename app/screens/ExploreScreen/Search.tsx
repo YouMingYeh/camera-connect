@@ -5,19 +5,43 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TouchableWithoutFeedback,
 } from "react-native"
+
+import { getUserId } from "../../utils/supabase"
 import { supabase } from "../../utils/supabase"
 import type { SearchProps, MediaItem } from "./types"
-import { Image } from "expo-image"
-
+import SBImageItem from "./SBImageItem"
 const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type, setType }) => {
   const [searchResults, setSearchResults] = useState<MediaItem[]>([])
   const [selectedFilter, setSelectedFilter] = useState<string>("all")
+  const [userID, setUserID] = useState("")
+  useEffect(() => {
+    const fetchAndSetUserID = async () => {
+      const fetchedUserID = await getUserId()
+      if (fetchedUserID && fetchedUserID !== "") {
+        setUserID(fetchedUserID)
+      }
+    }
 
+    fetchAndSetUserID()
+  }, [])
   useEffect(() => {
     const fetchSearchResults = async () => {
-      let query = supabase.from("media").select("*")
+      
+      const { data: albums } = await supabase
+      .from("join_album")
+      .select("album_id")
+      .eq("user_id", userID);
+
+    if (albums === null) {
+      setSearchResults([]);
+      return;
+    }
+
+    let query = supabase.from("media").select("*").in(
+      "album_id",
+      albums.map((album) => album.album_id)
+    );
 
       if (searchQuery) {
         query = query.or(`title.ilike.%${searchQuery}%,hashtag.cs.{${searchQuery}}`)
@@ -78,19 +102,24 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
         >
           <Text style={styles.filterText}>Images</Text>
         </Pressable>
-        <Pressable
+        {/* <Pressable
           onPress={() => handleFilterPress("favorites")}
           style={[styles.filterButton, selectedFilter === "favorites" && styles.selectedFilter]}
         >
           <Text style={styles.filterText}>Favorites</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
 
       <View style={styles.container}>
-        {searchResults.map((searchResult) => (
-          <TouchableWithoutFeedback key={searchResult.id}>
-            <Image source={{ uri: searchResult.url }} style={styles.image} />
-          </TouchableWithoutFeedback>
+      {searchResults.map((searchResult, index) => (
+          <View key={searchResult.id} style={styles.itemContainer}>
+            <SBImageItem
+              media={searchResult}
+              img={searchResult.url}
+              index={index}
+              style={styles.imageItem}
+            />
+          </View>
         ))}
       </View>
     </View>
@@ -98,6 +127,15 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
 }
 
 const styles = StyleSheet.create({
+  itemContainer: {
+    width: "50%", 
+    padding :5
+  },
+  imageItem: {
+    width: "100%",
+    height: 200,
+    borderRadius: 2,
+  },
   searchBar: {
     fontSize: 18,
     padding: 8,

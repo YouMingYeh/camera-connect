@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react"
+import React, { FC, useState, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, StyleSheet, TextInput, Text } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
@@ -6,14 +6,14 @@ import { Screen } from "app/components"
 import SuggestionCarousel from "./SuggestionCarousel"
 import FavoriteCarousel from "./FavoriteCarousel"
 import Search from "./Search"
-
+import { getUserId } from "../../utils/supabase"
 interface ExploreScreenProps extends AppStackScreenProps<"Explore"> {}
 
 export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreScreen() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
   const [type, setType] = useState("all")
-
+  const [userID, setUserID] = useState("")
   const handleSearch = () => {
     setIsSearching(true)
   }
@@ -22,7 +22,16 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
     setIsSearching(false)
     setSearchQuery("")
   }
+  useEffect(() => {
+    const fetchAndSetUserID = async () => {
+      const fetchedUserID = await getUserId()
+      if (fetchedUserID && fetchedUserID !== "") {
+        setUserID(fetchedUserID)
+      }
+    }
 
+    fetchAndSetUserID()
+  }, [])
   return (
     <Screen style={$root} preset="scroll">
       {isSearching ? (
@@ -44,9 +53,9 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
             placeholderTextColor="#666"
           />
           <Text style={styles.name}>Suggestion</Text>
-          <SuggestionCarousel />
+          <SuggestionCarousel userId={userID} />
           <Text style={styles.name}>My Favorite</Text>
-          <FavoriteCarousel />
+          <FavoriteCarousel userId={userID} />
         </>
       )}
     </Screen>

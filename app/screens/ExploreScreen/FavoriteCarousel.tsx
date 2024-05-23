@@ -1,20 +1,21 @@
 import * as React from "react"
-import { StyleSheet, ActivityIndicator, Dimensions, View } from "react-native"
+import { Dimensions, View } from "react-native"
 
-import type { StyleProp, ViewStyle, ImageURISource, ImageSourcePropType } from "react-native"
-
-import { Image } from "expo-image"
-
+import type { ImageSourcePropType } from "react-native"
+import SBImageItem from "./SBImageItem"
 import { interpolate } from "react-native-reanimated"
 import Carousel from "react-native-reanimated-carousel"
 import type { ScaledSize } from "react-native"
 
+import { fetchRandomMedia } from "./fetchRandomMedia"
+import { MediaItem } from "./types"
 export const window: ScaledSize = Dimensions.get("window")
 const scale = 0.7
 const PAGE_WIDTH = window.width * scale
 const PAGE_HEIGHT = 240 * scale
 
-function Index() {
+function Index({ userId }: { userId: string }) {
+  const [entries, setEntries] = React.useState<MediaItem[]>([])
   const animationStyle = React.useCallback((value: number) => {
     "worklet"
 
@@ -28,6 +29,14 @@ function Index() {
     }
   }, [])
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const mediaEntries = await fetchRandomMedia(userId)
+      setEntries(mediaEntries)
+    }
+    if (userId) fetchData()
+  }, [userId])
+
   return (
     <View style={{ flex: 1 }}>
       <Carousel
@@ -39,9 +48,16 @@ function Index() {
         }}
         width={PAGE_WIDTH}
         height={PAGE_HEIGHT}
-        data={[...new Array(16).keys()]}
-        renderItem={({ index }) => {
-          return <SBImageItem key={index} index={index} />
+        data={entries}
+        renderItem={({ item, index }) => {
+          return (
+            <SBImageItem
+              key={index}
+              index={index}
+              img={item.url as ImageSourcePropType}
+              media={item}
+            />
+          )
         }}
         customAnimation={animationStyle}
         autoPlay={true}
@@ -52,40 +68,3 @@ function Index() {
 }
 
 export default Index
-
-interface Props {
-  style?: StyleProp<ViewStyle>
-  index?: number
-  showIndex?: boolean
-  img?: ImageSourcePropType
-}
-
-export const SBImageItem: React.FC<Props> = ({ style, index: _index, img }) => {
-  const index = _index ?? 0
-  const source = React.useRef<ImageURISource>({
-    uri: `https://picsum.photos/id/${index}/400/300`,
-  }).current
-
-  return (
-    <View style={[styles.container, style]}>
-      <ActivityIndicator size="small" />
-      <Image cachePolicy={"memory-disk"} key={index} style={styles.image} source={img ?? source} />
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
-    borderRadius: 8,
-    overflow: "hidden",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    position: "absolute",
-  },
-})

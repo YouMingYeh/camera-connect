@@ -78,7 +78,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
   // const navigation = useNavigation()
 
   const { navigation } = _props
-  const { joinAlbumStore } = useStores()
+
   const [userID, setUserID] = React.useState("")
   const [modalOpen, setModalOpen] = React.useState(false)
 
