@@ -46,15 +46,15 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
         <>
           <TextInput
             style={styles.searchBar}
-            placeholder="Search..."
+            placeholder="搜尋..."
             value={searchQuery}
             onChangeText={setSearchQuery}
             onSubmitEditing={handleSearch}
             placeholderTextColor="#666"
           />
-          <Text style={styles.name}>Suggestion</Text>
+          <Text style={styles.name}>推薦</Text>
           <SuggestionCarousel userId={userID} />
-          <Text style={styles.name}>My Favorite</Text>
+          <Text style={styles.name}>我的最愛</Text>
           <FavoriteCarousel userId={userID} />
         </>
       )}

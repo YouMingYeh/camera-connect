@@ -64,7 +64,7 @@ const Albums = () => {
   return (
     <View>
       <Pressable style={styles.expandButton} onPress={handlePress}>
-        <Text style={styles.expandButtonText}>Albums</Text>
+        <Text style={styles.expandButtonText}>相簿</Text>
         <Feather
           style={styles.expandButtonIcon}
           name={expanded ? "chevron-up" : "chevron-down"}
@@ -76,7 +76,7 @@ const Albums = () => {
         <View style={styles.container}>
           <RNPickerSelect
             onValueChange={(value) => {
-              if (value === "Select an album...") {
+              if (value === "選擇一個相簿...") {
                 setSelectedAlbumId(null)
               } else {
                 setSelectedAlbumId(value)
@@ -94,7 +94,7 @@ const Albums = () => {
               inputWeb: Platform.OS === "web" ? pickerSelectStyles.inputWeb : {},
             }}
             placeholder={{
-              label: "Select an album...",
+              label: "選擇一個相簿...",
               value: null,
             }}
           />
@@ -106,7 +106,7 @@ const Albums = () => {
                 color="black"
                 backgroundColor="white"
               />
-              <Text style={styles.qrCodeText}>Scan to join this album</Text>
+              <Text style={styles.qrCodeText}>掃描 QRCode 以加入相簿！</Text>
             </View>
           ) : null}
         </View>

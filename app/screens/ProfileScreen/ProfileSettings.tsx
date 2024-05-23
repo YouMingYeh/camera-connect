@@ -99,9 +99,14 @@ const ProfileSettingsContent = () => {
   const [userID, setUserID] = useState("")
 
   useEffect(() => {
-    ;(async () => {
-      setUserID(await getUserId())
-    })()
+    const fetchAndSetUserID = async () => {
+      const fetchedUserID = await getUserId()
+      if (fetchedUserID && fetchedUserID !== "") {
+        setUserID(fetchedUserID)
+      }
+    }
+
+    fetchAndSetUserID()
   }, [])
 
   const avatarUri = "data:image/jpeg;base64," + avatar
@@ -109,7 +114,7 @@ const ProfileSettingsContent = () => {
   return (
     <View>
       <Pressable style={styles.expandButton} onPress={handlePress}>
-        <Text style={styles.expandButtonText}>Profile Settings</Text>
+        <Text style={styles.expandButtonText}>個人檔案設定</Text>
         <Feather
           style={styles.expandButtonIcon}
           name={expanded ? "chevron-up" : "chevron-down"}
@@ -123,17 +128,17 @@ const ProfileSettingsContent = () => {
             style={styles.input}
             onChangeText={setUsername}
             value={username}
-            placeholder="Enter your new username"
+            placeholder="輸入新名稱"
             placeholderTextColor="black"
           />
           <Pressable style={styles.button} onPress={pickImage}>
-            <Text style={styles.buttonText}>Upload New Avatar</Text>
+            <Text style={styles.buttonText}>上傳新頭貼</Text>
           </Pressable>
           {avatar ? (
             <Image source={{ uri: avatarUri }} style={styles.avatar} resizeMode="cover" />
           ) : null}
           <Pressable style={styles.button} onPress={updateProfile}>
-            <Text style={styles.buttonText}>Save</Text>
+            <Text style={styles.buttonText}>儲存</Text>
           </Pressable>
         </View>
       )}

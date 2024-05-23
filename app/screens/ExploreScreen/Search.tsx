@@ -1,11 +1,5 @@
 import React, { FC, useState, useEffect } from "react"
-import {
-  View,
-  TextInput,
-  Pressable,
-  StyleSheet,
-  Text,
-} from "react-native"
+import { View, TextInput, Pressable, StyleSheet, Text } from "react-native"
 
 import { getUserId } from "../../utils/supabase"
 import { supabase } from "../../utils/supabase"
@@ -27,21 +21,23 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
   }, [])
   useEffect(() => {
     const fetchSearchResults = async () => {
-      
       const { data: albums } = await supabase
-      .from("join_album")
-      .select("album_id")
-      .eq("user_id", userID);
+        .from("join_album")
+        .select("album_id")
+        .eq("user_id", userID)
 
-    if (albums === null) {
-      setSearchResults([]);
-      return;
-    }
+      if (albums === null) {
+        setSearchResults([])
+        return
+      }
 
-    let query = supabase.from("media").select("*").in(
-      "album_id",
-      albums.map((album) => album.album_id)
-    );
+      let query = supabase
+        .from("media")
+        .select("*")
+        .in(
+          "album_id",
+          albums.map((album) => album.album_id),
+        )
 
       if (searchQuery) {
         query = query.or(`title.ilike.%${searchQuery}%,hashtag.cs.{${searchQuery}}`)
@@ -74,11 +70,11 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
   return (
     <View style={styles.searchContainer}>
       <Pressable onPress={handleBack}>
-        <Text>Back</Text>
+        <Text>回上一頁</Text>
       </Pressable>
       <TextInput
         style={styles.searchBar}
-        placeholder="Search..."
+        placeholder="搜尋..."
         value={searchQuery}
         onChangeText={setSearchQuery}
         placeholderTextColor="#666"
@@ -88,19 +84,19 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
           onPress={() => handleFilterPress("all")}
           style={[styles.filterButton, selectedFilter === "all" && styles.selectedFilter]}
         >
-          <Text style={styles.filterText}>All</Text>
+          <Text style={styles.filterText}>全部</Text>
         </Pressable>
         <Pressable
           onPress={() => handleFilterPress("videos")}
           style={[styles.filterButton, selectedFilter === "videos" && styles.selectedFilter]}
         >
-          <Text style={styles.filterText}>Videos</Text>
+          <Text style={styles.filterText}>影片</Text>
         </Pressable>
         <Pressable
           onPress={() => handleFilterPress("images")}
           style={[styles.filterButton, selectedFilter === "images" && styles.selectedFilter]}
         >
-          <Text style={styles.filterText}>Images</Text>
+          <Text style={styles.filterText}>圖片</Text>
         </Pressable>
         {/* <Pressable
           onPress={() => handleFilterPress("favorites")}
@@ -111,7 +107,7 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
       </View>
 
       <View style={styles.container}>
-      {searchResults.map((searchResult, index) => (
+        {searchResults.map((searchResult, index) => (
           <View key={searchResult.id} style={styles.itemContainer}>
             <SBImageItem
               media={searchResult}
@@ -128,8 +124,8 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
 
 const styles = StyleSheet.create({
   itemContainer: {
-    width: "50%", 
-    padding :5
+    width: "50%",
+    padding: 5,
   },
   imageItem: {
     width: "100%",

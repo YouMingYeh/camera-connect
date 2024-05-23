@@ -129,7 +129,7 @@ const Friends = () => {
   return (
     <View>
       <Pressable style={styles.expandButton} onPress={handlePress}>
-        <Text style={styles.expandButtonText}>Friends</Text>
+        <Text style={styles.expandButtonText}>好友</Text>
         <Feather
           style={styles.expandButtonIcon}
           name={expanded ? "chevron-up" : "chevron-down"}
@@ -147,7 +147,7 @@ const Friends = () => {
                 color="black"
                 backgroundColor="white"
               />
-              <Text style={styles.qrCodeText}>Scan to add me as a friend!</Text>
+              <Text style={styles.qrCodeText}>掃描 QRCode 以新增好友！</Text>
             </View>
           )}
           <TextInput
