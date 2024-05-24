@@ -61,11 +61,13 @@ export default function Gallery({ medias }: GalleryProps) {
       setSad(data.sad)
       setSmile(data.smile)
       setAngry(data.angry)
+      setHeart(data.heart)
     } else {
       setThumbs_up(false)
       setSad(false)
       setSmile(false)
       setAngry(false)
+      setHeart(false)
     }
   }
 
@@ -76,6 +78,7 @@ export default function Gallery({ medias }: GalleryProps) {
       sad,
       smile,
       angry,
+      heart,
     }
 
     const newReactionState = {
@@ -87,6 +90,7 @@ export default function Gallery({ medias }: GalleryProps) {
     setSad(newReactionState.sad)
     setSmile(newReactionState.smile)
     setAngry(newReactionState.angry)
+    setHeart(newReactionState.heart)
 
     const mediaId = medias[activeIndex].id
 
@@ -193,6 +197,23 @@ export default function Gallery({ medias }: GalleryProps) {
                       text={"hashtags: " + medias[activeIndex].hashtag?.join(", ")}
                     />
                     <View style={styles.iconsContainer}>
+                      <TouchableOpacity onPress={() => handleToggleReaction("heart")}>
+                        {heart ? (
+                          <Icon
+                            icon="heartFill"
+                            size={30}
+                            color={"red"}
+                            label="albumScreen.reaction.heart"
+                          />
+                        ) : (
+                          <Icon
+                            icon="heart"
+                            size={30}
+                            color={"black"}
+                            label="albumScreen.reaction.heart"
+                          />
+                        )}
+                      </TouchableOpacity>
                       <TouchableOpacity onPress={() => handleToggleReaction("thumbs_up")}>
                         <Icon
                           icon="thumb"
