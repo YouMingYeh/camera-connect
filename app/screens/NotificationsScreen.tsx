@@ -79,35 +79,33 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
       <Screen style={$root} preset="scroll">
         <LoadingModal />
         {notifications.map((notification, index) => (
-          <>
-            <TouchableOpacity
-              key={notification.id}
-              onPress={() => {
-                setNotifications((prev) => {
-                  const newNotifications = [...prev]
-                  newNotifications[index].viewed = true
-                  return newNotifications
-                })
-              }}
-            >
-              <View>
-                <Card
-                  style={[
-                    $card,
-                    {
-                      backgroundColor: notification.viewed ? "white" : colors.palette.primary100,
-                    },
-                  ]}
-                  heading={notification.title}
-                  content={notification.content}
-                />
-                <View style={$badge}>
-                  <Text style={{ color: "white", fontWeight: "bold" }}>{notification.type}</Text>
-                </View>
+          <TouchableOpacity
+            key={notification.id}
+            onPress={() => {
+              setNotifications((prev) => {
+                const newNotifications = [...prev]
+                newNotifications[index].viewed = true
+                return newNotifications
+              })
+            }}
+          >
+            <View>
+              <Card
+                style={[
+                  $card,
+                  {
+                    backgroundColor: notification.viewed ? "white" : colors.palette.primary100,
+                  },
+                ]}
+                heading={notification.title}
+                content={notification.content}
+              />
+              <View style={$badge}>
+                <Text style={{ color: "white", fontWeight: "bold" }}>{notification.type}</Text>
               </View>
-              <DemoDivider />
-            </TouchableOpacity>
-          </>
+            </View>
+            <DemoDivider />
+          </TouchableOpacity>
         ))}
       </Screen>
     )

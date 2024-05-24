@@ -10,6 +10,7 @@ import {
   Animated,
   TouchableOpacity,
   Modal,
+  Alert
 } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Button, Card, Icon, LoadingModal, Screen, Text } from "app/components"
@@ -21,7 +22,6 @@ import Gallery from "app/components/Gallery"
 import { ScrollView } from "react-native-gesture-handler"
 import { BlurView } from "expo-blur"
 import { colors } from "app/theme"
-import { GoBackButton } from "app/components/GoBackButton"
 import { SupabaseClient } from "@supabase/supabase-js"
 import * as ImagePicker from "expo-image-picker"
 import { v4 as uuidv4 } from "uuid"
@@ -201,6 +201,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     })
     setSelectedImages([])
     setModalVisible(false)
+    Alert.alert("成功了！", "照片已經上傳到相簿，快去看看吧！")
   }
 
   useHeader(
@@ -281,7 +282,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                 key={media.id}
                 onSwipe={onSwipe}
                 onCardLeftScreen={() => onCardLeftScreen(media.id)}
-                preventSwipe={["up", "down"]}
+                preventSwipe={["up"]}
               >
                 <View style={$imageContainer}>
                   <Image source={{ uri: media.url }} style={$image} />

@@ -144,6 +144,7 @@ const CameraPreview = ({
     await createMedia(supabase, mediaCreates)
     await mediaStore.fetchMedias(supabase, userId)
     setModelVisible(false)
+    Alert.alert("成功了！", "照片已經上傳到相簿，快去看看吧！")
   }
 
   const fetchJoinAlbums = async () => {
@@ -153,6 +154,7 @@ const CameraPreview = ({
     }
     joinAlbumStore.fetchJoinAlbums(supabase, userId)
     setSelectedAlbum(joinAlbumStore.joinAlbums[0]?.album.id)
+    
   }
 
   useEffect(() => {

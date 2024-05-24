@@ -11,6 +11,7 @@ import {
   ScrollView,
   Modal,
   Keyboard,
+  Alert
 } from "react-native"
 import { v4 as uuidv4 } from "uuid"
 import { AppStackScreenProps } from "app/navigators"
@@ -119,6 +120,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     setModalOpen(false)
     await joinAlbumStore.joinAlbum(supabase, userID, album.id)
     await joinAlbumStore.fetchJoinAlbums(supabase, userID)
+    Alert.alert("創建成功", "相簿創建成功！快去看看吧")
   }
 
   const width = Dimensions.get("window").width
