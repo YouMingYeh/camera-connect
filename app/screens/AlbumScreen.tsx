@@ -49,7 +49,7 @@ async function uploadImage(supabase: SupabaseClient, base64: string, filename: s
     })
   if (error) {
     console.log("Error uploading file: ", error.message)
-    alert("上傳檔案失敗...")
+    Alert.alert("出錯了！","上傳檔案失敗...")
     return
   }
   console.log("Success uploading file: ", data)
@@ -59,7 +59,7 @@ async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
   const { data, error } = await supabase.from("media").insert(medias)
   if (error) {
     console.log("Error inserting media: ", error.message)
-    alert("上傳檔案失敗...")
+    Alert.alert("出錯了！","上傳檔案失敗...")
     return
   }
   console.log("Success inserting media: ", data)
@@ -85,8 +85,9 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   function animateHeart() {
     Animated.timing(heartScale, {
       toValue: 1,
-      duration: 300,
+      duration: 200,
       useNativeDriver: true,
+      easing: (value: number) => Math.sqrt(value),
     }).start()
   }
 
@@ -169,12 +170,12 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
   async function handleUploadToAlbum() {
     if (selectedImages.length === 0) {
-      alert("你沒有選擇照片！")
+      Alert.alert("出錯了！","你沒有選擇照片！")
       return
     }
     const userId = await getUserId()
     if (!userId) {
-      alert("找不到使用者")
+      Alert.alert("出錯了！","找不到使用者")
       return
     }
     const mediaCreates: MediaCreate[] = selectedImages.map(() => {

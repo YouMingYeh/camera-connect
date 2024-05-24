@@ -44,7 +44,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
     if (Platform.OS === "web") {
       alert(message)
     } else {
-      Alert.alert(message)
+      Alert.alert("出錯了！",message)
     }
   }
 

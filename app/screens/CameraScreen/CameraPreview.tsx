@@ -44,7 +44,7 @@ async function uploadImage(supabase: SupabaseClient, base64: string, filename: s
     })
   if (error) {
     console.log("Error uploading file: ", error.message)
-    alert("上傳檔案失敗...")
+    Alert.alert("出錯了！", "上傳檔案失敗...")
     return
   }
   console.log("Success uploading file: ", data)
@@ -54,7 +54,7 @@ async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
   const { data, error } = await supabase.from("media").insert(medias)
   if (error) {
     console.log("Error inserting media: ", error.message)
-    alert("上傳檔案失敗...")
+    Alert.alert("出錯了！", "上傳檔案失敗...")
     return
   }
   console.log("Success inserting media: ", data)
@@ -99,16 +99,16 @@ const CameraPreview = ({
 
   async function handleUploadToAlbum() {
     if (selectedPhotos.length === 0) {
-      alert("你沒有選擇照片")
+      Alert.alert("出錯了！", "你沒有選擇照片")
       return
     }
     const userId = await getUserId()
     if (!userId) {
-      alert("找不到使用者")
+      Alert.alert("出錯了！", "找不到使用者")
       return
     }
     if (!selectedAlbum) {
-      alert("請選擇一個相簿")
+      Alert.alert("出錯了！", "請選擇一個相簿")
       return
     }
     const mediasToUpload = medias.filter((_, index) => selectedPhotos[index])
@@ -134,7 +134,7 @@ const CameraPreview = ({
         base64: true,
       })
       if (!base64) {
-        alert("壓縮照片失敗...")
+        Alert.alert("出錯了！", "壓縮照片失敗...")
         return
       }
       // const base64 = medias[i].data.uri
@@ -239,47 +239,33 @@ const CameraPreview = ({
           </View>
         </View>
       </Modal>
-      <TouchableOpacity
+      <Button
+        style={{
+          position: "absolute",
+          left: 20,
+          top: 50,
+          zIndex: 10,
+          padding: 10,
+        }}
         onPress={() => {
           setMedias([])
           retakePicture()
         }}
-        style={{
-          position: "absolute",
-          left: 20,
-          top: 30,
-          zIndex: 10,
-          padding: 10,
-        }}
       >
-        <Text
-          style={{
-            color: "#fff",
-            fontSize: 20,
-          }}
-        >
-          重新拍攝
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
+        重新拍攝
+      </Button>
+      <Button
         onPress={() => handleEdit()}
         style={{
           position: "absolute",
           right: 20,
-          top: 30,
+          top: 50,
           zIndex: 10,
           padding: 10,
         }}
       >
-        <Text
-          style={{
-            color: "#fff",
-            fontSize: 20,
-          }}
-        >
-          編輯
-        </Text>
-      </TouchableOpacity>
+        編輯
+      </Button>
       <ImageEditor
         visible={editorVisible}
         onCloseEditor={() => setEditorVisible(false)}
@@ -349,7 +335,7 @@ const CameraPreview = ({
               fontSize: 20,
             }}
           >
-            Exit Edit
+            離開編輯
           </Text>
         </TouchableOpacity>
       )}
@@ -358,7 +344,7 @@ const CameraPreview = ({
         style={{
           flex: 1,
           flexDirection: "column",
-          padding: 15,
+          padding: 10,
           justifyContent: "flex-end",
         }}
       >
@@ -367,13 +353,13 @@ const CameraPreview = ({
             flexDirection: "row",
             justifyContent: "space-between",
             position: "absolute",
-            right: 0,
+            right: 10,
             bottom: 120,
             width: "100%",
             zIndex: 10,
           }}
         >
-          <TouchableOpacity
+          <Button
             onPress={retakePicture}
             style={{
               paddingEnd: 10,
@@ -381,16 +367,10 @@ const CameraPreview = ({
               borderRadius: 4,
             }}
           >
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 20,
-              }}
-            >
-              繼續拍攝
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+            繼續拍攝
+          </Button>
+
+          <Button
             onPress={() => {
               // check if any true in selectedPhotos array
               if (selectedPhotos.includes(true)) {
@@ -400,20 +380,13 @@ const CameraPreview = ({
               }
             }}
             style={{
-              paddingEnd: 20,
+              paddingEnd: 10,
               alignItems: "center",
               borderRadius: 4,
             }}
           >
-            <Text
-              style={{
-                color: "#fff",
-                fontSize: 20,
-              }}
-            >
-              儲存
-            </Text>
-          </TouchableOpacity>
+            儲存
+          </Button>
         </View>
         <ScrollView horizontal={true} style={styles.thumbnailScrollView}>
           {medias.map((media, index) => (

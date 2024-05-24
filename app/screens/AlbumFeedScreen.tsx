@@ -55,7 +55,7 @@ async function uploadImage(supabase: SupabaseClient, base64: string, filename: s
     })
   if (error) {
     console.log("Error uploading file: ", error.message)
-    alert("上傳檔案出現錯誤...")
+    Alert.alert("出錯了！", "上傳檔案出現錯誤...")
     return
   }
   console.log("Success uploading file: ", data)
@@ -65,7 +65,7 @@ async function createAlbum(supabase: SupabaseClient, album: Album) {
   const { data, error } = await supabase.from("album").insert([album])
   if (error) {
     console.log("Error inserting album: ", error.message)
-    alert("創建相簿出現錯誤...")
+    Alert.alert("出錯了！", "創建相簿出現錯誤...")
     return
   }
   console.log("Success inserting album: ", data)
@@ -102,7 +102,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
 
   async function handleCreateAlbum() {
     if (title === "" || description === "" || cover === "") {
-      alert("請填寫完整！")
+      Alert.alert("出錯了！", "請填寫完整！")
       return
     }
     const filename = `media-${uuidv4()}`
@@ -207,6 +207,8 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
         <DemoUseCase name="最近動態" description="你的相簿成員最近更新了這些照片！" layout="column">
           <Carousel
             loop
+            autoPlay
+            autoPlayInterval={5000}
             mode="parallax"
             width={width * 0.9}
             style={$carousel}
@@ -308,11 +310,11 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
             />
 
             <View style={{ flexDirection: "row", gap: 20, width: "90%" }}>
-              <Button style={{ flex: 1 }} preset="reversed" onPress={handleCreateAlbum}>
-                確認
-              </Button>
               <Button style={{ flex: 1 }} onPress={() => setModalOpen(false)}>
                 關閉
+              </Button>
+              <Button style={{ flex: 1 }} preset="reversed" onPress={handleCreateAlbum}>
+                確認
               </Button>
             </View>
           </View>

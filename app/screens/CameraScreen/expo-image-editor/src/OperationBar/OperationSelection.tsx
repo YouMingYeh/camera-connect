@@ -24,24 +24,24 @@ interface Operations {
 const operations: Operations = {
   transform: [
     {
-      title: "Crop",
+      title: "截取",
       iconID: "crop",
       operationID: "crop",
     },
     {
-      title: "Rotate",
+      title: "旋轉",
       iconID: "rotate-90-degrees-ccw",
       operationID: "rotate",
     },
   ],
   adjust: [
     {
-      title: "Blur",
+      title: "模糊",
       iconID: "blur-on",
       operationID: "blur",
     },
     {
-      title: "Filter",
+      title: "濾鏡",
       iconID: "filter",
       operationID: "filter",
     },
@@ -109,7 +109,7 @@ export function OperationSelection() {
           >
             <Icon
               iconID="transform"
-              text="Transform"
+              text="轉換"
               disabled={selectedOperationGroup !== "transform"}
             />
           </TouchableOpacity>
@@ -122,7 +122,7 @@ export function OperationSelection() {
             ]}
             onPress={() => setSelectedOperationGroup("adjust")}
           >
-            <Icon iconID="tune" text="Adjust" disabled={selectedOperationGroup !== "adjust"} />
+            <Icon iconID="tune" text="調整" disabled={selectedOperationGroup !== "adjust"} />
           </TouchableOpacity>
         </View>
       ) : null}
