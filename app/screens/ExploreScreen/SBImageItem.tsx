@@ -1,7 +1,7 @@
 import { View, Text, Pressable, Modal, StyleSheet } from "react-native"
 import type { MediaItem } from "./types"
 import { Image } from "expo-image"
-import { Card, Icon } from "app/components"
+import { Button, Card, Icon } from "app/components"
 import { colors } from "app/theme"
 import React, { useState, useEffect } from "react"
 import { supabase } from "../../utils/supabase"
@@ -181,9 +181,15 @@ const SBImageItem: React.FC<Props> = ({
                 </Pressable>
               </View>
             </View>
-            <Pressable style={styles.button} onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.textStyle}>關閉</Text>
-            </Pressable>
+            {/* <Pressable style={styles.button} onPress={() => setModalVisible(!modalVisible)}> */}
+            <Button
+              style={styles.button}
+              onPress={() => setModalVisible(!modalVisible)}
+              preset="reversed"
+            >
+              關閉
+            </Button>
+            {/* </Pressable> */}
           </View>
         </View>
       </Modal>
@@ -253,10 +259,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    backgroundColor: "#000000",
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2,
     marginTop: 30,
   },
   textStyle: {

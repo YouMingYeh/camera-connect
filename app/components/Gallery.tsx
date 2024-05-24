@@ -15,6 +15,7 @@ import { Media } from "app/models/Media"
 import { Card } from "./Card"
 import { Text } from "./Text"
 import { colors } from "app/theme"
+import { Button } from "./Button"
 
 interface GalleryProps {
   medias: Media[]
@@ -78,6 +79,7 @@ export default function Gallery({ medias }: GalleryProps) {
             <>
               <Image source={{ uri: medias[activeIndex].url }} style={styles.modalImage} />
               <Card
+              style={{ margin: 20 }}
                 ContentComponent={
                   <>
                     <Text
@@ -102,60 +104,63 @@ export default function Gallery({ medias }: GalleryProps) {
                       style={styles.description}
                       text={"hashtags: " + medias[activeIndex].hashtag?.join(", ")}
                     />
+                    <View style={styles.iconsContainer}>
+                      <TouchableOpacity onPress={() => setHeart(!heart)}>
+                        {heart ? (
+                          <Icon
+                            icon="heartFill"
+                            size={30}
+                            color={"red"}
+                            label="albumScreen.reaction.heart"
+                          />
+                        ) : (
+                          <Icon
+                            icon="heart"
+                            size={30}
+                            color={"black"}
+                            label="albumScreen.reaction.heart"
+                          />
+                        )}
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setThumb(!thumb)}>
+                        <Icon
+                          icon="thumb"
+                          size={30}
+                          color={thumb ? colors.tint : "black"}
+                          label="albumScreen.reaction.thumb"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setSad(!sad)}>
+                        <Icon
+                          icon="sad"
+                          size={30}
+                          color={sad ? colors.tint : "black"}
+                          label="albumScreen.reaction.sad"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setSmile(!smile)}>
+                        <Icon
+                          icon="smile"
+                          size={30}
+                          color={smile ? colors.tint : "black"}
+                          label="albumScreen.reaction.smile"
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => setAngry(!angry)}>
+                        <Icon
+                          icon="angry"
+                          size={30}
+                          color={angry ? colors.tint : "black"}
+                          label="albumScreen.reaction.angry"
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <Button style={styles.button} onPress={handleCloseImage} preset="reversed">
+                      關閉
+                    </Button>
                   </>
                 }
               />
-              <View style={styles.iconsContainer}>
-                <TouchableOpacity onPress={() => setHeart(!heart)}>
-                  {heart ? (
-                    <Icon
-                      icon="heartFill"
-                      size={30}
-                      color={"red"}
-                      label="albumScreen.reaction.heart"
-                    />
-                  ) : (
-                    <Icon
-                      icon="heart"
-                      size={30}
-                      color={"black"}
-                      label="albumScreen.reaction.heart"
-                    />
-                  )}
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setThumb(!thumb)}>
-                  <Icon
-                    icon="thumb"
-                    size={30}
-                    color={thumb ? colors.tint : "black"}
-                    label="albumScreen.reaction.thumb"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSad(!sad)}>
-                  <Icon
-                    icon="sad"
-                    size={30}
-                    color={sad ? colors.tint : "black"}
-                    label="albumScreen.reaction.sad"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSmile(!smile)}>
-                  <Icon
-                    icon="smile"
-                    size={30}
-                    color={smile ? colors.tint : "black"}
-                    label="albumScreen.reaction.smile"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setAngry(!angry)}>
-                  <Icon
-                    icon="angry"
-                    size={30}
-                    color={angry ? colors.tint : "black"}
-                    label="albumScreen.reaction.angry"
-                  />
-                </TouchableOpacity>
-              </View>
             </>
           )}
         </Animated.View>
@@ -185,14 +190,14 @@ const styles = StyleSheet.create({
   // eslint-disable-next-line react-native/no-unused-styles
   modalCloseText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 20,
   },
   modalContainer: {
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.3)",
     flex: 1,
     justifyContent: "center",
-    padding: 20,
+    padding: 0,
   },
   modalImage: {
     height: "50%",
@@ -213,5 +218,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     marginTop: 20,
     width: "100%",
+  },
+  button: {
+    marginTop: 20,
+    width: "30%",
+    alignSelf: "center",
   },
 })

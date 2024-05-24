@@ -81,7 +81,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
 
   return (
     <Screen preset="scroll">
-      <LoadingModal />
+      <LoadingModal duration={1500}/>
       <View style={styles.contentContainerStyle}>
         <View style={styles.avatarContainer}>
           <Image

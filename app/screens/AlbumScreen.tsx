@@ -49,7 +49,7 @@ async function uploadImage(supabase: SupabaseClient, base64: string, filename: s
     })
   if (error) {
     console.log("Error uploading file: ", error.message)
-    Alert.alert("出錯了！","上傳檔案失敗...")
+    Alert.alert("出錯了！", "上傳檔案失敗...")
     return
   }
   console.log("Success uploading file: ", data)
@@ -59,7 +59,7 @@ async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
   const { data, error } = await supabase.from("media").insert(medias)
   if (error) {
     console.log("Error inserting media: ", error.message)
-    Alert.alert("出錯了！","上傳檔案失敗...")
+    Alert.alert("出錯了！", "上傳檔案失敗...")
     return
   }
   console.log("Success inserting media: ", data)
@@ -79,6 +79,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   const [smile, setSmile] = React.useState(false)
   const [angry, setAngry] = React.useState(false)
   const [modalVisible, setModalVisible] = React.useState(false)
+  const [skipped, setSkipped] = React.useState(false)
 
   const [selectedImages, setSelectedImages] = React.useState<string[]>([])
 
@@ -170,12 +171,12 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
   async function handleUploadToAlbum() {
     if (selectedImages.length === 0) {
-      Alert.alert("出錯了！","你沒有選擇照片！")
+      Alert.alert("出錯了！", "你沒有選擇照片！")
       return
     }
     const userId = await getUserId()
     if (!userId) {
-      Alert.alert("出錯了！","找不到使用者")
+      Alert.alert("出錯了！", "找不到使用者")
       return
     }
     const mediaCreates: MediaCreate[] = selectedImages.map(() => {
@@ -219,7 +220,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
   return (
     <Screen style={$root}>
-      <LoadingModal />
+      <LoadingModal duration={1500} />
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <View
           style={{
@@ -275,15 +276,17 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
       </Modal>
       <View style={$screen}>
         <BlurView intensity={intensity} style={[$backdrop, { zIndex: intensity < 2 ? -1 : 10 }]} />
-        {medias.length !== 0 && (
+
+        {medias.length !== 0 && !skipped && (
           <View style={$container}>
+            <Text style={{ textAlign: "center", color: "white" }}>👇 右滑表示喜歡！</Text>
             {/* <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} /> */}
             {medias.map((media) => (
               <TinderCard
                 key={media.id}
                 onSwipe={onSwipe}
                 onCardLeftScreen={() => onCardLeftScreen(media.id)}
-                preventSwipe={["up"]}
+                preventSwipe={["up", "down"]}
               >
                 <View style={$imageContainer}>
                   <Image source={{ uri: media.url }} style={$image} />
@@ -326,49 +329,55 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                     style={$description}
                     text={"上傳者：" + medias[medias.length - 1].uploader?.username}
                   />
-                  <Text
-                    style={$description}
-                    text={"hashtags: " + medias[medias.length - 1].hashtag?.join(", ")}
-                  />
+                  {medias[medias.length - 1].hashtag?.length !== 0 ? (
+                    <Text
+                      style={$description}
+                      text={"hashtags: " + medias[medias.length - 1].hashtag?.join(", ")}
+                    />
+                  ) : (
+                    <Text text={" "}></Text>
+                  )}
+                  <View style={$icons}>
+                    <TouchableOpacity onPress={() => handleToggleReaction("thumb")}>
+                      <Icon
+                        icon="thumb"
+                        size={30}
+                        color={thumb ? colors.tint : "black"}
+                        label="albumScreen.reaction.thumb"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
+                      <Icon
+                        icon="sad"
+                        size={30}
+                        color={sad ? colors.tint : "black"}
+                        label="albumScreen.reaction.sad"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
+                      <Icon
+                        icon="smile"
+                        size={30}
+                        color={smile ? colors.tint : "black"}
+                        label="albumScreen.reaction.smile"
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => handleToggleReaction("angry")}>
+                      <Icon
+                        icon="angry"
+                        size={30}
+                        color={angry ? colors.tint : "black"}
+                        label="albumScreen.reaction.angry"
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </>
               }
             />
             <View style={$reactCard}>
-              {/* <Text tx="albumScreen.reactionHint" /> */}
-              <View style={$icons}>
-                <TouchableOpacity onPress={() => handleToggleReaction("thumb")}>
-                  <Icon
-                    icon="thumb"
-                    size={30}
-                    color={thumb ? colors.tint : "black"}
-                    label="albumScreen.reaction.thumb"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
-                  <Icon
-                    icon="sad"
-                    size={30}
-                    color={sad ? colors.tint : "black"}
-                    label="albumScreen.reaction.sad"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
-                  <Icon
-                    icon="smile"
-                    size={30}
-                    color={smile ? colors.tint : "black"}
-                    label="albumScreen.reaction.smile"
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleToggleReaction("angry")}>
-                  <Icon
-                    icon="angry"
-                    size={30}
-                    color={angry ? colors.tint : "black"}
-                    label="albumScreen.reaction.angry"
-                  />
-                </TouchableOpacity>
-              </View>
+              <Button onPress={() => setMedias([])} preset="reversed">
+                跳過全部
+              </Button>
             </View>
           </View>
         )}
@@ -410,10 +419,10 @@ const $description: TextStyle = {
 
 const $reactCard: ViewStyle = {
   transform: [{ translateY: 330 }],
-  height: 100,
   width: "100%",
   flex: 1,
   alignItems: "center",
+  marginTop: 20,
 }
 
 const $icons: ViewStyle = {

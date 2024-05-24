@@ -33,6 +33,7 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
         .from("notification")
         .select(
           `
+          id,
     receiver_id,
     viewed,
     type,
@@ -46,7 +47,6 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
         return
       }
       console.log("Fetched notification data!")
-      console.log(data)
       setNotifications(data)
     }
 
@@ -77,7 +77,7 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
 
     return (
       <Screen style={$root} preset="scroll">
-        <LoadingModal />
+        <LoadingModal duration={500} />
         {notifications.map((notification, index) => (
           <TouchableOpacity
             key={notification.id}
