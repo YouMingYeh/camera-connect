@@ -7,16 +7,17 @@ import SuggestionCarousel from "./SuggestionCarousel"
 import FavoriteCarousel from "./FavoriteCarousel"
 import Search from "./Search"
 import { getUserId } from "../../utils/supabase"
+import { useHeader } from "app/utils/useHeader"
 interface ExploreScreenProps extends AppStackScreenProps<"Explore"> {}
 
-export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreScreen() {
+export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreScreen(_props) {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
-  const [type, setType] = useState("all")
   const [userID, setUserID] = useState("")
   const handleSearch = () => {
     setIsSearching(true)
   }
+  const { navigation } = _props
 
   const handleBack = () => {
     setIsSearching(false)
@@ -32,16 +33,21 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
 
     fetchAndSetUserID()
   }, [])
+
+  useHeader(
+    {
+      title: "探索  ",
+      leftIcon: "caretLeft",
+      titleStyle: { fontSize: 24, padding: 10 },
+      onLeftPress: isSearching ? handleBack : () => navigation.navigate("Welcome"),
+    },
+    [isSearching],
+  )
+
   return (
     <Screen style={$root} preset="scroll">
       {isSearching ? (
-        <Search
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          handleBack={handleBack}
-          type={type}
-          setType={setType}
-        />
+        <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleBack={handleBack} />
       ) : (
         <>
           <TextInput
@@ -64,7 +70,6 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
 
 const $root: ViewStyle = {
   flex: 1,
-  marginTop: 32,
 }
 
 const styles = StyleSheet.create({

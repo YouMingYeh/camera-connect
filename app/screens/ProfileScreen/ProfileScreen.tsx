@@ -55,7 +55,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
       title: "個人資料",
       leftIcon: "caretLeft",
       titleStyle: { fontSize: 24, padding: 10 },
-      onLeftPress: () => navigation.navigate("Welcome")
+      onLeftPress: () => navigation.navigate("Welcome"),
     },
     [],
   )
@@ -81,7 +81,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
 
   return (
     <Screen preset="scroll">
-      <LoadingModal/>
+      <LoadingModal />
       <View style={styles.contentContainerStyle}>
         <View style={styles.avatarContainer}>
           <Image

@@ -27,11 +27,11 @@ export const LoadingModal = observer(function LoadingModal(props: LoadingModalPr
   }, [])
 
   return (
-    < >
+    <>
       {modalVisible && (
-        <Modal style={$modalContent} visible={true} >
+        <Modal style={$modalContent} visible={true}>
           <View style={$container}>
-          <Loading />
+            <Loading />
           </View>
         </Modal>
       )}
@@ -47,5 +47,4 @@ const $container: ViewStyle = {
   alignItems: "center",
 }
 
-const $modalContent: ViewStyle = {
-}
+const $modalContent: ViewStyle = {}

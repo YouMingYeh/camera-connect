@@ -13,6 +13,4 @@ export interface SearchProps {
   searchQuery: string
   setSearchQuery: (query: string) => void
   handleBack: () => void
-  type: string
-  setType: (type: string) => void
 }

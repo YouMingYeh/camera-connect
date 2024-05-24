@@ -5,49 +5,117 @@ import { Card, Icon } from "app/components"
 import { colors } from "app/theme"
 import React, { useState, useEffect } from "react"
 import { supabase } from "../../utils/supabase"
+
 interface Props {
   style?: any
   index?: number
   img: any
   media: MediaItem
+  userId: string
+  isScrolling: boolean
 }
 
-const SBImageItem: React.FC<Props> = ({ style, index: _index, img, media }) => {
+const SBImageItem: React.FC<Props> = ({
+  style,
+  index: _index,
+  img,
+  media,
+  userId,
+  isScrolling,
+}) => {
   const [modalVisible, setModalVisible] = useState(false)
-  const [thumb, setThumb] = useState(false)
+  const [thumbs_up, setThumbs_up] = useState(false)
   const [sad, setSad] = useState(false)
   const [smile, setSmile] = useState(false)
   const [angry, setAngry] = useState(false)
   const [username, setUsername] = useState<string | null>(null)
   const index = _index ?? 0
 
-  function handleToggleReaction(reaction: string) {
-    if (reaction === "thumb") {
-      setThumb(!thumb)
-    } else if (reaction === "sad") {
-      setSad(!sad)
-    } else if (reaction === "smile") {
-      setSmile(!smile)
-    } else if (reaction === "angry") {
-      setAngry(!angry)
+  const handleToggleReaction = async (reaction: string) => {
+    const currentReactionState = {
+      thumbs_up,
+      sad,
+      smile,
+      angry,
     }
-  }
-  useEffect(() => {
-    const fetchUsername = async () => {
-      const { data, error } = await supabase
-        .from("user")
-        .select("username")
-        .eq("id", media.uploader_id)
-        .single()
-      if (data) {
-        setUsername(data.username)
+
+    const newReactionState = {
+      ...currentReactionState,
+      [reaction]: !currentReactionState[reaction as keyof typeof currentReactionState],
+    }
+
+    setThumbs_up(newReactionState.thumbs_up)
+    setSad(newReactionState.sad)
+    setSmile(newReactionState.smile)
+    setAngry(newReactionState.angry)
+
+    const { data: existingReaction, error } = await supabase
+      .from("react")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("media_id", media.id)
+      .single()
+
+    if (existingReaction) {
+      const { error } = await supabase
+        .from("react")
+        .update(newReactionState)
+        .eq("user_id", userId)
+        .eq("media_id", media.id)
+
+      if (error) {
+        console.error("Error updating reaction:", error)
+      }
+    } else {
+      const { error } = await supabase.from("react").insert({
+        user_id: userId,
+        media_id: media.id,
+        ...newReactionState,
+      })
+
+      if (error) {
+        console.error("Error inserting reaction:", error)
       }
     }
-    fetchUsername()
-  }, [media.uploader_id])
+  }
+
+  useEffect(() => {
+    if (modalVisible) {
+      const fetchReactions = async () => {
+        const { data, error } = await supabase
+          .from("react")
+          .select("*")
+          .eq("user_id", userId)
+          .eq("media_id", media.id)
+          .single()
+
+        if (data) {
+          setThumbs_up(data.thumbs_ups_up)
+          setSad(data.sad)
+          setSmile(data.smile)
+          setAngry(data.angry)
+        }
+      }
+
+      const fetchUsername = async () => {
+        const { data, error } = await supabase
+          .from("user")
+          .select("username")
+          .eq("id", media.uploader_id)
+          .single()
+        if (data) {
+          setUsername(data.username)
+        }
+      }
+
+      fetchReactions()
+      fetchUsername()
+    }
+  }, [modalVisible, media.uploader_id, media.id, userId])
+
   return (
     <View style={[styles.container, style]}>
-      <Pressable onPress={() => setModalVisible(true)} style={styles.pressable}>
+      <Pressable onPress={() => !isScrolling && setModalVisible(true)} style={styles.pressable}>
         <Image cachePolicy={"memory-disk"} key={index} style={styles.image} source={img} />
       </Pressable>
 
@@ -79,12 +147,12 @@ const SBImageItem: React.FC<Props> = ({ style, index: _index, img, media }) => {
             />
             <View style={styles.reactCard}>
               <View style={styles.icons}>
-                <Pressable onPress={() => handleToggleReaction("thumb")}>
+                <Pressable onPress={() => handleToggleReaction("thumbs_up")}>
                   <Icon
                     icon="thumb"
                     size={30}
-                    color={thumb ? colors.tint : "black"}
-                    label="albumScreen.reaction.thumb"
+                    color={thumbs_up ? colors.tint : "black"}
+                    label="albumScreen.reaction.thumbs_up"
                   />
                 </Pressable>
                 <Pressable onPress={() => handleToggleReaction("sad")}>
@@ -133,12 +201,6 @@ const styles = StyleSheet.create({
   },
   pressable: {
     flex: 1,
-  },
-  activityIndicator: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    zIndex: 1,
   },
   image: {
     width: "100%",
