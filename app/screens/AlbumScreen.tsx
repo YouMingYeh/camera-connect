@@ -70,25 +70,23 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   const { albumId, albumName } = _props.route.params
   const [medias, setMedias] = React.useState<Media[]>([])
   const [direction, setDirection] = React.useState("")
-  const [swipedDirection, setSwipedDirection] = React.useState("")
   const [intensity, setIntensity] = React.useState(10)
   const [showingHeart, setShowingHeart] = React.useState(false)
   const [heartScale, setHeartScale] = React.useState(new Animated.Value(0))
-  const [thumb, setThumb] = React.useState(false)
+  const [thumbs_up, setThumbs_up] = React.useState(false)
   const [sad, setSad] = React.useState(false)
   const [smile, setSmile] = React.useState(false)
   const [angry, setAngry] = React.useState(false)
   const [modalVisible, setModalVisible] = React.useState(false)
-  const [skipped, setSkipped] = React.useState(false)
-
   const [selectedImages, setSelectedImages] = React.useState<string[]>([])
+  const [currentMediaId, setCurrentMediaId] = React.useState<string | null>(null)
+  const [skipped, setSkipped] = React.useState(false)
 
   function animateHeart() {
     Animated.timing(heartScale, {
       toValue: 1,
-      duration: 200,
+      duration: 300,
       useNativeDriver: true,
-      easing: (value: number) => Math.sqrt(value),
     }).start()
   }
 
@@ -99,11 +97,23 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   useEffect(() => {
     mediaStore.fetchMedias(supabase, albumId).then(() => {
       setMedias(mediaStore.medias)
+      if (mediaStore.medias.length > 0) {
+        setCurrentMediaId(mediaStore.medias[mediaStore.medias.length - 1].id)
+        fetchReactions(mediaStore.medias[mediaStore.medias.length - 1].id)
+      }
     })
   }, [albumId])
 
-  function onSwipe(direction: string) {
+  function onSwipe(direction: string, myIdentifier: string) {
     setDirection(direction)
+    setMedias((prev) => {
+      const remainingMedias = prev.filter((media) => media.id !== myIdentifier)
+      if (remainingMedias.length > 0) {
+        setCurrentMediaId(remainingMedias[remainingMedias.length - 1].id)
+        fetchReactions(remainingMedias[remainingMedias.length - 1].id)
+      }
+      return remainingMedias
+    })
     if (direction === "right") {
       setShowingHeart(true)
       animateHeart()
@@ -112,18 +122,12 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
         heartScale.setValue(0) // Reset the animation
       }, 1000)
     }
-    setThumb(false)
+    setThumbs_up(false)
     setSad(false)
     setSmile(false)
     setAngry(false)
   }
 
-  function onCardLeftScreen(myIdentifier: string) {
-    setSwipedDirection(direction)
-    setMedias((prev) => {
-      return prev.filter((media) => media.id !== myIdentifier)
-    })
-  }
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null
     if (medias.length !== 0) {
@@ -143,29 +147,73 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     }
   }, [medias])
 
-  function handleToggleReaction(reaction: string) {
-    if (reaction === "thumb") {
-      setThumb(!thumb)
-    } else if (reaction === "sad") {
-      setSad(!sad)
-    } else if (reaction === "smile") {
-      setSmile(!smile)
-    } else if (reaction === "angry") {
-      setAngry(!angry)
+  const fetchReactions = async (mediaId: string) => {
+    const userId = await getUserId()
+    const { data, error } = await supabase
+      .from("react")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("media_id", mediaId)
+      .single()
+
+    if (data) {
+      setThumbs_up(data.thumbs_up)
+      setSad(data.sad)
+      setSmile(data.smile)
+      setAngry(data.angry)
+    } else {
+      setThumbs_up(false)
+      setSad(false)
+      setSmile(false)
+      setAngry(false)
     }
   }
 
-  async function handleUploadImage() {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      aspect: [4, 3],
-      quality: 1,
-      base64: true,
-      allowsMultipleSelection: true,
-    })
+  const handleToggleReaction = async (reaction: string) => {
+    const currentReactionState = {
+      thumbs_up,
+      sad,
+      smile,
+      angry,
+    }
 
-    if (!result.canceled) {
-      setSelectedImages(result.assets.map((asset) => asset.base64 || ""))
+    const newReactionState = {
+      ...currentReactionState,
+      [reaction]: !currentReactionState[reaction as keyof typeof currentReactionState],
+    }
+    console.log("reaction: " + reaction + " currentMediaId: " + currentMediaId)
+    setThumbs_up(newReactionState.thumbs_up)
+    setSad(newReactionState.sad)
+    setSmile(newReactionState.smile)
+    setAngry(newReactionState.angry)
+    const userId = await getUserId()
+    const { data: existingReaction, error } = await supabase
+      .from("react")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("media_id", currentMediaId)
+      .single()
+
+    if (existingReaction) {
+      const { error } = await supabase
+        .from("react")
+        .update(newReactionState)
+        .eq("user_id", userId)
+        .eq("media_id", currentMediaId)
+
+      if (error) {
+        console.error("Error updating reaction:", error)
+      }
+    } else {
+      const { error } = await supabase.from("react").insert({
+        user_id: userId,
+        media_id: currentMediaId,
+        ...newReactionState,
+      })
+
+      if (error) {
+        console.error("Error inserting reaction:", error)
+      }
     }
   }
 
@@ -205,6 +253,19 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     setModalVisible(false)
     Alert.alert("成功了！", "照片已經上傳到相簿，快去看看吧！")
   }
+  async function handleUploadImage() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      quality: 1,
+      base64: true,
+      allowsMultipleSelection: true,
+    })
+
+    if (!result.canceled) {
+      setSelectedImages(result.assets.map((asset) => asset.base64 || ""))
+    }
+  }
 
   useHeader(
     {
@@ -217,7 +278,6 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     },
     [],
   )
-
   return (
     <Screen style={$root}>
       <LoadingModal duration={1500} />
@@ -284,8 +344,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
             {medias.map((media) => (
               <TinderCard
                 key={media.id}
-                onSwipe={onSwipe}
-                onCardLeftScreen={() => onCardLeftScreen(media.id)}
+                onSwipe={(dir) => onSwipe(dir, media.id)}
                 preventSwipe={["up", "down"]}
               >
                 <View style={$imageContainer}>
@@ -338,11 +397,11 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                     <Text text={" "}></Text>
                   )}
                   <View style={$icons}>
-                    <TouchableOpacity onPress={() => handleToggleReaction("thumb")}>
+                    <TouchableOpacity onPress={() => handleToggleReaction("thumbs_up")}>
                       <Icon
                         icon="thumb"
                         size={30}
-                        color={thumb ? colors.tint : "black"}
+                        color={thumbs_up ? colors.tint : "black"}
                         label="albumScreen.reaction.thumb"
                       />
                     </TouchableOpacity>

@@ -1,6 +1,6 @@
 /* eslint-disable react-native/sort-styles */
 /* eslint-disable react-native/no-color-literals */
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import {
   View,
   Image,
@@ -16,6 +16,7 @@ import { Card } from "./Card"
 import { Text } from "./Text"
 import { colors } from "app/theme"
 import { Button } from "./Button"
+import { supabase, getUserId } from "app/utils/supabase"
 
 interface GalleryProps {
   medias: Media[]
@@ -23,14 +24,101 @@ interface GalleryProps {
 
 export default function Gallery({ medias }: GalleryProps) {
   const [modalVisible, setModalVisible] = useState(false)
-  // const [activeImage, setActiveImage] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const [modalOpacity] = useState(new Animated.Value(0))
   const [heart, setHeart] = useState(false)
-  const [thumb, setThumb] = useState(false)
+  const [thumbs_up, setThumbs_up] = useState(false)
   const [sad, setSad] = useState(false)
   const [smile, setSmile] = useState(false)
   const [angry, setAngry] = useState(false)
+  const [userId, setUserId] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const id = await getUserId()
+      setUserId(id)
+    }
+    fetchUserId()
+  }, [])
+
+  useEffect(() => {
+    if (activeIndex !== null && medias[activeIndex]) {
+      fetchReactions(medias[activeIndex].id)
+    }
+  }, [activeIndex])
+
+  const fetchReactions = async (mediaId: string) => {
+    if (!userId) return
+    const { data, error } = await supabase
+      .from("react")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("media_id", mediaId)
+      .single()
+
+    if (data) {
+      setThumbs_up(data.thumbs_up)
+      setSad(data.sad)
+      setSmile(data.smile)
+      setAngry(data.angry)
+    } else {
+      setThumbs_up(false)
+      setSad(false)
+      setSmile(false)
+      setAngry(false)
+    }
+  }
+
+  const handleToggleReaction = async (reaction: string) => {
+    if (!userId || activeIndex === null) return
+    const currentReactionState = {
+      thumbs_up,
+      sad,
+      smile,
+      angry,
+    }
+
+    const newReactionState = {
+      ...currentReactionState,
+      [reaction]: !currentReactionState[reaction as keyof typeof currentReactionState],
+    }
+
+    setThumbs_up(newReactionState.thumbs_up)
+    setSad(newReactionState.sad)
+    setSmile(newReactionState.smile)
+    setAngry(newReactionState.angry)
+
+    const mediaId = medias[activeIndex].id
+
+    const { data: existingReaction, error } = await supabase
+      .from("react")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("media_id", mediaId)
+      .single()
+
+    if (existingReaction) {
+      const { error } = await supabase
+        .from("react")
+        .update(newReactionState)
+        .eq("user_id", userId)
+        .eq("media_id", mediaId)
+
+      if (error) {
+        console.error("Error updating reaction:", error)
+      }
+    } else {
+      const { error } = await supabase.from("react").insert({
+        user_id: userId,
+        media_id: mediaId,
+        ...newReactionState,
+      })
+
+      if (error) {
+        console.error("Error inserting reaction:", error)
+      }
+    }
+  }
 
   const animateModal = (toValue: number, callback?: () => void) => {
     Animated.timing(modalOpacity, {
@@ -79,7 +167,7 @@ export default function Gallery({ medias }: GalleryProps) {
             <>
               <Image source={{ uri: medias[activeIndex].url }} style={styles.modalImage} />
               <Card
-              style={{ margin: 20 }}
+                style={{ margin: 20 }}
                 ContentComponent={
                   <>
                     <Text
@@ -105,32 +193,15 @@ export default function Gallery({ medias }: GalleryProps) {
                       text={"hashtags: " + medias[activeIndex].hashtag?.join(", ")}
                     />
                     <View style={styles.iconsContainer}>
-                      <TouchableOpacity onPress={() => setHeart(!heart)}>
-                        {heart ? (
-                          <Icon
-                            icon="heartFill"
-                            size={30}
-                            color={"red"}
-                            label="albumScreen.reaction.heart"
-                          />
-                        ) : (
-                          <Icon
-                            icon="heart"
-                            size={30}
-                            color={"black"}
-                            label="albumScreen.reaction.heart"
-                          />
-                        )}
-                      </TouchableOpacity>
-                      <TouchableOpacity onPress={() => setThumb(!thumb)}>
+                      <TouchableOpacity onPress={() => handleToggleReaction("thumbs_up")}>
                         <Icon
                           icon="thumb"
                           size={30}
-                          color={thumb ? colors.tint : "black"}
+                          color={thumbs_up ? colors.tint : "black"}
                           label="albumScreen.reaction.thumb"
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => setSad(!sad)}>
+                      <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
                         <Icon
                           icon="sad"
                           size={30}
@@ -138,7 +209,7 @@ export default function Gallery({ medias }: GalleryProps) {
                           label="albumScreen.reaction.sad"
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => setSmile(!smile)}>
+                      <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
                         <Icon
                           icon="smile"
                           size={30}
@@ -146,7 +217,7 @@ export default function Gallery({ medias }: GalleryProps) {
                           label="albumScreen.reaction.smile"
                         />
                       </TouchableOpacity>
-                      <TouchableOpacity onPress={() => setAngry(!angry)}>
+                      <TouchableOpacity onPress={() => handleToggleReaction("angry")}>
                         <Icon
                           icon="angry"
                           size={30}
@@ -187,7 +258,6 @@ const styles = StyleSheet.create({
     right: 20,
     top: 40,
   },
-  // eslint-disable-next-line react-native/no-unused-styles
   modalCloseText: {
     color: "#fff",
     fontSize: 20,

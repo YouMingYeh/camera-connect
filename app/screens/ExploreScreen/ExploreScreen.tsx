@@ -46,7 +46,7 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
 
   return (
     <Screen style={$root} preset="scroll">
-      <LoadingModal duration={1500}/>
+      <LoadingModal duration={1500} />
       {isSearching ? (
         <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleBack={handleBack} />
       ) : (
