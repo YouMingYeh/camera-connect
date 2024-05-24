@@ -3,7 +3,7 @@ import { Dimensions, View, PanResponder } from "react-native"
 
 import SBImageItem from "./SBImageItem"
 import Carousel from "react-native-reanimated-carousel"
-import { fetchRandomMedia } from "./fetchRandomMedia"
+import { fetchRandomMedia } from "./fetchMedia"
 import { MediaItem } from "./types"
 
 function Index({ userId }: { userId: string }) {

@@ -81,7 +81,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   const [selectedImages, setSelectedImages] = React.useState<string[]>([])
   const [currentMediaId, setCurrentMediaId] = React.useState<string | null>(null)
   const [skipped, setSkipped] = React.useState(false)
-
+  const [heart, setHeart] = React.useState(false)
   function animateHeart() {
     Animated.timing(heartScale, {
       toValue: 1,
@@ -106,6 +106,16 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
   function onSwipe(direction: string, myIdentifier: string) {
     setDirection(direction)
+    if (direction === "right") {
+      setShowingHeart(true)
+      animateHeart()
+      setHeart(true)
+      handleToggleReaction("heart", myIdentifier)
+      setTimeout(() => {
+        setShowingHeart(false)
+        heartScale.setValue(0)
+      }, 1000)
+    }
     setMedias((prev) => {
       const remainingMedias = prev.filter((media) => media.id !== myIdentifier)
       if (remainingMedias.length > 0) {
@@ -114,18 +124,11 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
       }
       return remainingMedias
     })
-    if (direction === "right") {
-      setShowingHeart(true)
-      animateHeart()
-      setTimeout(() => {
-        setShowingHeart(false)
-        heartScale.setValue(0) // Reset the animation
-      }, 1000)
-    }
     setThumbs_up(false)
     setSad(false)
     setSmile(false)
     setAngry(false)
+    setHeart(false)
   }
 
   useEffect(() => {
@@ -161,37 +164,40 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
       setSad(data.sad)
       setSmile(data.smile)
       setAngry(data.angry)
+      setHeart(data.heart)
     } else {
       setThumbs_up(false)
       setSad(false)
       setSmile(false)
       setAngry(false)
+      setHeart(false)
     }
   }
 
-  const handleToggleReaction = async (reaction: string) => {
+  const handleToggleReaction = async (reaction: string, mediaId: string | null) => {
     const currentReactionState = {
       thumbs_up,
       sad,
       smile,
       angry,
+      heart,
     }
 
     const newReactionState = {
       ...currentReactionState,
       [reaction]: !currentReactionState[reaction as keyof typeof currentReactionState],
     }
-    console.log("reaction: " + reaction + " currentMediaId: " + currentMediaId)
     setThumbs_up(newReactionState.thumbs_up)
     setSad(newReactionState.sad)
     setSmile(newReactionState.smile)
     setAngry(newReactionState.angry)
+    setHeart(newReactionState.heart)
     const userId = await getUserId()
     const { data: existingReaction, error } = await supabase
       .from("react")
       .select("*")
       .eq("user_id", userId)
-      .eq("media_id", currentMediaId)
+      .eq("media_id", mediaId)
       .single()
 
     if (existingReaction) {
@@ -199,7 +205,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
         .from("react")
         .update(newReactionState)
         .eq("user_id", userId)
-        .eq("media_id", currentMediaId)
+        .eq("media_id", mediaId)
 
       if (error) {
         console.error("Error updating reaction:", error)
@@ -207,7 +213,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     } else {
       const { error } = await supabase.from("react").insert({
         user_id: userId,
-        media_id: currentMediaId,
+        media_id: mediaId,
         ...newReactionState,
       })
 
@@ -397,7 +403,9 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                     <Text text={" "}></Text>
                   )}
                   <View style={$icons}>
-                    <TouchableOpacity onPress={() => handleToggleReaction("thumbs_up")}>
+                    <TouchableOpacity
+                      onPress={() => handleToggleReaction("thumbs_up", currentMediaId)}
+                    >
                       <Icon
                         icon="thumb"
                         size={30}
@@ -405,7 +413,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                         label="albumScreen.reaction.thumb"
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
+                    <TouchableOpacity onPress={() => handleToggleReaction("sad", currentMediaId)}>
                       <Icon
                         icon="sad"
                         size={30}
@@ -413,7 +421,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                         label="albumScreen.reaction.sad"
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
+                    <TouchableOpacity onPress={() => handleToggleReaction("smile", currentMediaId)}>
                       <Icon
                         icon="smile"
                         size={30}
@@ -421,7 +429,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                         label="albumScreen.reaction.smile"
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleToggleReaction("angry")}>
+                    <TouchableOpacity onPress={() => handleToggleReaction("angry", currentMediaId)}>
                       <Icon
                         icon="angry"
                         size={30}

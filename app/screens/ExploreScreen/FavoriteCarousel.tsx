@@ -6,7 +6,7 @@ import SBImageItem from "./SBImageItem"
 import { interpolate } from "react-native-reanimated"
 import Carousel from "react-native-reanimated-carousel"
 
-import { fetchRandomMedia } from "./fetchRandomMedia"
+import { fetchFavoriteMedia } from "./fetchMedia"
 import { MediaItem } from "./types"
 export const window: ScaledSize = Dimensions.get("window")
 const scale = 0.7
@@ -51,7 +51,7 @@ function Index({ userId }: { userId: string }) {
   ).current
   React.useEffect(() => {
     const fetchData = async () => {
-      const mediaEntries = await fetchRandomMedia(userId)
+      const mediaEntries = await fetchFavoriteMedia(userId)
       setEntries(mediaEntries)
     }
     if (userId) fetchData()
