@@ -136,8 +136,6 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
     joinAlbumStore.fetchJoinAlbums(supabase, userID)
   }, [userID])
 
- 
-
   const dummyData = [
     {
       id: "1",
@@ -378,7 +376,7 @@ const $badge: ViewStyle = {
   borderRadius: 10,
   padding: 5,
 }
-const $text1: TextStyle = { textAlign: "center", fontSize: 20, color: "white", fontWeight: "bold"}
+const $text1: TextStyle = { textAlign: "center", fontSize: 20, color: "white", fontWeight: "bold" }
 
 const $text2: TextStyle = { fontSize: 24, fontWeight: "bold", paddingTop: 5 }
 

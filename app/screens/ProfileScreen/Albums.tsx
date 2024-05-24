@@ -28,10 +28,9 @@ const Albums = () => {
         console.error("User ID not found")
         return
       }
-      await joinAlbumStore.fetchJoinAlbums(supabase, userId);
+      await joinAlbumStore.fetchJoinAlbums(supabase, userId)
       const data = joinAlbumStore.joinAlbums.map((j) => j.album)
       setAlbums(data)
-
     }
 
     fetchAlbums()

@@ -1,11 +1,10 @@
 import * as React from "react"
 import { Dimensions, View, PanResponder } from "react-native"
 
-import type { ImageSourcePropType } from "react-native"
+import type { ImageSourcePropType, ScaledSize } from "react-native"
 import SBImageItem from "./SBImageItem"
 import { interpolate } from "react-native-reanimated"
 import Carousel from "react-native-reanimated-carousel"
-import type { ScaledSize } from "react-native"
 
 import { fetchRandomMedia } from "./fetchRandomMedia"
 import { MediaItem } from "./types"
@@ -16,7 +15,7 @@ const PAGE_HEIGHT = 240 * scale
 
 function Index({ userId }: { userId: string }) {
   const [entries, setEntries] = React.useState<MediaItem[]>([])
-  const [isScrolling, setIsScrolling] = React.useState(false);
+  const [isScrolling, setIsScrolling] = React.useState(false)
   const animationStyle = React.useCallback((value: number) => {
     "worklet"
 
@@ -32,24 +31,24 @@ function Index({ userId }: { userId: string }) {
   const panResponder = React.useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (evt, gestureState) => {
-        return Math.abs(gestureState.dx) > 10;
+        return Math.abs(gestureState.dx) > 10
       },
       onPanResponderGrant: () => {
-        setIsScrolling(true);
+        setIsScrolling(true)
       },
       onPanResponderMove: (evt, gestureState) => {
         if (Math.abs(gestureState.dx) > 10) {
-          setIsScrolling(true);
+          setIsScrolling(true)
         }
       },
       onPanResponderRelease: () => {
-        setIsScrolling(false);
+        setIsScrolling(false)
       },
       onPanResponderTerminate: () => {
-        setIsScrolling(false);
+        setIsScrolling(false)
       },
-    })
-  ).current;
+    }),
+  ).current
   React.useEffect(() => {
     const fetchData = async () => {
       const mediaEntries = await fetchRandomMedia(userId)

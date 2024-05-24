@@ -32,8 +32,7 @@ const zh = {
   },
   loginScreen: {
     signIn: "登入",
-    enterDetails:
-      "在下面輸入你的電子郵件地址和密碼，或者點擊註冊以創建一個新帳戶。",
+    enterDetails: "在下面輸入你的電子郵件地址和密碼，或者點擊註冊以創建一個新帳戶。",
     emailFieldLabel: "電子郵件",
     passwordFieldLabel: "密碼",
     emailFieldPlaceholder: "輸入你的電子郵件地址",
