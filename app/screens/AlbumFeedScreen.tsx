@@ -11,7 +11,7 @@ import {
   ScrollView,
   Modal,
   Keyboard,
-  Alert
+  Alert,
 } from "react-native"
 import { v4 as uuidv4 } from "uuid"
 import { AppStackScreenProps } from "app/navigators"

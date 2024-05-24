@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import { ViewStyle, StyleSheet, TextInput, Text } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Screen } from "app/components"
+import { LoadingModal, Screen } from "app/components"
 import SuggestionCarousel from "./SuggestionCarousel"
 import FavoriteCarousel from "./FavoriteCarousel"
 import Search from "./Search"
@@ -46,6 +46,7 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
 
   return (
     <Screen style={$root} preset="scroll">
+      <LoadingModal />
       {isSearching ? (
         <Search searchQuery={searchQuery} setSearchQuery={setSearchQuery} handleBack={handleBack} />
       ) : (

@@ -10,7 +10,7 @@ import {
   Animated,
   TouchableOpacity,
   Modal,
-  Alert
+  Alert,
 } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { Button, Card, Icon, LoadingModal, Screen, Text } from "app/components"

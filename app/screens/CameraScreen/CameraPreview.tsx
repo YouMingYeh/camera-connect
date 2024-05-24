@@ -154,7 +154,6 @@ const CameraPreview = ({
     }
     joinAlbumStore.fetchJoinAlbums(supabase, userId)
     setSelectedAlbum(joinAlbumStore.joinAlbums[0]?.album.id)
-    
   }
 
   useEffect(() => {
