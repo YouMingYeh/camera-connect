@@ -1,6 +1,15 @@
 /* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
-import { Text, TouchableOpacity, View, Image, StyleSheet, ScrollView, Modal } from "react-native"
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Modal,
+  Alert,
+} from "react-native"
 import React, { useEffect, useState } from "react"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
 import { Media } from "./type"
@@ -89,7 +98,7 @@ const CameraPreview = ({
   }
 
   async function handleUploadToAlbum() {
-    if (medias.length === 0) {
+    if (selectedPhotos.length === 0) {
       alert("你沒有選擇照片")
       return
     }
@@ -102,7 +111,9 @@ const CameraPreview = ({
       alert("請選擇一個相簿")
       return
     }
-    const mediaCreates: MediaCreate[] = medias.map(() => {
+    const mediasToUpload = medias.filter((_, index) => selectedPhotos[index])
+
+    const mediaCreates: MediaCreate[] = mediasToUpload.map(() => {
       const uuid = uuidv4()
       return {
         id: uuid,
@@ -116,8 +127,8 @@ const CameraPreview = ({
       }
     })
 
-    for (let i = 0; i < medias.length; i++) {
-      const base64 = await ImageManinpulator.manipulateAsync(medias[i].data.uri, [], {
+    for (let i = 0; i < mediasToUpload.length; i++) {
+      const base64 = await ImageManinpulator.manipulateAsync(mediasToUpload[i].data.uri, [], {
         compress: 1,
         format: ImageManinpulator.SaveFormat.JPEG,
         base64: true,
@@ -141,6 +152,7 @@ const CameraPreview = ({
       return
     }
     joinAlbumStore.fetchJoinAlbums(supabase, userId)
+    setSelectedAlbum(joinAlbumStore.joinAlbums[0]?.album.id)
   }
 
   useEffect(() => {
@@ -378,7 +390,14 @@ const CameraPreview = ({
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setModelVisible(true)}
+            onPress={() => {
+              // check if any true in selectedPhotos array
+              if (selectedPhotos.includes(true)) {
+                setModelVisible(true)
+              } else {
+                Alert.alert("出錯了！", "你沒有選擇照片")
+              }
+            }}
             style={{
               paddingEnd: 20,
               alignItems: "center",

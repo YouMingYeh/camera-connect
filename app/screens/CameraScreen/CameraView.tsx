@@ -3,7 +3,16 @@
 import { StatusBar } from "expo-status-bar"
 import { Camera, FlashMode, CameraType, CameraCapturedPicture } from "expo-camera/legacy"
 import React, { useEffect, useState } from "react"
-import { StyleSheet, Text, View, TouchableOpacity, Alert, Image, Linking } from "react-native"
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  Image,
+  Linking,
+  Modal,
+} from "react-native"
 import CameraPreview from "./CameraPreview"
 import { ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
@@ -27,6 +36,7 @@ export default function App() {
   const [userID, setUserID] = useState("")
   const [recordingMode, setRecordingMode] = React.useState(false)
   const [isProcessingScan, setIsProcessingScan] = useState(false)
+  const [flashModalVisible, setFlashModalVisible] = useState(false)
 
   const __startCamera = async () => {
     const cameraStatus = await Camera.requestCameraPermissionsAsync()
@@ -43,6 +53,8 @@ export default function App() {
   }
 
   const __takePicture = async () => {
+    setFlashModalVisible(true)
+    setTimeout(() => setFlashModalVisible(false), 100)
     const photo: CameraCapturedPicture = await camera.takePictureAsync()
 
     // Make the image size smaller using expo image manipulator
@@ -279,6 +291,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
+      {flashModalVisible && <View style={styles.flashView} />}
       {startCamera ? (
         <View
           style={{
@@ -355,7 +368,7 @@ export default function App() {
                         fontSize: 30,
                       }}
                     >
-                      {cameraType === CameraType.front ? "🤳" : "📸"}
+                      {cameraType === CameraType.front ? "🤳" : "📷"}
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
@@ -372,7 +385,7 @@ export default function App() {
                         fontSize: 30,
                       }}
                     >
-                      {recordingMode ? "📹" : "📷"}
+                      {recordingMode ? "📹" : "🖼️"}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -501,5 +514,12 @@ const styles = StyleSheet.create({
   thumbnailScrollView: {
     backgroundColor: "transparent",
     width: "100%",
+  },
+  flashView: {
+    position: "absolute",
+    backgroundColor: "rgba(255,255,255,0.5)",
+    zIndex: 100,
+    width: "100%",
+    height: "100%",
   },
 })
