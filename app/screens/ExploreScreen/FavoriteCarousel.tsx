@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Dimensions, View } from "react-native"
+import { Dimensions, View, PanResponder } from "react-native"
 
 import type { ImageSourcePropType } from "react-native"
 import SBImageItem from "./SBImageItem"
@@ -16,6 +16,7 @@ const PAGE_HEIGHT = 240 * scale
 
 function Index({ userId }: { userId: string }) {
   const [entries, setEntries] = React.useState<MediaItem[]>([])
+  const [isScrolling, setIsScrolling] = React.useState(false);
   const animationStyle = React.useCallback((value: number) => {
     "worklet"
 
@@ -28,7 +29,27 @@ function Index({ userId }: { userId: string }) {
       zIndex,
     }
   }, [])
-
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (evt, gestureState) => {
+        return Math.abs(gestureState.dx) > 10;
+      },
+      onPanResponderGrant: () => {
+        setIsScrolling(true);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        if (Math.abs(gestureState.dx) > 10) {
+          setIsScrolling(true);
+        }
+      },
+      onPanResponderRelease: () => {
+        setIsScrolling(false);
+      },
+      onPanResponderTerminate: () => {
+        setIsScrolling(false);
+      },
+    })
+  ).current;
   React.useEffect(() => {
     const fetchData = async () => {
       const mediaEntries = await fetchRandomMedia(userId)
@@ -38,7 +59,7 @@ function Index({ userId }: { userId: string }) {
   }, [userId])
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }} {...panResponder.panHandlers}>
       <Carousel
         loop
         style={{
@@ -56,6 +77,8 @@ function Index({ userId }: { userId: string }) {
               index={index}
               img={item.url as ImageSourcePropType}
               media={item}
+              userId={userId}
+              isScrolling={isScrolling}
             />
           )
         }}

@@ -5,7 +5,7 @@ import { getUserId } from "../../utils/supabase"
 import { supabase } from "../../utils/supabase"
 import type { SearchProps, MediaItem } from "./types"
 import SBImageItem from "./SBImageItem"
-const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type, setType }) => {
+const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack }) => {
   const [searchResults, setSearchResults] = useState<MediaItem[]>([])
   const [selectedFilter, setSelectedFilter] = useState<string>("all")
   const [userID, setUserID] = useState("")
@@ -16,10 +16,10 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
         setUserID(fetchedUserID)
       }
     }
-
     fetchAndSetUserID()
   }, [])
   useEffect(() => {
+    if (userID) {
     const fetchSearchResults = async () => {
       const { data: albums } = await supabase
         .from("join_album")
@@ -42,11 +42,10 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
       if (searchQuery) {
         query = query.or(`title.ilike.%${searchQuery}%,hashtag.cs.{${searchQuery}}`)
       }
-
-      if (type !== "all") {
-        if (type === "videos") {
+      if (selectedFilter !== "all") {
+        if (selectedFilter === "videos") {
           query = query.eq("is_video", true)
-        } else if (type === "images") {
+        } else if (selectedFilter === "images") {
           query = query.eq("is_video", false)
         }
       }
@@ -59,11 +58,10 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
       }
     }
 
-    fetchSearchResults()
-  }, [searchQuery, type])
+    fetchSearchResults()}
+  }, [searchQuery, selectedFilter, userID])
 
   const handleFilterPress = (filter: string) => {
-    setType(filter)
     setSelectedFilter(filter)
   }
 
@@ -114,6 +112,8 @@ const Search: FC<SearchProps> = ({ searchQuery, setSearchQuery, handleBack, type
               img={searchResult.url}
               index={index}
               style={styles.imageItem}
+              userId={userID}
+              isScrolling={false}
             />
           </View>
         ))}

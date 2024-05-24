@@ -12,7 +12,6 @@ interface ExploreScreenProps extends AppStackScreenProps<"Explore"> {}
 export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreScreen() {
   const [searchQuery, setSearchQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
-  const [type, setType] = useState("all")
   const [userID, setUserID] = useState("")
   const handleSearch = () => {
     setIsSearching(true)
@@ -39,8 +38,6 @@ export const ExploreScreen: FC<ExploreScreenProps> = observer(function ExploreSc
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleBack={handleBack}
-          type={type}
-          setType={setType}
         />
       ) : (
         <>
