@@ -24,6 +24,8 @@ import { SupabaseClient } from "@supabase/supabase-js"
 import { v4 as uuidv4 } from "uuid"
 import { Buffer } from "buffer"
 import * as ImageManinpulator from "expo-image-manipulator"
+import { AppStackParamList } from "app/navigators"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 type MediaCreate = {
   id: string
@@ -64,10 +66,12 @@ const CameraPreview = ({
   medias,
   setMedias,
   retakePicture,
+  navigation,
 }: {
   medias: Media[]
   setMedias: (medias: Media[]) => void
   retakePicture: () => void
+  navigation: NativeStackNavigationProp<AppStackParamList, "Camera", undefined>
 }) => {
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0)
   const [selectedPhotos, setSelectedPhotos] = useState<Array<boolean>>(
@@ -145,6 +149,10 @@ const CameraPreview = ({
     await mediaStore.fetchMedias(supabase, userId)
     setModelVisible(false)
     Alert.alert("成功了！", "照片已經上傳到相簿，快去看看吧！")
+    const selectedAlbumName = joinAlbumStore.joinAlbums.find(
+      (album) => album.album.id === selectedAlbum,
+    )?.album.album_name
+    navigation.navigate("Album", { albumId: selectedAlbum, albumName: selectedAlbumName })
   }
 
   const fetchJoinAlbums = async () => {
@@ -239,10 +247,24 @@ const CameraPreview = ({
           </View>
         </View>
       </Modal>
+
       <Button
+        onPress={retakePicture}
         style={{
           position: "absolute",
           left: 20,
+          top: 50,
+          zIndex: 10,
+          padding: 10,
+        }}
+      >
+        繼續拍攝
+      </Button>
+
+      <Button
+        style={{
+          position: "absolute",
+          right: 20,
           top: 50,
           zIndex: 10,
           padding: 10,
@@ -253,18 +275,6 @@ const CameraPreview = ({
         }}
       >
         重新拍攝
-      </Button>
-      <Button
-        onPress={() => handleEdit()}
-        style={{
-          position: "absolute",
-          right: 20,
-          top: 50,
-          zIndex: 10,
-          padding: 10,
-        }}
-      >
-        編輯
       </Button>
       <ImageEditor
         visible={editorVisible}
@@ -360,14 +370,14 @@ const CameraPreview = ({
           }}
         >
           <Button
-            onPress={retakePicture}
+            onPress={() => handleEdit()}
             style={{
               paddingEnd: 10,
               alignItems: "center",
               borderRadius: 4,
             }}
           >
-            繼續拍攝
+            編輯
           </Button>
 
           <Button

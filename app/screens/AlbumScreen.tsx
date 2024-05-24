@@ -279,7 +279,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
         {medias.length !== 0 && !skipped && (
           <View style={$container}>
-            <Text style={{ textAlign: "center", color: "white" }}>👇 右滑表示喜歡！</Text>
+            <Text style={{ textAlign: "center", color: "white" }}>👇 試試看左右滑動！</Text>
             {/* <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} /> */}
             {medias.map((media) => (
               <TinderCard

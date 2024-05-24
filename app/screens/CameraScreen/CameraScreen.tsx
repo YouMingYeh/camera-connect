@@ -9,13 +9,13 @@ import CameraView from "./CameraView"
 
 interface CameraScreenProps extends AppStackScreenProps<"Camera"> {}
 
-export const CameraScreen: FC<CameraScreenProps> = observer(function CameraScreen() {
+export const CameraScreen: FC<CameraScreenProps> = observer(function CameraScreen(_props) {
   // Pull in one of our MST stores
   // const { someStore, anotherStore } = useStores()
 
   // Pull in navigation via hook
   // const navigation = useNavigation()
-  return <CameraView />
+  return <CameraView _props={_props}/>
 })
 
 // const $root: ViewStyle = {

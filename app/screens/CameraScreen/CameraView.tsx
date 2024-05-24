@@ -20,13 +20,16 @@ import { ResizeMode, Video } from "expo-av"
 import * as ImageManinpulator from "expo-image-manipulator"
 import { supabase, getUserId } from "../../utils/supabase"
 import { checkFriendshipStatus } from "../../screens/ProfileScreen/Friends"
+import { AppStackScreenProps } from "app/navigators"
 
 let camera: Camera
 interface BarCodeEvent {
   type: string
   data: string
 }
-export default function App() {
+interface CameraScreenProps extends AppStackScreenProps<"Camera"> {}
+
+export default function App({ _props }: { _props: CameraScreenProps }) {
   const [startCamera, setStartCamera] = React.useState(false)
   const [previewVisible, setPreviewVisible] = React.useState(false)
   const [capturedMedia, setCapturedMedias] = React.useState<Media[]>()
@@ -304,6 +307,7 @@ export default function App() {
               medias={capturedMedia}
               retakePicture={__retakePicture}
               setMedias={setCapturedMedias}
+              navigation={_props.navigation}
             />
           ) : (
             <Camera
