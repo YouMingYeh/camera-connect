@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import { TouchableOpacity, View, ViewStyle } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Card, LoadingModal, Screen, Text } from "app/components"
+import { Button, Card, Icon, LoadingModal, Screen, Text } from "app/components"
 import { getUserId, supabase } from "app/utils/supabase"
 import { DemoDivider } from "./DemoShowroomScreen/DemoDivider"
 import { useHeader } from "app/utils/useHeader"
@@ -18,6 +18,12 @@ interface Notification {
   content: string
   viewed: boolean
   type: string
+  receiver_id: string
+  created_at: string
+  album: {
+    id: string
+    album_name: string
+  }
 }
 
 export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
@@ -39,15 +45,39 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
     type,
     title,
     content,
-    created_at
+    created_at,
+    album (
+      id,
+      album_name
+    )
   `,
         )
         .eq("receiver_id", userId)
       if (error) {
+        console.log("Error fetching notification data:", error)
         return
       }
       console.log("Fetched notification data!")
       setNotifications(data)
+    }
+
+    async function handleViewNotification(notificationId: string) {
+      const { data, error } = await supabase
+        .from("notification")
+        .update({ viewed: true })
+        .eq("id", notificationId)
+      if (error) {
+        console.log("Error updating notification data:", error)
+        return
+      }
+      console.log("Updated notification data!")
+      setNotifications((prev) =>
+        prev.map((prevNotification) =>
+          prevNotification.id === notificationId
+            ? { ...prevNotification, viewed: true }
+            : prevNotification,
+        ),
+      )
     }
 
     useEffect(() => {
@@ -67,9 +97,11 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
         onLeftPress: () => navigation.navigate("Welcome"),
         rightText: "全部標示已讀",
         onRightPress: () => {
-          setNotifications((prev) =>
-            prev.map((notification) => ({ ...notification, viewed: true })),
-          )
+          notifications.forEach((notification) => {
+            if (!notification.viewed) {
+              handleViewNotification(notification.id)
+            }
+          })
         },
       },
       [],
@@ -82,14 +114,10 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
           <TouchableOpacity
             key={notification.id}
             onPress={() => {
-              setNotifications((prev) => {
-                const newNotifications = [...prev]
-                newNotifications[index].viewed = true
-                return newNotifications
-              })
+              handleViewNotification(notification.id)
             }}
           >
-            <View>
+            <View style={{ flex: 1, flexDirection: "row" }}>
               <Card
                 style={[
                   $card,
@@ -103,7 +131,19 @@ export const NotificationsScreen: FC<NotificationsScreenProps> = observer(
               <View style={$badge}>
                 <Text style={{ color: "white", fontWeight: "bold" }}>{notification.type}</Text>
               </View>
+              <Button
+                style={$button}
+                onPress={() => {
+                  navigation.navigate("Album", {
+                    albumId: notification.album.id,
+                    albumName: notification.album.album_name,
+                  })
+                }}
+              >
+                <Icon icon="caretRight" />
+              </Button>
             </View>
+
             <DemoDivider />
           </TouchableOpacity>
         ))}
@@ -118,14 +158,20 @@ const $root: ViewStyle = {
 
 const $card: ViewStyle = {
   padding: 10,
-  marginHorizontal: 10,
+  marginHorizontal: 5,
+  width: "85%",
 }
 
 const $badge: ViewStyle = {
   position: "absolute",
   borderRadius: 10,
-  top: 10,
-  right: 20,
+  top: 5,
+  right: "15%",
   padding: 4,
   backgroundColor: colors.palette.primary600,
+}
+
+const $button: ViewStyle = {
+  width: "10%",
+  marginHorizontal: 5,
 }
