@@ -2,7 +2,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import { StatusBar } from "expo-status-bar"
 import { Camera, FlashMode, CameraType, CameraCapturedPicture } from "expo-camera/legacy"
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
 import {
   StyleSheet,
   Text,
@@ -12,9 +12,10 @@ import {
   Image,
   Linking,
   Modal,
+  Platform,
 } from "react-native"
 import CameraPreview from "./CameraPreview"
-import { ScrollView } from "react-native-gesture-handler"
+import { Gesture, GestureDetector, ScrollView } from "react-native-gesture-handler"
 import { Media, VideoType } from "./type"
 import { ResizeMode, Video } from "expo-av"
 import * as ImageManinpulator from "expo-image-manipulator"
@@ -42,6 +43,42 @@ export default function App({ _props }: { _props: CameraScreenProps }) {
   const [isProcessingScan, setIsProcessingScan] = useState(false)
   const [flashModalVisible, setFlashModalVisible] = useState(false)
   const [tooltipIndex, setTooltipIndex] = useState(0)
+  const [zoom, setZoom] = useState(0)
+  const [lastZoom, setLastZoom] = useState(0)
+
+  const onPinch = useCallback(
+    (event) => {
+      const velocity = event.velocity / 20
+      const outFactor = lastZoom * (Platform.OS === "ios" ? 40 : 15)
+
+      let newZoom =
+        velocity > 0
+          ? zoom + event.scale * velocity * (Platform.OS === "ios" ? 0.01 : 25)
+          : zoom -
+            event.scale *
+              (outFactor || 1) *
+              Math.abs(velocity) *
+              (Platform.OS === "ios" ? 0.02 : 50)
+
+      if (newZoom < 0) newZoom = 0
+      else if (newZoom > 0.7) newZoom = 0.7
+
+      setZoom(newZoom)
+    },
+    [zoom, setZoom, lastZoom, setLastZoom],
+  )
+
+  const onPinchEnd = useCallback(
+    (event) => {
+      setLastZoom(zoom)
+    },
+    [zoom, setLastZoom],
+  )
+
+  const pinchGesture = useMemo(
+    () => Gesture.Pinch().onUpdate(onPinch).onEnd(onPinchEnd),
+    [onPinch, onPinchEnd],
+  )
 
   const __startCamera = async () => {
     const cameraStatus = await Camera.requestCameraPermissionsAsync()
@@ -312,180 +349,183 @@ export default function App({ _props }: { _props: CameraScreenProps }) {
               navigation={_props.navigation}
             />
           ) : (
-            <Camera
-              type={cameraType}
-              flashMode={flashMode}
-              style={{ flex: 1 }}
-              ref={(r) => {
-                camera = r as Camera
-              }}
-              useCamera2Api={true}
-              autoFocus={customAutoFocus}
-              onBarCodeScanned={__handleBarCodeScanned}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  width: "100%",
-                  backgroundColor: "transparent",
-                  flexDirection: "row",
+            <GestureDetector gesture={pinchGesture}>
+              <Camera
+                type={cameraType}
+                flashMode={flashMode}
+                style={{ flex: 1 }}
+                ref={(r) => {
+                  camera = r as Camera
                 }}
+                useCamera2Api={true}
+                autoFocus={customAutoFocus}
+                onBarCodeScanned={__handleBarCodeScanned}
+                zoom={zoom}
               >
                 <View
                   style={{
-                    position: "absolute",
-                    left: "5%",
-                    top: "10%",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Tooltip
-                    isVisible={tooltipIndex === 0}
-                    content={<Text>開關閃光燈</Text>}
-                    placement="right"
-                    onClose={() => setTooltipIndex(1)}
-                  >
-                    <TouchableOpacity
-                      onPress={__handleFlashMode}
-                      style={{
-                        borderRadius: 50, // Change the value to a number
-                        height: 35,
-                        width: 35,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 30,
-                        }}
-                      >
-                        {flashMode === FlashMode.on
-                          ? "⚡️"
-                          : flashMode === FlashMode.off
-                          ? "🔆"
-                          : "❌"}
-                      </Text>
-                    </TouchableOpacity>
-                  </Tooltip>
-                  <Tooltip
-                    isVisible={tooltipIndex === 1}
-                    content={<Text>切換自拍／後置鏡頭</Text>}
-                    placement="right"
-                    onClose={() => setTooltipIndex(2)}
-                  >
-                    <TouchableOpacity
-                      onPress={__switchCamera}
-                      style={{
-                        marginTop: 10,
-                        borderRadius: 50,
-                        height: 35,
-                        width: 35,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 30,
-                        }}
-                      >
-                        {cameraType === CameraType.front ? "🤳" : "📷"}
-                      </Text>
-                    </TouchableOpacity>
-                  </Tooltip>
-                  <Tooltip
-                    isVisible={tooltipIndex === 2}
-                    content={<Text>切換錄影／拍照</Text>}
-                    placement="right"
-                    onClose={() => setTooltipIndex(3)}
-                  >
-                    <TouchableOpacity
-                      onPress={__toggleRecordingMode}
-                      style={{
-                        marginTop: 10,
-                        borderRadius: 50,
-                        height: 35,
-                        width: 35,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          fontSize: 30,
-                        }}
-                      >
-                        {recordingMode ? "📹" : "🖼️"}
-                      </Text>
-                    </TouchableOpacity>
-                  </Tooltip>
-                </View>
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    flexDirection: "row",
                     flex: 1,
                     width: "100%",
-                    padding: 20,
-                    justifyContent: "space-between",
+                    backgroundColor: "transparent",
+                    flexDirection: "row",
                   }}
                 >
                   <View
                     style={{
-                      alignSelf: "center",
-                      flex: 1,
-                      alignItems: "center",
+                      position: "absolute",
+                      left: "5%",
+                      top: "10%",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <TouchableOpacity
-                      onPress={recordingMode ? __toggleRecord : __takePicture}
+                    <Tooltip
+                      isVisible={tooltipIndex === 0}
+                      content={<Text>開關閃光燈</Text>}
+                      placement="right"
+                      onClose={() => setTooltipIndex(1)}
+                    >
+                      <TouchableOpacity
+                        onPress={__handleFlashMode}
+                        style={{
+                          borderRadius: 50, // Change the value to a number
+                          height: 35,
+                          width: 35,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 30,
+                          }}
+                        >
+                          {flashMode === FlashMode.on
+                            ? "⚡️"
+                            : flashMode === FlashMode.off
+                            ? "🔆"
+                            : "❌"}
+                        </Text>
+                      </TouchableOpacity>
+                    </Tooltip>
+                    <Tooltip
+                      isVisible={tooltipIndex === 1}
+                      content={<Text>切換自拍／後置鏡頭</Text>}
+                      placement="right"
+                      onClose={() => setTooltipIndex(2)}
+                    >
+                      <TouchableOpacity
+                        onPress={__switchCamera}
+                        style={{
+                          marginTop: 10,
+                          borderRadius: 50,
+                          height: 35,
+                          width: 35,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 30,
+                          }}
+                        >
+                          {cameraType === CameraType.front ? "🤳" : "📷"}
+                        </Text>
+                      </TouchableOpacity>
+                    </Tooltip>
+                    <Tooltip
+                      isVisible={tooltipIndex === 2}
+                      content={<Text>切換錄影／拍照</Text>}
+                      placement="right"
+                      onClose={() => setTooltipIndex(3)}
+                    >
+                      <TouchableOpacity
+                        onPress={__toggleRecordingMode}
+                        style={{
+                          marginTop: 10,
+                          borderRadius: 50,
+                          height: 35,
+                          width: 35,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: 30,
+                          }}
+                        >
+                          {recordingMode ? "📹" : "🖼️"}
+                        </Text>
+                      </TouchableOpacity>
+                    </Tooltip>
+                  </View>
+                  <View
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      flexDirection: "row",
+                      flex: 1,
+                      width: "100%",
+                      padding: 20,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
                       style={{
-                        width: 70,
-                        height: 70,
-                        bottom: 0,
-                        borderRadius: 50,
-                        backgroundColor: recordingMode ? "#ff0000" : "#fff",
-                        zIndex: 10,
-                        borderWidth: 3,
-                        borderColor: recording ? "#ff0000" : "#fff",
+                        alignSelf: "center",
+                        flex: 1,
+                        alignItems: "center",
                       }}
-                    />
+                    >
+                      <TouchableOpacity
+                        onPress={recordingMode ? __toggleRecord : __takePicture}
+                        style={{
+                          width: 70,
+                          height: 70,
+                          bottom: 0,
+                          borderRadius: 50,
+                          backgroundColor: recordingMode ? "#ff0000" : "#fff",
+                          zIndex: 10,
+                          borderWidth: 3,
+                          borderColor: recording ? "#ff0000" : "#fff",
+                        }}
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
 
-              <TouchableOpacity
-                onPress={__handlePreviewButtonPress}
-                style={{
-                  position: "absolute",
-                  right: 20,
-                  bottom: 20,
-                  borderRadius: 30,
-                  width: 60,
-                  height: 60,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                {capturedMedia && capturedMedia.length > 0 && (
-                  <ScrollView horizontal={true} style={styles.thumbnailScrollView}>
-                    {capturedMedia.map((media) =>
-                      media.type === "image" ? (
-                        <Image
-                          key={media.data.uri}
-                          source={{ uri: media.data.uri }}
-                          style={styles.thumbnail}
-                        />
-                      ) : (
-                        <Video
-                          key={media.data.uri}
-                          source={{ uri: media.data.uri }}
-                          style={styles.thumbnail}
-                          resizeMode={ResizeMode.COVER}
-                        />
-                      ),
-                    )}
-                  </ScrollView>
-                )}
-              </TouchableOpacity>
-            </Camera>
+                <TouchableOpacity
+                  onPress={__handlePreviewButtonPress}
+                  style={{
+                    position: "absolute",
+                    right: 20,
+                    bottom: 20,
+                    borderRadius: 30,
+                    width: 60,
+                    height: 60,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  {capturedMedia && capturedMedia.length > 0 && (
+                    <ScrollView horizontal={true} style={styles.thumbnailScrollView}>
+                      {capturedMedia.map((media) =>
+                        media.type === "image" ? (
+                          <Image
+                            key={media.data.uri}
+                            source={{ uri: media.data.uri }}
+                            style={styles.thumbnail}
+                          />
+                        ) : (
+                          <Video
+                            key={media.data.uri}
+                            source={{ uri: media.data.uri }}
+                            style={styles.thumbnail}
+                            resizeMode={ResizeMode.COVER}
+                          />
+                        ),
+                      )}
+                    </ScrollView>
+                  )}
+                </TouchableOpacity>
+              </Camera>
+            </GestureDetector>
           )}
         </View>
       ) : (
