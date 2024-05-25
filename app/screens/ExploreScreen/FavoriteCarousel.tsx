@@ -1,12 +1,13 @@
 import * as React from "react"
 import { Dimensions, View, PanResponder } from "react-native"
 
+import { useFocusEffect } from "@react-navigation/native"
 import type { ImageSourcePropType, ScaledSize } from "react-native"
 import SBImageItem from "./SBImageItem"
 import { interpolate } from "react-native-reanimated"
 import Carousel from "react-native-reanimated-carousel"
 
-import { fetchRandomMedia } from "./fetchRandomMedia"
+import { fetchFavoriteMedia } from "./fetchMedia"
 import { MediaItem } from "./types"
 export const window: ScaledSize = Dimensions.get("window")
 const scale = 0.7
@@ -49,14 +50,18 @@ function Index({ userId }: { userId: string }) {
       },
     }),
   ).current
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const mediaEntries = await fetchRandomMedia(userId)
-      setEntries(mediaEntries)
-    }
-    if (userId) fetchData()
+  const fetchData = React.useCallback(async () => {
+    const mediaEntries = await fetchFavoriteMedia(userId)
+    setEntries(mediaEntries)
   }, [userId])
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (userId) {
+        fetchData()
+      }
+    }, [userId]),
+  )
   return (
     <View style={{ flex: 1 }} {...panResponder.panHandlers}>
       <Carousel

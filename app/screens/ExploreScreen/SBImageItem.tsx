@@ -28,6 +28,7 @@ const SBImageItem: React.FC<Props> = ({
   const [sad, setSad] = useState(false)
   const [smile, setSmile] = useState(false)
   const [angry, setAngry] = useState(false)
+  const [heart, setHeart] = useState(false)
   const [username, setUsername] = useState<string | null>(null)
   const index = _index ?? 0
 
@@ -37,6 +38,7 @@ const SBImageItem: React.FC<Props> = ({
       sad,
       smile,
       angry,
+      heart,
     }
 
     const newReactionState = {
@@ -48,7 +50,7 @@ const SBImageItem: React.FC<Props> = ({
     setSad(newReactionState.sad)
     setSmile(newReactionState.smile)
     setAngry(newReactionState.angry)
-
+    setHeart(newReactionState.heart)
     const { data: existingReaction, error } = await supabase
       .from("react")
       .select("*")
@@ -94,6 +96,7 @@ const SBImageItem: React.FC<Props> = ({
           setSad(data.sad)
           setSmile(data.smile)
           setAngry(data.angry)
+          setHeart(data.heart)
         }
       }
 
@@ -147,6 +150,14 @@ const SBImageItem: React.FC<Props> = ({
             />
             <View style={styles.reactCard}>
               <View style={styles.icons}>
+                <Pressable onPress={() => handleToggleReaction("heart")}>
+                  <Icon
+                    icon={heart ? "heartFill" : "heart"}
+                    size={30}
+                    color={heart ? "red" : "black"}
+                    label="albumScreen.reaction.heart"
+                  />
+                </Pressable>
                 <Pressable onPress={() => handleToggleReaction("thumbs_up")}>
                   <Icon
                     icon="thumb"
