@@ -4,7 +4,6 @@ import { observer } from "mobx-react-lite"
 import { colors, typography } from "app/theme"
 import { Text } from "app/components/Text"
 import { Loading } from "./Loading"
-import { AutoImage } from "./AutoImage"
 
 export interface LoadingModalProps {
   /**

@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react"
 import {
   View,
-  Image,
   TouchableOpacity,
   Modal,
   StyleSheet,
@@ -11,6 +10,7 @@ import {
   Animated,
   Alert,
 } from "react-native"
+import { Image } from "expo-image"
 import { Icon } from "./Icon"
 import { Media } from "app/models/Media"
 import { Card } from "./Card"
@@ -210,7 +210,7 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                       text={
                         (medias[activeIndex].title
                           ? medias[activeIndex].title
-                          : "No title") as string
+                          : "沒有標題") as string
                       }
                     />
 
@@ -221,7 +221,7 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
 
                     <Text
                       style={styles.description}
-                      text={"上傳者：" + medias[activeIndex].uploader?.username}
+                      text={"作者：" + medias[activeIndex].uploader?.username}
                     />
                     <Text
                       style={styles.description}
@@ -313,9 +313,9 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                           }}
                         />
                         <TextField
-                          label="hashtags"
+                          label="標籤"
                           value={hashtags}
-                          placeholder="輸入 hashtags（以逗號分隔）"
+                          placeholder="輸入標籤（以逗號分隔）"
                           onChange={(e) => {
                             setHashtags(e.nativeEvent.text)
                           }}

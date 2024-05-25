@@ -10,12 +10,29 @@ import {
   SpaceGrotesk_700Bold as spaceGroteskBold,
 } from "@expo-google-fonts/space-grotesk"
 
+import {
+  NotoSerifTC_200ExtraLight as notoSerifTCExtraLight,
+  NotoSerifTC_300Light as notoSerifTCLight,
+  NotoSerifTC_400Regular as notoSerifTCRegular,
+  NotoSerifTC_500Medium as notoSerifTCMedium,
+  NotoSerifTC_600SemiBold as notoSerifTCSemiBold,
+  NotoSerifTC_700Bold as notoSerifTCBold,
+  NotoSerifTC_900Black as notoSerifTCBlack,
+} from "@expo-google-fonts/noto-serif-tc"
+
 export const customFontsToLoad = {
   spaceGroteskLight,
   spaceGroteskRegular,
   spaceGroteskMedium,
   spaceGroteskSemiBold,
   spaceGroteskBold,
+  notoSerifTCExtraLight,
+  notoSerifTCLight,
+  notoSerifTCRegular,
+  notoSerifTCMedium,
+  notoSerifTCSemiBold,
+  notoSerifTCBold,
+  notoSerifTCBlack,
 }
 
 const fonts = {

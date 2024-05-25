@@ -2,7 +2,6 @@
 import React, { FC, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import {
-  Image,
   ImageStyle,
   TextStyle,
   View,
@@ -12,6 +11,7 @@ import {
   Modal,
   Alert,
 } from "react-native"
+import { Image } from "expo-image"
 import { AppStackScreenProps } from "app/navigators"
 import { Button, Card, Icon, LoadingModal, Screen, Text } from "app/components"
 import { useStores } from "app/models"
@@ -237,7 +237,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
       const uuid = uuidv4()
       return {
         id: uuid,
-        title: "No title",
+        title: "沒有標題",
         is_video: false,
         url:
           "https://adjixakqimigxsubirmn.supabase.co/storage/v1/object/public/media/media-" + uuid,
@@ -286,7 +286,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   )
   return (
     <Screen style={$root}>
-      <LoadingModal duration={1500} />
+      <LoadingModal duration={1000} />
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
         <View
           style={{
@@ -381,23 +381,26 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                     text={
                       (medias[medias.length - 1].title
                         ? medias[medias.length - 1].title
-                        : "No title") as string
+                        : "沒有標題") as string
                     }
                   />
 
                   <Text
                     style={$description}
-                    text={new Date(medias[medias.length - 1].created_at).toLocaleDateString()}
+                    text={
+                      "創建時間：" +
+                      new Date(medias[medias.length - 1].created_at).toLocaleDateString()
+                    }
                   />
 
                   <Text
                     style={$description}
-                    text={"上傳者：" + medias[medias.length - 1].uploader?.username}
+                    text={"作者：" + medias[medias.length - 1].uploader?.username}
                   />
                   {medias[medias.length - 1].hashtag?.length !== 0 ? (
                     <Text
                       style={$description}
-                      text={"hashtags: " + medias[medias.length - 1].hashtag?.join(", ")}
+                      text={"標籤：" + medias[medias.length - 1].hashtag?.join(", ")}
                     />
                   ) : (
                     <Text text={" "}></Text>
@@ -449,7 +452,9 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
           </View>
         )}
         <ScrollView style={$galleryContainer}>
-          {mediaStore.medias && <Gallery medias={mediaStore.medias} updateMedia={mediaStore.updateMedia} />}
+          {mediaStore.medias && (
+            <Gallery medias={mediaStore.medias} updateMedia={mediaStore.updateMedia} />
+          )}
         </ScrollView>
       </View>
     </Screen>

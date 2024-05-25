@@ -1,5 +1,5 @@
 import { observer } from "mobx-react-lite"
-import { View, Image, Text, StyleSheet, Pressable } from "react-native"
+import { View, Text, StyleSheet, Pressable } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
 import { LoadingModal, Screen } from "app/components"
 import ProfileSettings from "./ProfileSettings"
@@ -8,6 +8,7 @@ import Albums from "./Albums"
 import React, { FC, useEffect, useState } from "react"
 import { supabase, getUserId } from "../../utils/supabase"
 import { useStores } from "../../models"
+import { Image } from "expo-image"
 
 import type { SupabaseClient } from "@supabase/supabase-js"
 import { useHeader } from "app/utils/useHeader"
@@ -81,7 +82,7 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
 
   return (
     <Screen preset="scroll">
-      <LoadingModal duration={1500} />
+      <LoadingModal duration={1000} />
       <View style={styles.contentContainerStyle}>
         <View style={styles.avatarContainer}>
           <Image

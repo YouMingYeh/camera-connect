@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
-import { View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native"
+import { View, TextInput, StyleSheet, Pressable, Text } from "react-native"
 import { Feather } from "@expo/vector-icons"
 import { supabase, getUserId } from "../../utils/supabase"
 import QRCode from "react-native-qrcode-svg"
+import { Image } from "expo-image"
 interface User {
   id: string
   username: string
@@ -10,6 +11,7 @@ interface User {
   email: string
   isFriend: boolean
 }
+
 export const checkFriendshipStatus = async (userID: string, userIDToCheck: string) => {
   try {
     const { data, error } = await supabase

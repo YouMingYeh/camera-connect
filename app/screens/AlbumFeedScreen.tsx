@@ -5,7 +5,6 @@ import {
   ViewStyle,
   Dimensions,
   TextStyle,
-  Image,
   TouchableOpacity,
   ImageStyle,
   ScrollView,
@@ -13,6 +12,7 @@ import {
   Keyboard,
   Alert,
 } from "react-native"
+import { Image } from "expo-image"
 import { v4 as uuidv4 } from "uuid"
 import { AppStackScreenProps } from "app/navigators"
 import { Button, Card, Loading, Screen, Text, TextField } from "app/components"
@@ -25,6 +25,7 @@ import * as ImagePicker from "expo-image-picker"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Buffer } from "buffer"
 import { useHeader } from "app/utils/useHeader"
+import { typography } from "app/theme"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -223,7 +224,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
               <View style={$item}>
                 {item.image ? (
                   <TouchableOpacity onPress={() => setZoomImage(item.image)}>
-                    <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
+                    <Image source={{ uri: item.image }} style={$image} contentFit="cover" />
                   </TouchableOpacity>
                 ) : (
                   <Loading />
@@ -255,7 +256,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
               <TouchableOpacity key={item.id} onPress={() => goNext(item.id, item.title as string)}>
                 <Text style={$text2}>{item.title}</Text>
                 {item.image ? (
-                  <Image source={{ uri: item.image }} style={$image} resizeMode="cover" />
+                  <Image source={{ uri: item.image }} style={$image} contentFit="cover" />
                 ) : (
                   <Loading />
                 )}
@@ -300,7 +301,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
                   <Image
                     source={{ uri: `data:image/png;base64,${cover}` }}
                     style={$image}
-                    resizeMode="cover"
+                    contentFit="cover"
                   />
                   <Button onPress={pickImage} preset="filled">
                     上傳封面
@@ -380,14 +381,20 @@ const $badge: ViewStyle = {
   borderRadius: 10,
   padding: 5,
 }
-const $text1: TextStyle = { textAlign: "center", fontSize: 20, color: "white", fontWeight: "bold" }
+const $text1: TextStyle = {
+  textAlign: "center",
+  fontSize: 20,
+  color: "white",
+  fontFamily: typography.primary.bold,
+}
 
-const $text2: TextStyle = { fontSize: 24, fontWeight: "bold", paddingTop: 5 }
+const $text2: TextStyle = { fontSize: 24, fontFamily: typography.primary.bold, paddingTop: 5 }
 
 const $image: ImageStyle = {
   width: "100%",
   height: 200,
   backgroundColor: "gray",
+  borderRadius: 10,
 }
 
 const $carousel: ViewStyle = {

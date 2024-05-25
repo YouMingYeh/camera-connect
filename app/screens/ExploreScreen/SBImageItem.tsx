@@ -1,3 +1,6 @@
+/* eslint-disable react-native/no-unused-styles */
+/* eslint-disable react-native/sort-styles */
+/* eslint-disable react-native/no-color-literals */
 import { View, Text, Pressable, Modal, StyleSheet } from "react-native"
 import type { MediaItem } from "./types"
 import { Image } from "expo-image"
@@ -123,7 +126,7 @@ const SBImageItem: React.FC<Props> = ({
       </Pressable>
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
@@ -137,14 +140,14 @@ const SBImageItem: React.FC<Props> = ({
               style={styles.descriptionCard}
               ContentComponent={
                 <>
-                  <Text style={styles.title}>{media.title ? media.title : "No title"}</Text>
+                  <Text style={styles.title}>{media.title ? media.title : "沒有標題"}</Text>
                   <Text style={styles.description}>
-                    {"創建時間： " + new Date(media.created_at).toLocaleDateString()}
+                    {"創建時間：" + new Date(media.created_at).toLocaleDateString()}
                   </Text>
                   <Text style={styles.description}>
-                    {"作者： " + (username ? username : "Loading...")}
+                    {"作者：" + (username ? username : "Loading...")}
                   </Text>
-                  <Text style={styles.description}>{"標籤： " + media.hashtag.join(", ")}</Text>
+                  <Text style={styles.description}>{"標籤：" + media.hashtag.join(", ")}</Text>
                 </>
               }
             />
@@ -209,25 +212,42 @@ const SBImageItem: React.FC<Props> = ({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: "transparent",
-    borderRadius: 8,
-    overflow: "hidden",
-  },
-  pressable: {
-    flex: 1,
-  },
-  image: {
-    width: "100%",
-    height: "100%",
+  button: {
+    marginTop: 30,
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    // marginTop: 22,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  container: {
+    backgroundColor: "transparent",
+    borderRadius: 8,
+    flex: 1,
+    justifyContent: "center",
+    overflow: "hidden",
+  },
+  description: {
+    color: "black",
+    alignSelf: "center",
+  },
+  descriptionCard: {},
+  icons: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    width: "100%",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+  },
+  modalImage: {
+    width: 300,
+    height: 300,
+    marginBottom: 15,
   },
   modalView: {
     margin: 20,
@@ -244,38 +264,23 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  modalImage: {
-    width: 300,
-    height: 300,
-    marginBottom: 15,
-  },
-  descriptionCard: {},
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    alignSelf: "center",
-    color: "black",
-  },
-  description: {
-    color: "black",
-    alignSelf: "center",
+  pressable: {
+    flex: 1,
   },
   reactCard: {
     width: "100%",
-    marginTop: 30,
-  },
-  icons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-  },
-  button: {
     marginTop: 30,
   },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    alignSelf: "center",
+    color: "black",
   },
 })
 

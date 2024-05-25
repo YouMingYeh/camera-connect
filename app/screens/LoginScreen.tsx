@@ -4,7 +4,7 @@ import { TextInput, TextStyle, ViewStyle, View, Alert, Platform } from "react-na
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
-import { colors, spacing } from "../theme"
+import { colors, spacing, typography } from "../theme"
 
 import { supabase } from "../utils/supabase"
 

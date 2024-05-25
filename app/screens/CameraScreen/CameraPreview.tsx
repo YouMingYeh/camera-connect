@@ -121,7 +121,7 @@ const CameraPreview = ({
       const uuid = uuidv4()
       return {
         id: uuid,
-        title: "No title",
+        title: "沒有標題",
         is_video: false,
         url:
           "https://adjixakqimigxsubirmn.supabase.co/storage/v1/object/public/media/media-" + uuid,
