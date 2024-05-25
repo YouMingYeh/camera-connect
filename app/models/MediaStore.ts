@@ -73,6 +73,15 @@ export const MediaStoreModel = types
     removeJoinAlbum(media: Media) {
       store.medias.remove(media)
     },
+    updateMedia(media: Media) {
+      const index = store.medias.findIndex((m) => m.id === media.id)
+      if (index === -1) {
+        console.error(`Media with id ${media.id} not found`)
+        return
+      }
+      store.medias[index].title = media.title
+      store.medias[index].hashtag = media.hashtag
+    },
   }))
 
 export interface AuthenticationStore extends Instance<typeof MediaStoreModel> {}

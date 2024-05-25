@@ -449,7 +449,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
           </View>
         )}
         <ScrollView style={$galleryContainer}>
-          {mediaStore.medias && <Gallery medias={mediaStore.medias} />}
+          {mediaStore.medias && <Gallery medias={mediaStore.medias} updateMedia={mediaStore.updateMedia} />}
         </ScrollView>
       </View>
     </Screen>
