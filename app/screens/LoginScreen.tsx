@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React, { ComponentType, FC, useEffect, useMemo, useRef, useState } from "react"
-import { TextInput, TextStyle, ViewStyle, View, Alert, Platform } from "react-native"
+import { TextInput, TextStyle, ViewStyle, View, Alert, Platform, Image } from "react-native"
 import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../components"
 import { useStores } from "../models"
 import { AppStackScreenProps } from "../navigators"
@@ -9,6 +9,8 @@ import { colors, spacing, typography } from "../theme"
 import { supabase } from "../utils/supabase"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
+
+const welcomeLogo = require("../../assets/images/logo.png")
 
 export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_props) {
   const authPasswordInput = useRef<TextInput>(null)
@@ -122,6 +124,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       contentContainerStyle={$screenContentContainer}
       safeAreaEdges={["top", "bottom"]}
     >
+      <Image source={welcomeLogo} style={{ height: 100, width: "100%" }} resizeMode="contain" />
       <Text testID="login-heading" tx="loginScreen.signIn" preset="heading" style={$signIn} />
       <Text tx="loginScreen.enterDetails" preset="subheading" style={$enterDetails} />
       {attemptsCount > 2 && <Text tx="loginScreen.hint" size="sm" weight="light" style={$hint} />}

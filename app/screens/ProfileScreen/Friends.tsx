@@ -156,11 +156,11 @@ const Friends = () => {
             style={styles.input}
             onChangeText={setSearchQuery}
             value={searchQuery}
-            placeholder="Enter email or name"
+            placeholder="輸入用戶名稱或電子郵件..."
             placeholderTextColor="#666"
           />
           <Pressable style={styles.button} onPress={handleSearch}>
-            <Text style={styles.buttonText}>Search</Text>
+            <Text style={styles.buttonText}>尋找</Text>
           </Pressable>
           {searchResults.map((item) => (
             <View style={styles.userRow} key={item.id}>

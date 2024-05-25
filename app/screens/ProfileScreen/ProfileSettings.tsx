@@ -73,10 +73,12 @@ const ProfileSettingsContent = () => {
     } catch (error) {
       console.error("Error updating profile:", error)
       Alert.alert("Update Failed")
+      return
     }
     setExpanded(!expanded)
     setUsername("")
     setAvatar("")
+    Alert.alert("成功了！", "成功更新個人資料！")
   }
 
   const pickImage = async () => {
