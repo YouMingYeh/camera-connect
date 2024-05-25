@@ -4,6 +4,7 @@ import { EpisodeStoreModel } from "./EpisodeStore"
 import { JoinAlbumStoreModel } from "./JoinAlbumStore"
 import { UserStoreModel } from "./UserStore"
 import { MediaStoreModel } from "./MediaStore"
+import { MediaViewedModel } from "./MediaViewed"
 /**
  * A RootStore model.
  */
@@ -13,6 +14,7 @@ export const RootStoreModel = types.model("RootStore").props({
   joinAlbumStore: types.optional(JoinAlbumStoreModel, {}),
   userStores: types.optional(UserStoreModel, {}),
   mediaStore: types.optional(MediaStoreModel, {}),
+  mediaViewedStore: types.optional(MediaViewedModel, {}),
 })
 
 /**

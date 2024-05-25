@@ -1,4 +1,3 @@
-import { getUserId, supabase } from "app/utils/supabase"
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
 
 export const AuthenticationStoreModel = types
@@ -27,7 +26,7 @@ export const AuthenticationStoreModel = types
       store.authEmail = value.replace(/ /g, "")
     },
     logout() {
-      store.authToken = undefined
+      store.authToken = ""
       store.authEmail = ""
     },
   }))

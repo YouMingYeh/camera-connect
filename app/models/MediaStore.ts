@@ -2,7 +2,6 @@ import { Instance, SnapshotOut, types } from "mobx-state-tree"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Media, MediaModel } from "./Media"
-import { User } from "./User"
 
 async function readMediaByAlbumId(supabaseClient: SupabaseClient, albumId: string) {
   const { data, error } = await supabaseClient
@@ -84,5 +83,5 @@ export const MediaStoreModel = types
     },
   }))
 
-export interface AuthenticationStore extends Instance<typeof MediaStoreModel> {}
-export interface AuthenticationStoreSnapshot extends SnapshotOut<typeof MediaStoreModel> {}
+export interface MediaStore extends Instance<typeof MediaStoreModel> {}
+export interface MediaStoreSnapshot extends SnapshotOut<typeof MediaStoreModel> {}

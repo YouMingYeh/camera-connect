@@ -27,6 +27,7 @@ import * as ImagePicker from "expo-image-picker"
 import { v4 as uuidv4 } from "uuid"
 import { Buffer } from "buffer"
 import { useHeader } from "app/utils/useHeader"
+import Tooltip from "react-native-walkthrough-tooltip"
 
 interface AlbumScreenProps extends AppStackScreenProps<"Album"> {}
 
@@ -66,7 +67,7 @@ async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
 }
 
 export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_props) {
-  const { mediaStore } = useStores()
+  const { mediaStore, mediaViewedStore } = useStores()
   const { albumId, albumName } = _props.route.params
   const [medias, setMedias] = React.useState<Media[]>([])
   const [direction, setDirection] = React.useState("")
@@ -82,6 +83,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
   const [currentMediaId, setCurrentMediaId] = React.useState<string | null>(null)
   const [skipped, setSkipped] = React.useState(false)
   const [heart, setHeart] = React.useState(false)
+  const [tooltipVisible, setTooltipVisible] = React.useState(true)
   function animateHeart() {
     Animated.timing(heartScale, {
       toValue: 1,
@@ -96,7 +98,10 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
   useEffect(() => {
     mediaStore.fetchMedias(supabase, albumId).then(() => {
-      setMedias(mediaStore.medias)
+      const newMedias = mediaStore.medias.filter(
+        (media) => !mediaViewedStore.mediaIdsSet.has(media.id),
+      )
+      setMedias(newMedias)
       if (mediaStore.medias.length > 0) {
         setCurrentMediaId(mediaStore.medias[mediaStore.medias.length - 1].id)
         fetchReactions(mediaStore.medias[mediaStore.medias.length - 1].id)
@@ -108,6 +113,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     setDirection(direction)
     if (direction === "right") {
       setShowingHeart(true)
+      heartScale.setValue(0)
       animateHeart()
       setHeart(true)
       handleToggleReaction("heart", myIdentifier)
@@ -116,6 +122,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
         heartScale.setValue(0)
       }, 1000)
     }
+    mediaViewedStore.addMediaId(myIdentifier)
     setMedias((prev) => {
       const remainingMedias = prev.filter((media) => media.id !== myIdentifier)
       if (remainingMedias.length > 0) {
@@ -345,8 +352,15 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
 
         {medias.length !== 0 && !skipped && (
           <View style={$container}>
-            <Text style={{ textAlign: "center", color: "white" }}>👇 試試看左右滑動！</Text>
             {/* <Text tx="albumScreen.swipeHint" style={{color: colors.text, alignSelf: "center"}} /> */}
+
+            <Tooltip
+              isVisible={tooltipVisible}
+              content={<Text>👇 右滑喜歡！</Text>}
+              onClose={() => setTooltipVisible(false)}
+            >
+              <Text></Text>
+            </Tooltip>
             {medias.map((media) => (
               <TinderCard
                 key={media.id}
@@ -358,6 +372,7 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                 </View>
               </TinderCard>
             ))}
+
             {showingHeart && (
               <Animated.View
                 style={{

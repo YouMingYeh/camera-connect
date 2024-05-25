@@ -21,6 +21,7 @@ import * as ImageManinpulator from "expo-image-manipulator"
 import { supabase, getUserId } from "../../utils/supabase"
 import { checkFriendshipStatus } from "../../screens/ProfileScreen/Friends"
 import { AppStackScreenProps } from "app/navigators"
+import Tooltip from "react-native-walkthrough-tooltip"
 
 let camera: Camera
 interface BarCodeEvent {
@@ -40,6 +41,7 @@ export default function App({ _props }: { _props: CameraScreenProps }) {
   const [recordingMode, setRecordingMode] = React.useState(false)
   const [isProcessingScan, setIsProcessingScan] = useState(false)
   const [flashModalVisible, setFlashModalVisible] = useState(false)
+  const [tooltipIndex, setTooltipIndex] = useState(0)
 
   const __startCamera = async () => {
     const cameraStatus = await Camera.requestCameraPermissionsAsync()
@@ -338,60 +340,81 @@ export default function App({ _props }: { _props: CameraScreenProps }) {
                     justifyContent: "space-between",
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={__handleFlashMode}
-                    style={{
-                      borderRadius: 50, // Change the value to a number
-                      height: 35,
-                      width: 35,
-                    }}
+                  <Tooltip
+                    isVisible={tooltipIndex === 0}
+                    content={<Text>開關閃光燈</Text>}
+                    placement="right"
+                    onClose={() => setTooltipIndex(1)}
                   >
-                    <Text
+                    <TouchableOpacity
+                      onPress={__handleFlashMode}
                       style={{
-                        fontSize: 30,
+                        borderRadius: 50, // Change the value to a number
+                        height: 35,
+                        width: 35,
                       }}
                     >
-                      {flashMode === FlashMode.on
-                        ? "⚡️"
-                        : flashMode === FlashMode.off
-                        ? "🔆"
-                        : "❌"}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={__switchCamera}
-                    style={{
-                      marginTop: 10,
-                      borderRadius: 50,
-                      height: 35,
-                      width: 35,
-                    }}
+                      <Text
+                        style={{
+                          fontSize: 30,
+                        }}
+                      >
+                        {flashMode === FlashMode.on
+                          ? "⚡️"
+                          : flashMode === FlashMode.off
+                          ? "🔆"
+                          : "❌"}
+                      </Text>
+                    </TouchableOpacity>
+                  </Tooltip>
+                  <Tooltip
+                    isVisible={tooltipIndex === 1}
+                    content={<Text>切換自拍／後置鏡頭</Text>}
+                    placement="right"
+                    onClose={() => setTooltipIndex(2)}
                   >
-                    <Text
+                    <TouchableOpacity
+                      onPress={__switchCamera}
                       style={{
-                        fontSize: 30,
+                        marginTop: 10,
+                        borderRadius: 50,
+                        height: 35,
+                        width: 35,
                       }}
                     >
-                      {cameraType === CameraType.front ? "🤳" : "📷"}
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={__toggleRecordingMode}
-                    style={{
-                      marginTop: 10,
-                      borderRadius: 50,
-                      height: 35,
-                      width: 35,
-                    }}
+                      <Text
+                        style={{
+                          fontSize: 30,
+                        }}
+                      >
+                        {cameraType === CameraType.front ? "🤳" : "📷"}
+                      </Text>
+                    </TouchableOpacity>
+                  </Tooltip>
+                  <Tooltip
+                    isVisible={tooltipIndex === 2}
+                    content={<Text>切換錄影／拍照</Text>}
+                    placement="right"
+                    onClose={() => setTooltipIndex(3)}
                   >
-                    <Text
+                    <TouchableOpacity
+                      onPress={__toggleRecordingMode}
                       style={{
-                        fontSize: 30,
+                        marginTop: 10,
+                        borderRadius: 50,
+                        height: 35,
+                        width: 35,
                       }}
                     >
-                      {recordingMode ? "📹" : "🖼️"}
-                    </Text>
-                  </TouchableOpacity>
+                      <Text
+                        style={{
+                          fontSize: 30,
+                        }}
+                      >
+                        {recordingMode ? "📹" : "🖼️"}
+                      </Text>
+                    </TouchableOpacity>
+                  </Tooltip>
                 </View>
                 <View
                   style={{

@@ -243,7 +243,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
                 source={{ uri: zoomImage }}
                 // eslint-disable-next-line react-native/no-inline-styles
                 style={{ width: "100%", height: "60%" }}
-                resizeMode="contain"
+                contentFit="contain"
               />
             </View>
           </Modal>
