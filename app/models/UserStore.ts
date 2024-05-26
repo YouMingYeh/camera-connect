@@ -18,7 +18,11 @@ export const UserStoreModel = types
   })
   .actions((store) => ({
     setUserInfo(userInfo: UserInfo) {
-      store.userInfo = userInfo
+      const { username, avatar_url } = userInfo
+      store.userInfo.username = username
+      store.userInfo.avatar_url =
+        avatar_url ||
+        "https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
     },
   }))
 

@@ -280,6 +280,10 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
     }
   }
 
+  // useEffect(() => {
+  //   mediaViewedStore.clearMediaIds()
+  // }, [])
+
   useHeader(
     {
       title: albumName,
