@@ -23,6 +23,11 @@ jest.mock("@supabase/supabase-js", () => ({
             email: "testuser@example.com",
           },
           hashtag: ["#test"],
+          heart: 1,
+          thumb: 1,
+          sad: 1,
+          smile: 1,
+          angry: 1,
         },
       ],
     }),
@@ -58,6 +63,11 @@ describe("MediaStoreModel", () => {
         email: "testuser@example.com",
       },
       hashtag: ["#test"],
+      heart: 1,
+      thumb: 1,
+      sad: 1,
+      smile: 1,
+      angry: 1,
     })
 
     instance.addMedia(newMedia)
@@ -86,6 +96,11 @@ describe("MediaStoreModel", () => {
         avatar_url: "http://example.com/avatar.jpg",
         email: "testuser@example.com",
       },
+      heart: 1,
+      thumb: 1,
+      sad: 1,
+      smile: 1,
+      angry: 1,
       hashtag: ["#test"],
     })
 
