@@ -12,7 +12,7 @@ import {
 } from "react-native"
 import React, { useEffect, useState } from "react"
 import BouncyCheckbox from "react-native-bouncy-checkbox"
-import { Media } from "./type"
+import { Media, MediaCreate } from "./type"
 import { ResizeMode, Video } from "expo-av"
 import { ImageEditor } from "./expo-image-editor"
 import VideoTrimmer from "./VideoTrimmer"
@@ -22,35 +22,12 @@ import { useStores } from "app/models"
 import { getUserId, supabase } from "app/utils/supabase"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { v4 as uuidv4 } from "uuid"
-import { Buffer } from "buffer"
 import * as ImageManinpulator from "expo-image-manipulator"
 import { AppStackParamList } from "app/navigators"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { uploadImage } from "./helper/utils"
 
-type MediaCreate = {
-  id: string
-  title: string
-  is_video: boolean
-  url: string
-  album_id: string
-  uploader_id: string
-  hashtag: string[]
-}
 
-async function uploadImage(supabase: SupabaseClient, base64: string, filename: string) {
-  const { data, error } = await supabase.storage
-    .from("media")
-    .upload(filename, Buffer.from(base64, "base64"), {
-      contentType: "image/jpeg",
-      upsert: true,
-    })
-  if (error) {
-    console.log("Error uploading file: ", error.message)
-    Alert.alert("出錯了！", "上傳檔案失敗...")
-    return
-  }
-  console.log("Success uploading file: ", data)
-}
 
 async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
   const { data, error } = await supabase.from("media").insert(medias)
@@ -142,7 +119,7 @@ const CameraPreview = ({
         return
       }
       // const base64 = medias[i].data.uri
-      await uploadImage(supabase, base64.base64, "media-" + mediaCreates[i].id)
+      await uploadImage(supabase, base64.base64 as string, "media-" + mediaCreates[i].id)
     }
 
     await createMedia(supabase, mediaCreates)
@@ -152,7 +129,7 @@ const CameraPreview = ({
     const selectedAlbumName = joinAlbumStore.joinAlbums.find(
       (album) => album.album.id === selectedAlbum,
     )?.album.album_name
-    navigation.navigate("Album", { albumId: selectedAlbum, albumName: selectedAlbumName })
+    navigation.navigate("Album", { albumId: selectedAlbum, albumName: selectedAlbumName as string })
   }
 
   const fetchJoinAlbums = async () => {

@@ -22,7 +22,7 @@ async function readJoinAlbums(supabaseClient: SupabaseClient, userId: string) {
     .eq("user_id", userId)
 
   if (error) {
-    console.error("Failed to fetch join_album:", error.message)
+    console.log("Failed to fetch join_album:", error.message)
     return null
   }
 
@@ -64,7 +64,7 @@ export const JoinAlbumStoreModel = types
       ])
 
       if (error) {
-        console.error("Failed to join album:", error.message)
+        console.log("Failed to join album:", error.message)
         return null
       }
       return data
