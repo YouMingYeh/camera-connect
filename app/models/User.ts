@@ -1,9 +1,6 @@
 import { Instance, SnapshotIn, SnapshotOut, types } from "mobx-state-tree"
 import { withSetPropAction } from "./helpers/withSetPropAction"
 
-/**
- * Model description here for TypeScript hints.
- */
 export const UserModel = types
   .model("User")
   .props({

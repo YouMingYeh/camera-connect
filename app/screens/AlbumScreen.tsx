@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-color-literals */
 /* eslint-disable react-native/no-inline-styles */
 import React, { FC, useEffect } from "react"
 import { observer } from "mobx-react-lite"
@@ -22,12 +23,11 @@ import Gallery from "app/components/Gallery"
 import { ScrollView } from "react-native-gesture-handler"
 import { BlurView } from "expo-blur"
 import { colors } from "app/theme"
-import { SupabaseClient } from "@supabase/supabase-js"
 import * as ImagePicker from "expo-image-picker"
 import { v4 as uuidv4 } from "uuid"
-import { Buffer } from "buffer"
 import { useHeader } from "app/utils/useHeader"
 import Tooltip from "react-native-walkthrough-tooltip"
+import { createMedia, uploadImage } from "./helper/utils"
 
 interface AlbumScreenProps extends AppStackScreenProps<"Album"> {}
 
@@ -39,31 +39,6 @@ type MediaCreate = {
   album_id: string
   uploader_id: string
   hashtag: string[]
-}
-
-async function uploadImage(supabase: SupabaseClient, base64: string, filename: string) {
-  const { data, error } = await supabase.storage
-    .from("media")
-    .upload(filename, Buffer.from(base64, "base64"), {
-      contentType: "image/jpeg",
-      upsert: true,
-    })
-  if (error) {
-    console.log("Error uploading file: ", error.message)
-    Alert.alert("出錯了！", "上傳檔案失敗...")
-    return
-  }
-  console.log("Success uploading file: ", data)
-}
-
-async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
-  const { data, error } = await supabase.from("media").insert(medias)
-  if (error) {
-    console.log("Error inserting media: ", error.message)
-    Alert.alert("出錯了！", "上傳檔案失敗...")
-    return
-  }
-  console.log("Success inserting media: ", data)
 }
 
 export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_props) {

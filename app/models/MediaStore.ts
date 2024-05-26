@@ -3,7 +3,7 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Media, MediaModel } from "./Media"
 
-async function readMediaByAlbumId(supabaseClient: SupabaseClient, albumId: string) {
+export async function readMediaByAlbumId(supabaseClient: SupabaseClient, albumId: string) {
   const { data, error } = await supabaseClient
     .from("media")
     .select(
