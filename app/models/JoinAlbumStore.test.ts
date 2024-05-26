@@ -2,9 +2,43 @@ import { JoinAlbumStoreModel } from "./JoinAlbumStore"
 import { JoinAlbumModel } from "./JoinAlbum"
 import { createClient } from "@supabase/supabase-js"
 
-const PROJECT_URL = "https://adjixakqimigxsubirmn.supabase.co"
-const PROJECT_PUBLIC_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkaml4YWtxaW1pZ3hzdWJpcm1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM3ODk1NTEsImV4cCI6MjAyOTM2NTU1MX0.wY-4aRx_mFOZJKc_8le4dpjCyaCGNqfc94hlhKC4-74"
+jest.mock("@supabase/supabase-js", () => ({
+  createClient: jest.fn().mockReturnValue({
+    from: jest.fn().mockReturnThis(),
+    select: jest.fn().mockReturnThis(),
+    eq: jest.fn().mockResolvedValue({
+      data: [
+        {
+          user_id: "06fb7376-ef25-4785-9756-d84577be603d",
+          album: {
+            id: "2ccce6e3-dc5c-484b-9d57-f8e3a0cb3984",
+            created_at: "2022-01-20 21:05:36",
+            description: "description",
+            cover_url: "cover_url",
+            album_name: "album_name",
+          },
+          created_at: "2022-01-20 21:05:36",
+        },
+      ],
+    }),
+    insert: jest.fn().mockResolvedValue({
+      data: [
+        {
+          user_id: "06fb7376-ef25-4785-9756-d84577be603d",
+          album: {
+            id: "2ccce6e3-dc5c-484b-9d57-f8e3a0cb3984",
+            created_at: "2022-01-20 21:05:36",
+            description: "description",
+            cover_url: "cover_url",
+            album_name: "album_name",
+          },
+          created_at: "2022-01-20 21:05:36",
+        },
+      ],
+    }),
+  }),
+}));
+
 
 test("can be created", () => {
   const instance = JoinAlbumStoreModel.create({
@@ -27,7 +61,7 @@ test("can be created", () => {
 })
 
 test("can fetch joinAlbums", async () => {
-  const supabaseClient = createClient(PROJECT_URL, PROJECT_PUBLIC_KEY)
+  const supabaseClient = createClient("url", "key")
   const instance = JoinAlbumStoreModel.create({
     joinAlbums: [],
   })
@@ -40,7 +74,7 @@ test("can fetch joinAlbums", async () => {
 })
 
 test("can join album", async () => {
-  const supabaseClient = createClient(PROJECT_URL, PROJECT_PUBLIC_KEY)
+  const supabaseClient = createClient("url", "key")
   const instance = JoinAlbumStoreModel.create({
     joinAlbums: [],
   })
