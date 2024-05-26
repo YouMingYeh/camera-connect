@@ -1,0 +1,27 @@
+#flow: Login
+#intent:
+# Open up our app and use the default credentials to login
+# and navigate to the demo screen
+
+# [namwoam]: serve the web app at http://localhost:8081
+appId: com.cameraconnect # the app id of the app we want to test
+# You can find the appId of an Ignite app in the `app.json` file
+# as the "package" under the "android" section and "bundleIdentifier" under the "ios" section
+---
+- clearState # clears the state of our app (navigation and authentication)
+- launchApp # launches the app
+- assertVisible: "登入"
+- tapOn: 
+    below: "在下面輸入你的電子郵件地址和密碼，或者點擊註冊以創建一個新帳戶。"  
+- inputText: "b11705009@g.ntu.edu.tw"
+- tapOn: 
+    below: "在下面輸入你的電子郵件地址和密碼，或者點擊註冊以創建一個新帳戶。"
+    index: 1
+- inputText: "12345678"
+- tapOn:
+    text: "點擊登入！"
+- assertVisible: "歡迎使用 Camera Connect！"
+- tapOn:
+    text: "我們開始吧！"
+
+
