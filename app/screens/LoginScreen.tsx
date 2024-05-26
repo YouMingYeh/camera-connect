@@ -160,7 +160,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       />
 
       <Button
-        id="login-button"
+        testID="login-button"
         tx={isSignUp ? "loginScreen.tapToSignUp" : "loginScreen.tapToSignIn"}
         style={$tapButton}
         preset="reversed"
