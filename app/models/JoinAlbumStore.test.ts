@@ -37,8 +37,7 @@ jest.mock("@supabase/supabase-js", () => ({
       ],
     }),
   }),
-}));
-
+}))
 
 test("can be created", () => {
   const instance = JoinAlbumStoreModel.create({
@@ -105,8 +104,7 @@ test("can add joinAlbum", () => {
   instance.addJoinAlbum(joinAlbum)
 
   expect(instance.joinAlbums.length).toBe(1)
-}
-)
+})
 
 test("can remove joinAlbum", () => {
   const joinAlbum = JoinAlbumModel.create({

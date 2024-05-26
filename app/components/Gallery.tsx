@@ -317,6 +317,8 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                       <>
                         <Text style={styles.title}>編輯相片</Text>
                         <TextField
+                          accessibilityLabel="相簿名稱"
+                          testID="title"
                           label="相簿名稱"
                           value={title}
                           placeholder="輸入相簿名稱"

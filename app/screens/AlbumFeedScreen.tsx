@@ -253,7 +253,11 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
         <DemoUseCase name="你的相簿" description="你加入的相簿" layout="column">
           <ScrollView style={$container}>
             {data.map((item) => (
-              <TouchableOpacity key={item.id} onPress={() => goNext(item.id, item.title as string)}>
+              <TouchableOpacity
+                key={item.id}
+                onPress={() => goNext(item.id, item.title as string)}
+                accessibilityLabel={item.title as string}
+              >
                 <Text style={$text2}>{item.title}</Text>
                 {item.image ? (
                   <Image source={{ uri: item.image }} style={$image} contentFit="cover" />
@@ -280,7 +284,10 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
                     Keyboard.dismiss()
                   }}
                 >
+                  <Text style={$text2}>創建相簿</Text>
                   <TextField
+                    testID="title"
+                    accessibilityLabel="相簿名稱"
                     label="相簿名稱"
                     value={title}
                     placeholder="輸入相簿名稱"
@@ -289,7 +296,10 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
                     }}
                   />
                   <TextField
+                    accessibilityLabel="相簿描述"
                     label="相簿描述"
+                    testID="description"
+                    id="description"
                     value={description}
                     placeholder="輸入相簿描述"
                     multiline
@@ -303,7 +313,7 @@ export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function Album
                     style={$image}
                     contentFit="cover"
                   />
-                  <Button onPress={pickImage} preset="filled">
+                  <Button onPress={pickImage} preset="filled" accessibilityLabel="上傳封面">
                     上傳封面
                   </Button>
                 </View>

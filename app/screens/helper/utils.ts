@@ -35,13 +35,12 @@ export async function createAlbum(supabase: SupabaseClient, album: Album) {
   console.log("Success inserting album: ", data)
 }
 
-  
-export  async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
-    const { data, error } = await supabase.from("media").insert(medias)
-    if (error) {
-      console.log("Error inserting media: ", error.message)
-      Alert.alert("出錯了！", "上傳檔案失敗...")
-      return
-    }
-    console.log("Success inserting media: ", data)
+export async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
+  const { data, error } = await supabase.from("media").insert(medias)
+  if (error) {
+    console.log("Error inserting media: ", error.message)
+    Alert.alert("出錯了！", "上傳檔案失敗...")
+    return
   }
+  console.log("Success inserting media: ", data)
+}

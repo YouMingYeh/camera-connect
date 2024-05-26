@@ -27,8 +27,6 @@ import { AppStackParamList } from "app/navigators"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { uploadImage } from "./helper/utils"
 
-
-
 async function createMedia(supabase: SupabaseClient, medias: MediaCreate[]) {
   const { data, error } = await supabase.from("media").insert(medias)
   if (error) {

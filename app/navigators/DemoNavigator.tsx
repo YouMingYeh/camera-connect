@@ -83,6 +83,7 @@ export function DemoNavigator() {
         name="AlbumFeed"
         component={AlbumFeedScreen}
         options={{
+          tabBarAccessibilityLabel: translate("demoNavigator.albumTab"),
           tabBarLabel: translate("demoNavigator.albumTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="album" color={focused ? colors.tint : undefined} size={30} />
@@ -94,6 +95,7 @@ export function DemoNavigator() {
         name="Explore"
         component={ExploreScreen}
         options={{
+          tabBarAccessibilityLabel: translate("demoNavigator.exploreTab"),
           tabBarLabel: translate("demoNavigator.exploreTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="explore" color={focused ? colors.tint : undefined} size={30} />
@@ -105,6 +107,7 @@ export function DemoNavigator() {
         name="Camera"
         component={CameraScreen}
         options={{
+          tabBarAccessibilityLabel: translate("demoNavigator.cameraTab"),
           tabBarLabel: translate("demoNavigator.cameraTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="camera" color={focused ? colors.tint : undefined} size={30} />
@@ -115,6 +118,7 @@ export function DemoNavigator() {
         name="Notifications"
         component={NotificationsScreen}
         options={{
+          tabBarAccessibilityLabel: translate("demoNavigator.notificationsTab"),
           tabBarLabel: translate("demoNavigator.notificationsTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="notification" color={focused ? colors.tint : undefined} size={30} />
@@ -126,6 +130,7 @@ export function DemoNavigator() {
         name="Profile"
         component={ProfileScreen}
         options={{
+          tabBarAccessibilityLabel: translate("demoNavigator.profileTab"),
           tabBarLabel: translate("demoNavigator.profileTab"),
           tabBarIcon: ({ focused }) => (
             <Icon icon="profile" color={focused ? colors.tint : undefined} size={30} />
