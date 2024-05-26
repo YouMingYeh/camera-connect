@@ -428,36 +428,16 @@ export const AlbumScreen: FC<AlbumScreenProps> = observer(function AlbumScreen(_
                     <TouchableOpacity
                       onPress={() => handleToggleReaction("thumbs_up", currentMediaId)}
                     >
-                      <Icon
-                        icon="thumb"
-                        size={30}
-                        color={thumbs_up ? colors.tint : "black"}
-                        label="albumScreen.reaction.thumb"
-                      />
+                      <Icon icon="thumb" size={30} color={thumbs_up ? colors.tint : "black"} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleToggleReaction("sad", currentMediaId)}>
-                      <Icon
-                        icon="sad"
-                        size={30}
-                        color={sad ? colors.tint : "black"}
-                        label="albumScreen.reaction.sad"
-                      />
+                      <Icon icon="sad" size={30} color={sad ? colors.tint : "black"} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleToggleReaction("smile", currentMediaId)}>
-                      <Icon
-                        icon="smile"
-                        size={30}
-                        color={smile ? colors.tint : "black"}
-                        label="albumScreen.reaction.smile"
-                      />
+                      <Icon icon="smile" size={30} color={smile ? colors.tint : "black"} />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => handleToggleReaction("angry", currentMediaId)}>
-                      <Icon
-                        icon="angry"
-                        size={30}
-                        color={angry ? colors.tint : "black"}
-                        label="albumScreen.reaction.angry"
-                      />
+                      <Icon icon="angry" size={30} color={angry ? colors.tint : "black"} />
                     </TouchableOpacity>
                   </View>
                 </>

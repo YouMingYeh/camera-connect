@@ -234,14 +234,14 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                             icon="heartFill"
                             size={30}
                             color={"red"}
-                            label="albumScreen.reaction.heart"
+                            label={(medias[activeIndex].heart + 1).toString()}
                           />
                         ) : (
                           <Icon
                             icon="heart"
                             size={30}
                             color={"black"}
-                            label="albumScreen.reaction.heart"
+                            label={medias[activeIndex].heart.toString()}
                           />
                         )}
                       </TouchableOpacity>
@@ -250,7 +250,10 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                           icon="thumb"
                           size={30}
                           color={thumbs_up ? colors.tint : "black"}
-                          label="albumScreen.reaction.thumb"
+                          label={(thumbs_up
+                            ? medias[activeIndex].thumb + 1
+                            : medias[activeIndex].thumb
+                          ).toString()}
                         />
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => handleToggleReaction("sad")}>
@@ -258,7 +261,10 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                           icon="sad"
                           size={30}
                           color={sad ? colors.tint : "black"}
-                          label="albumScreen.reaction.sad"
+                          label={(sad
+                            ? medias[activeIndex].sad + 1
+                            : medias[activeIndex].sad
+                          ).toString()}
                         />
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => handleToggleReaction("smile")}>
@@ -266,7 +272,10 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                           icon="smile"
                           size={30}
                           color={smile ? colors.tint : "black"}
-                          label="albumScreen.reaction.smile"
+                          label={(smile
+                            ? medias[activeIndex].smile + 1
+                            : medias[activeIndex].smile
+                          ).toString()}
                         />
                       </TouchableOpacity>
                       <TouchableOpacity onPress={() => handleToggleReaction("angry")}>
@@ -274,7 +283,10 @@ export default function Gallery({ medias, updateMedia }: GalleryProps) {
                           icon="angry"
                           size={30}
                           color={angry ? colors.tint : "black"}
-                          label="albumScreen.reaction.angry"
+                          label={(angry
+                            ? medias[activeIndex].angry + 1
+                            : medias[activeIndex].angry
+                          ).toString()}
                         />
                       </TouchableOpacity>
                     </View>

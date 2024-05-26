@@ -15,7 +15,12 @@ async function readMediaByAlbumId(supabaseClient: SupabaseClient, albumId: strin
       url,
       album_id,
       uploader_id ( id, created_at, username, avatar_url, email ),
-      hashtag
+      hashtag,
+      heart,
+      thumb,
+      sad,
+      smile,
+      angry
 `,
     )
     .eq("album_id", albumId)
@@ -53,6 +58,11 @@ export const MediaStoreModel = types
           album_id: media.album_id,
           uploader: media.uploader_id,
           hashtag: media.hashtag,
+          heart: media.heart,
+          thumb: media.thumb,
+          sad: media.sad,
+          smile: media.smile,
+          angry: media.angry,
         }
       })
       if (medias?.length === 0) {
