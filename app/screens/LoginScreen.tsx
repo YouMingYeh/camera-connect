@@ -8,7 +8,7 @@ import { colors, spacing, typography } from "../theme"
 
 import { supabase } from "../utils/supabase"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
+interface LoginScreenProps extends AppStackScreenProps<"Login"> { }
 
 const welcomeLogo = require("../../assets/images/logo.png")
 
@@ -160,7 +160,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       />
 
       <Button
-        id="login-button"
+        testID="login-button"
         tx={isSignUp ? "loginScreen.tapToSignUp" : "loginScreen.tapToSignIn"}
         style={$tapButton}
         preset="reversed"
