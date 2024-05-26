@@ -17,6 +17,11 @@ test("can be created", () => {
       email: "testuser@example.com",
     }),
     hashtag: ["#test"],
+    heart: 1,
+    thumb: 1,
+    sad: 1,
+    smile: 1,
+    angry: 1,
   })
 
   expect(instance).toBeTruthy()
