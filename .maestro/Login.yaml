@@ -13,10 +13,11 @@ appId: http://localhost:8081 # the app id of the app we want to test
 - assertVisible: "Sign In"
 - tapOn: "Email"
 - inputText: "b11705009@g.ntu.edu.tw"
-- tapOn: "Password"
+- tapOn: 
+    id: "password-input"
 - inputText: "12345678"
 - tapOn:
-    text: "Tap to sign in!"
+    id: "login-button"
 - assertVisible: "Your app, almost ready for launch!"
 - tapOn:
     text: "Let's go!"

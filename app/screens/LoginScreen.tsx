@@ -145,6 +145,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       />
 
       <TextField
+        id="password-input"
         ref={authPasswordInput}
         value={authPassword}
         onChangeText={setAuthPassword}
@@ -159,7 +160,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       />
 
       <Button
-        testID="login-button"
+        id="login-button"
         tx={isSignUp ? "loginScreen.tapToSignUp" : "loginScreen.tapToSignIn"}
         style={$tapButton}
         preset="reversed"
