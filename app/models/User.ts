@@ -11,11 +11,6 @@ export const UserModel = types
     email: "",
   })
   .actions(withSetPropAction)
-  .actions((self) => ({
-    setUserInfo(userInfo: Partial<SnapshotIn<typeof self>>) {
-      Object.assign(self, userInfo)
-    },
-  }))
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars
 
