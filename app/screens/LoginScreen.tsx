@@ -152,7 +152,6 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         autoCapitalize="none"
         autoComplete="password"
         autoCorrect={false}
-        secureTextEntry={isAuthPasswordHidden}
         labelTx="loginScreen.passwordFieldLabel"
         placeholderTx="loginScreen.passwordFieldPlaceholder"
         onSubmitEditing={isSignUp ? register : login}
