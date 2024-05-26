@@ -16,8 +16,9 @@ appId: http://localhost:8081 # the app id of the app we want to test
 - tapOn: 
     id: "password-input"
 - inputText: "12345678"
+- scroll
 - tapOn:
-    id: "login-button"
+    text: "Tap to sign in!"
 - assertVisible: "Your app, almost ready for launch!"
 - tapOn:
     text: "Let's go!"

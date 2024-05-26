@@ -8,7 +8,7 @@ import { colors, spacing, typography } from "../theme"
 
 import { supabase } from "../utils/supabase"
 
-interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
+interface LoginScreenProps extends AppStackScreenProps<"Login"> { }
 
 const welcomeLogo = require("../../assets/images/logo.png")
 
