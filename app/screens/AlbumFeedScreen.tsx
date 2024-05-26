@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { FC, useEffect } from "react"
 import { observer } from "mobx-react-lite"
 import {
@@ -22,10 +23,9 @@ import { DemoUseCase } from "./DemoShowroomScreen/DemoUseCase"
 import { useStores } from "app/models"
 import { supabase, getUserId } from "../utils/supabase"
 import * as ImagePicker from "expo-image-picker"
-import { SupabaseClient } from "@supabase/supabase-js"
-import { Buffer } from "buffer"
 import { useHeader } from "app/utils/useHeader"
 import { typography } from "app/theme"
+import { createAlbum, uploadImage } from "./helper/utils"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -47,30 +47,30 @@ type Album = {
   album_name: string
 }
 
-async function uploadImage(supabase: SupabaseClient, base64: string, filename: string) {
-  const { data, error } = await supabase.storage
-    .from("media")
-    .upload(filename, Buffer.from(base64, "base64"), {
-      contentType: "image/jpeg",
-      upsert: true,
-    })
-  if (error) {
-    console.log("Error uploading file: ", error.message)
-    Alert.alert("出錯了！", "上傳檔案出現錯誤...")
-    return
-  }
-  console.log("Success uploading file: ", data)
-}
+// async function uploadImage(supabase: SupabaseClient, base64: string, filename: string) {
+//   const { data, error } = await supabase.storage
+//     .from("media")
+//     .upload(filename, Buffer.from(base64, "base64"), {
+//       contentType: "image/jpeg",
+//       upsert: true,
+//     })
+//   if (error) {
+//     console.log("Error uploading file: ", error.message)
+//     Alert.alert("出錯了！", "上傳檔案出現錯誤...")
+//     return
+//   }
+//   console.log("Success uploading file: ", data)
+// }
 
-async function createAlbum(supabase: SupabaseClient, album: Album) {
-  const { data, error } = await supabase.from("album").insert([album])
-  if (error) {
-    console.log("Error inserting album: ", error.message)
-    Alert.alert("出錯了！", "創建相簿出現錯誤...")
-    return
-  }
-  console.log("Success inserting album: ", data)
-}
+// async function createAlbum(supabase: SupabaseClient, album: Album) {
+//   const { data, error } = await supabase.from("album").insert([album])
+//   if (error) {
+//     console.log("Error inserting album: ", error.message)
+//     Alert.alert("出錯了！", "創建相簿出現錯誤...")
+//     return
+//   }
+//   console.log("Success inserting album: ", data)
+// }
 
 export const AlbumFeedScreen: FC<AlbumFeedScreenProps> = observer(function AlbumScreen(_props) {
   // Pull in one of our MST stores
@@ -357,10 +357,6 @@ const $cardContent: ViewStyle = {
   gap: 10,
   flexDirection: "column",
   display: "flex",
-}
-
-const $button: ViewStyle = {
-  width: "90%",
 }
 
 const $item: ViewStyle = {
