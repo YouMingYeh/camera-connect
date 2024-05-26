@@ -16,6 +16,9 @@ export const MediaViewedModel = types
     },
   })) // eslint-disable-line @typescript-eslint/no-unused-vars
   .actions((self) => ({
+    clearMediaIds() {
+      self.mediaIds.clear()
+    },
     addMediaId(mediaId: string) {
       self.mediaIds.push(mediaId)
     },

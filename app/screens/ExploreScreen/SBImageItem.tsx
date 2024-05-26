@@ -158,7 +158,7 @@ const SBImageItem: React.FC<Props> = ({
                     icon={heart ? "heartFill" : "heart"}
                     size={30}
                     color={heart ? "red" : "black"}
-                    label="albumScreen.reaction.heart"
+                    label={(heart ? media.heart + 1 : media.heart).toString()}
                   />
                 </Pressable>
                 <Pressable onPress={() => handleToggleReaction("thumbs_up")}>
@@ -166,7 +166,7 @@ const SBImageItem: React.FC<Props> = ({
                     icon="thumb"
                     size={30}
                     color={thumbs_up ? colors.tint : "black"}
-                    label="albumScreen.reaction.thumbs_up"
+                    label={(thumbs_up ? media.thumb + 1 : media.thumb).toString()}
                   />
                 </Pressable>
                 <Pressable onPress={() => handleToggleReaction("sad")}>
@@ -174,7 +174,7 @@ const SBImageItem: React.FC<Props> = ({
                     icon="sad"
                     size={30}
                     color={sad ? colors.tint : "black"}
-                    label="albumScreen.reaction.sad"
+                    label={(sad ? media.sad + 1 : media.sad).toString()}
                   />
                 </Pressable>
                 <Pressable onPress={() => handleToggleReaction("smile")}>
@@ -182,7 +182,7 @@ const SBImageItem: React.FC<Props> = ({
                     icon="smile"
                     size={30}
                     color={smile ? colors.tint : "black"}
-                    label="albumScreen.reaction.smile"
+                    label={(smile ? media.smile + 1 : media.smile).toString()}
                   />
                 </Pressable>
                 <Pressable onPress={() => handleToggleReaction("angry")}>
@@ -190,7 +190,7 @@ const SBImageItem: React.FC<Props> = ({
                     icon="angry"
                     size={30}
                     color={angry ? colors.tint : "black"}
-                    label="albumScreen.reaction.angry"
+                    label={(angry ? media.angry + 1 : media.angry).toString()}
                   />
                 </Pressable>
               </View>

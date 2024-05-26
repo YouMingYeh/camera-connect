@@ -16,6 +16,11 @@ export const MediaModel = types
     album_id: "",
     uploader: types.maybeNull(UserModel),
     hashtag: types.maybeNull(types.array(types.string)),
+    heart: types.number,
+    thumb: types.number,
+    sad: types.number,
+    smile: types.number,
+    angry: types.number,
   })
   .actions(withSetPropAction)
   .views((self) => ({})) // eslint-disable-line @typescript-eslint/no-unused-vars

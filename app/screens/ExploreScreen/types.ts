@@ -7,6 +7,11 @@ export interface MediaItem {
   album_id: string
   uploader_id: string
   hashtag: string[]
+  heart: number
+  thumb: number
+  sad: number
+  smile: number
+  angry: number
 }
 
 export interface SearchProps {

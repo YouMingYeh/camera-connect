@@ -89,6 +89,7 @@ export function Icon(props: IconProps) {
     >
       <Image style={$imageStyle} source={iconRegistry[icon]} />
       {/* {props.label && <Text style={{color}} tx={props.label as TxKeyPath}></Text>} */}
+      {props.label && <Text style={{ color, textAlign: "center" }}>{props.label}</Text>}
     </Wrapper>
   )
 }
