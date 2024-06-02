@@ -14,3 +14,5 @@ Camera Connect Documentation - Misc
 #### Unit Test
 
 #### End-to-end Test
+
+### Localization
