@@ -103,7 +103,3 @@ For more information, refer to the [documentation](https://github.com/YouMingYeh
 1. **Video Demo**: [Camera Connect Video Demo](https://drive.google.com/file/d/1E6wPS3EVAFbnrVsIrRBG66Rq9EtXnkXU/view?usp=sharing)
 2. **Automated Acceptance Test**: [Camera Connect Automated Acceptance Test](https://drive.google.com/file/d/1GCuYVclHA6T3XyAXSY64czR8EKlrlZck/view)
 3. **Usability Testing**: [Camera Connect Usability Testing](https://drive.google.com/file/d/1_-K65GMtYCUqlMiqSLbI3qjaT1xHAO-m/view?usp=sharing)
-
----
-
-This version includes badges, emojis, and a clear, organized structure to make it more visually appealing and user-friendly.
