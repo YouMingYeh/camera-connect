@@ -53,25 +53,24 @@ To support multiple languages, all display strings are stored in the `/app/i18n/
 1. **Define the String:**
    - Add the string in both `en.ts` (English) and `zh.ts` (Chinese) files located in the `/app/i18n/` directory.
    - Example:
-     ```typescript
-     // en.ts
-     const en = {
+```typescript
+// en.ts
+const en = {
   common: {
     ok: "OK!",
     cancel: "Cancel",
     back: "Back",
     logOut: "Log Out",
-  }}
-
-     // zh.ts
-     const zh = {
+}}
+// zh.ts
+const zh = {
   common: {
     ok: "確定！",
     cancel: "取消",
     back: "返回",
     logOut: "登出",
-  }}
-     ```
+}}
+```
 
 2. **Use the String in Code:**
    - Import the localization module and use the appropriate key to display the string in the UI.
